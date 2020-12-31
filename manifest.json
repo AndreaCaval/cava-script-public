@@ -1,0 +1,108 @@
+{
+  "manifest_version": 2,
+  "name": "Cava-Scripts-1",
+  "description": "botterboycava",
+  "version": "1.0.0",
+  "icons": {
+    "128": "icons/iconpk.png"
+  },
+  "permissions": [
+    "identity",
+    "activeTab",
+    "storage",
+    "tabs",
+    "cookies",
+    "contextMenus",
+    "clipboardRead",
+    "clipboardWrite",
+    "notifications"
+  ],
+  "browser_action": {
+    "default_title": "Cava_Scripts",
+    "default_icon": "icons/iconpk.png",
+    "default_popup": "popup/popup-site-aco.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches":["https://www.solebox.com/*"],
+      "js": ["scripts/solebox-login.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["https://www.solebox.com/*/p/*"],
+      "js": ["scripts/solebox-atc.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["https://www.solebox.com/*/cart"],
+      "js": ["scripts/solebox-checkout.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs":  ["https://www.snipes.*/*"],
+      "js": ["scripts/snipes-login.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs":  ["https://www.snipes.*/p/*"],
+      "js": ["scripts/snipes-atc.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs":  ["https://www.snipes.*/cart"],
+      "js": ["scripts/snipes-checkout.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs":  ["https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*"],
+      "js": ["scripts/zalando-login.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "exclude_globs":["https://*.zalando.*/cart*", "https://*.zalando.*/zalando-newsletter*", "https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*", "https://*.zalando.*/checkout/address", "https://checkout.payment.zalando.com*", "https://*.zalando.*/checkout/confirm*", "https://*.zalando.*/checkout/success*"],
+      "include_globs": ["*.zalando.*"],
+      "js": ["scripts/zalando-mini-display.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs": ["https://*.zalando.*/cart*"],
+      "js": ["scripts/zalando-cart.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs": ["https://*.zalando.*/checkout/address"],
+      "js": ["scripts/zalando-checkout-address.js"],
+      "all_frames": true
+    },
+    {
+      "matches": ["https://checkout.payment.zalando.com/*"],
+      "js": ["scripts/zalando-checkout-payment.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs": ["https://*.zalando.*/checkout/confirm*"],
+      "js": ["scripts/zalando-checkout.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs": ["https://*.zalando.*/checkout/success*"],
+      "js": ["scripts/zalando-success.js"],
+      "all_frames": true
+    }
+  ]
+}

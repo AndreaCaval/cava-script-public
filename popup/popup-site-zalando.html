@@ -1,0 +1,66 @@
+<!doctype html>
+<!--pagina delle impostazioni di zalando-->
+<html>
+
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/jquery.min.js"></script>
+    <script src="/scripts/popup.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estensione</title>
+</head>
+
+<body>
+    <ul>
+        <li><a href="popup-site-aco.html">ACO</a></li>
+        <li><a href="popup-site-autologin.html">Login</a></li>
+        <li><a href="popup-setting.html">Setting</a></li>
+        <li><a href="popup-info.html ">Info</a></li>
+    </ul>
+    <p style="text-align: center;">Zalando</p>
+    <div style="padding:15px;">
+        <div>
+            <label>Email: </label>
+            <input style="float: right;" type="text" id="email_zalando" placeholder="es: cavascripts@gmail.com">
+            <br><br>
+            <label>Password: </label>
+            <input style="float: right;" type="text" id="pw_zalando" placeholder="es: cavascripts">
+            <br><br>
+            <label>Coupon Code: </label>
+            <input style="float: right;" type="text" id="couponZ" placeholder="es: XYZ;XYZ;XYZ">
+            <br><br>
+            <label>Product Link: </label>
+            <input style="float: right;" type="text" id="linkZ" placeholder="es: xyz;xyz;xyz">
+            <br><br>
+            <label>Sku: </label>
+            <input style="float: right;" type="text" id="skuZ" placeholder="es: XYZ;XYZ;XYZ">
+            <br><br>
+            <label>Preload Sku: </label>
+            <input style="float: right;" type="text" id="preloadskuZ" placeholder="es: JOC12N01C-A110160000">
+            <br><br>
+            <label>Timer: </label>
+            <input style="float: right;" type="text" id="timerZ" placeholder="es: 09:00:00">
+            <br><br>
+            <label style="float: left;">Checkout Mode: </label>
+            <select style="float: right; width: 177px;" id="checkoutMode">
+        <option id="normal">Normal</option>
+        <option id="safe">Safe</option>
+        <option id="fast">Fast</option>
+      </select>
+            <br><br>
+            <input style="text-align: center; width: 100%;" class='btn' id="btnZ" type="submit" value="Save">
+            <br><br>
+        </div>
+    </div>
+    <footer>
+        <p style="float:left; display:block;">
+            <a href="https://twitter.com/CavaScripts" target="_blank"><img style="float:left; display:block;" src="/icons/iconpk.png" height="15" width="15"></a>
+        </p>
+        <p id="version" style="float:left;"></p>
+    </footer>
+
+</body>
+
+</html>
