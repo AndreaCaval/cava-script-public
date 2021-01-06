@@ -54,9 +54,20 @@ const LINK_REQUEST = {
         "submit_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-PlaceOrder?format=ajax"
+    },
+    "www.snipes.at": {
+        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
+        "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
+        "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
+        "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
+        "submit_order": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-PlaceOrder?format=ajax"
     }
 
 }
+
+let ck_time = 0; let ck_start = 0;
+let img_product = ""; let name_product = ""; let price_product = ""; let size_product = ""
+
 var html = document.createElement('html')
 var address_id = ""; var snipes_store = ""; var post_office_number = ""; var pack_station_number = ""; var post_number = ""; var country_code = "";
 var suite = ""; var street = ""; var city = ""; var address1 = ""; var address2 = ""; var last_name = ""; var first_name = ""; var title = ""; var postal_code = ""
@@ -69,19 +80,12 @@ async function sendText(text, color) {
 
 async function main() {
     if (document.getElementsByClassName('t-error')[0] == undefined && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "") {
+        ck_start = performance.now()
         await getCheckout()
         await ress.then(function (result) {
             html.innerHTML = result
         })
-        sendText("Getting shipping info", "white")
-        try { img = html.querySelectorAll('img')[6].getAttribute('data-src') }
-        catch (error) { console.log(error) }
-        try { price = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "") }
-        catch (error) { console.log(error) }
-        try { item_name = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "") }
-        catch (error) { console.log(error) }
-        try { item_size = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent }
-        catch (error) { console.log(error) }
+        sendText("Getting shipping info...", "blue")
         try {
             var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
             address_id = rdbtn.getAttribute("data-id")
@@ -106,10 +110,19 @@ async function main() {
             address_selector = rdbtn.getAttribute("value")
 
             email = html.querySelector('[aria-label="Email"]').getAttribute('value')
-            //phone = html.querySelector('[aria-label="Phone"').getAttribute('value')
 
             csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
             sendText("Getting shipping info", "green")
+            try {
+                img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+                price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+                name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+                size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
+            }
+            catch (error) {
+                sendText("Error getting product info", "red")
+                console.log(error)
+            }
 
         } catch (error) {
             console.log(error)
@@ -122,13 +135,18 @@ async function main() {
 
         await ckR()
         res.then(function (result) {
-            //console.log(result)
             var j = JSON.parse(result)
             try {
                 var linkpp = j["continueUrl"]
                 if (linkpp != null) {
+                    ck_time = (performance.now() - ck_start) / 1000
+                    sendText("Checked out", "green")
                     window.open(linkpp)
                     sendWebhooks(linkpp)
+                }
+                else {
+                    let errorMessage = j['errorMessage']
+                    sendText(errorMessage, "red")
                 }
             } catch (error) { console.log(error) }
         })
@@ -159,34 +177,6 @@ async function getCheckout() {
 }
 
 async function ckRship() {
-
-    await fetch(LINK_REQUEST[country]["select_ship"], {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://" + country + "/checkout",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "methodID=home-delivery_it&shipmentUUID=" + shipmentUUID,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
-        .then(response => {
-            if (response.status) {
-                sendText("Selecting shipping method", "green")
-            }
-            else {
-                sendText("Error selecting shipping method", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
-    ;
 
     await fetch(LINK_REQUEST[country]["validate_ship"], {
         "headers": {
@@ -293,7 +283,15 @@ async function ckR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { res = response.text() })
+        .then(response => {
+            if (response.status) {
+                sendText("Placing order", "green")
+            }
+            else {
+                sendText("Error placing order", "red")
+            }
+            res = response.text()
+        })
         .catch((error) => { console.log(error) });
     ;
 }
@@ -314,7 +312,7 @@ async function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         color: ("65280"),
         fields: [
             {
@@ -324,19 +322,24 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Item',
-                value: item_name,
+                value: name_product,
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
                 inline: true
             },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -362,9 +365,8 @@ async function sendWebhook_private(linkpp) {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        //description: '[ PayPal ](' + linkpp + ')',
         color: ("65280"),
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         fields: [
             {
                 name: 'Site',
@@ -373,17 +375,17 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Item',
-                value: item_name,
+                value: name_product,
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
                 inline: true
             },
             {
@@ -391,6 +393,11 @@ async function sendWebhook_private(linkpp) {
                 value: '[ PayPal ](' + linkpp + ')',
                 inline: true
             },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),

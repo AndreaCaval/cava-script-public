@@ -59,13 +59,24 @@ const LINK_REQUEST = {
         "submit_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-PlaceOrder?format=ajax"
+    },
+    "www.snipes.at": {
+        "add_product": "https://www.snipes.at/add-product?format=ajax",
+        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
+        "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
+        "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
+        "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
+        "submit_order": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-PlaceOrder?format=ajax"
     }
 
 }
 
+let ck_time = 0; let ck_start = 0;
+let img_product = ""; let price_product = ""; let name_product = ""; let size_product = ""
+
 var link = document.location.href
 var country = link.split('/')[2]
-var pid_size = ""; var pid = ""; var size = ""
+var pidsize = ""; var pid = ""; var size = ""
 var html = document.createElement('html'); var cart = false
 var address_id = ""; var snipes_store = ""; var post_office_number = ""; var pack_station_number = ""; var post_number = ""; var country_code = "";
 var suite = ""; var street = ""; var city = ""; var address1 = ""; var address2 = ""; var last_name = ""; var first_name = ""; var title = ""; var postal_code = ""
@@ -80,7 +91,7 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
-    return n//Il max è incluso e il min è incluso 
+    return n
 }
 
 async function sendText(text, color) {
@@ -88,16 +99,15 @@ async function sendText(text, color) {
 }
 
 async function main() {
+    ck_start = performance.now()
     csrf_token = document.getElementsByName('csrf_token')[0].value
 
     pidd = link.split('-')
     pidd = pidd[pidd.length - 1].substring(0, 22)
     if (pidd.includes("html")) {
         pid = pidd.substring(0, 14)
-        console.log("atc")
         atc()
     } else {
-        console.log("atc fast")
         pidsize = pidd.substring(0, 22)
         atcRfast()
     }
@@ -106,26 +116,34 @@ async function main() {
 async function atc() {
 
     try {
-        //instock
-        var sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
-        var n = getRandomIntInclusive(0, sizes.length - 1)
-        sizes[n].click()
-        await sleep(2000)
-        var btn = document.getElementsByClassName('f-pdp-button f-pdp-button--active js-btn-add-to-cart')[0]
-        pid = btn.getAttribute('data-pid')
-        size = btn.getAttribute('data-variables')
-        size = size.substring(1, size.length - 1)
-        j = JSON.parse(size)
-        size = j['selectedValueId']
-        atcR(pid, size)
+        let btn_1 = document.getElementsByClassName('f-pdp-button f-pdp-button--active js-btn-add-to-cart')[0]
+        if (btn_1 != undefined && btn_1.getAttribute('data-pid').length > 14) {
+            pidsize = btn_1.getAttribute('data-pid')
+            atcRfast()
+        }
+        else {
+            var sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
+            var n = getRandomIntInclusive(0, sizes.length - 1)
+            sizes[n].click()
+            await sleep(1500)
+            let btn_2 = document.getElementsByClassName('f-pdp-button f-pdp-button--active js-btn-add-to-cart')[0]
+            pid = btn_2.getAttribute('data-pid')
+            size = btn_2.getAttribute('data-variables')
+            size = size.substring(1, size.length - 1)
+            j = JSON.parse(size)
+            size = j['selectedValueId']
+            atcR()
+        }
     }
     catch (error) {
         console.log(error)
     }
 }
 
-async function atcR(pid, size) {
-    fetch(LINK_REQUEST[country]["add_product"], {
+async function atcR() {
+
+    sendText("Trying atc...", "blue")
+    await fetch(LINK_REQUEST[country]["add_product"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
             "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -148,7 +166,9 @@ async function atcR(pid, size) {
 }
 
 async function atcRfast() {
-    fetch(LINK_REQUEST[country]["add_product"], {
+
+    sendText("Trying atc fast...", "blue")
+    await fetch(LINK_REQUEST[country]["add_product"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
             "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -171,82 +191,115 @@ async function atcRfast() {
 }
 
 async function checkRes(response) {
-    status = response.status
-    if (status == '201' || status == '200') {
-        sendText("Carted", "green")
-        main2()
+
+    sendText("Carting...", "blue")
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
+    let message = res["message"]
+    let errorType = res["errorType"]
+    let errorMessage = res["errorMessage"]
+    console.log(message)
+
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            sendText("Carted", "green")
+            main2()
+        }
+        else {
+            if (message == "La talla seleccionada ya no está disponible" || message == "Siamo spiacenti, la taglia selezionata non è più disponibile" || message.includes('Die gewünschte Menge') || message == 'De geselecteerde maat is helaas niet meer beschikbaar' || message == "La taille sélectionnée nest malheureusement plus disponible.") {
+                sendText("Item out of stock", "red")
+            }
+            else if (errorType == "productLimitation") {
+                sendText("Max quantity for this item", "red")
+            }
+            else {
+                sendText("Error carting", "red")
+            }
+        }
     } else {
-        sendText("Error carting", "red")
+        if (errorMessage != undefined)
+            sendText(errorMessage, "red")
+        else
+            sendText("Error carting", "red")
     }
 }
 
 async function main2() {
-    await getCheckout()
-    await ress.then(function (result) {
-        html.innerHTML = result
-    })
-
-    if (cart == false) {
-        sendText("Getting shipping info", "white")
-        try { img = html.querySelectorAll('img')[6].getAttribute('data-src') }
-        catch (error) { console.log(error) }
-        try { price = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "") }
-        catch (error) { console.log(error) }
-        try { item_name = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "") }
-        catch (error) { console.log(error) }
-        try { item_size = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent }
-        catch (error) { console.log(error) }
-        try {
-            var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
-            address_id = rdbtn.getAttribute("data-id")
-            snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
-            post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
-            pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
-            post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
-            postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
-            country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
-            suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
-            street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
-            city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
-            address1 = street + "," + suite
-            address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
-            last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
-            first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
-            title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
-
-            originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
-            shipmentUUID = originalShipmentUUID
-            shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
-            address_selector = rdbtn.getAttribute("value")
-
-            email = html.querySelector('[aria-label="Email"]').getAttribute('value')
-            //phone = html.querySelector('[aria-label="Phone"').getAttribute('value')
-
-            csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
-            sendText("Getting shipping info", "green")
-
-        } catch (error) {
-            console.log(error)
-            sendText("Error getting shipping info", "red")
-        }
-
-        await ckRship()
-
-        await ckRpp()
-
-        await ckR()
-        res.then(function (result) {
-            //console.log(result)
-            var j = JSON.parse(result)
-            try {
-                var linkpp = j["continueUrl"]
-                if (linkpp != null) {
-                    window.open(linkpp)
-                    sendWebhooks(linkpp)
-                }
-            } catch (error) { console.log(error) }
+    try {
+        await getCheckout()
+        await ress.then(function (result) {
+            html.innerHTML = result
         })
-    }
+        if (cart == false) {
+            sendText("Getting shipping info...", "blue")
+            try {
+                var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
+                address_id = rdbtn.getAttribute("data-id")
+                snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
+                post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
+                pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
+                post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
+                postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
+                country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
+                suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
+                street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
+                city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
+                address1 = street + "," + suite
+                address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
+                last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
+                first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
+                title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
+
+                originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
+                shipmentUUID = originalShipmentUUID
+                shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
+                address_selector = rdbtn.getAttribute("value")
+
+                email = html.querySelector('[aria-label="Email"]').getAttribute('value')
+
+                csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
+                sendText("Getting shipping info", "green")
+                try {
+                    img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+                    price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+                    name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+                    size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
+                }
+                catch (error) {
+                    sendText("Error getting product info", "red")
+                    console.log(error)
+                }
+
+            } catch (error) {
+                console.log(error)
+                sendText("Error getting shipping info", "red")
+            }
+
+            await ckRship()
+
+            await ckRpp()
+
+            await ckR()
+            res.then(function (result) {
+                var j = JSON.parse(result)
+                try {
+                    var linkpp = j["continueUrl"]
+                    if (linkpp != null) {
+                        ck_time = (performance.now() - ck_start) / 1000
+                        sendText("Checked out", "green")
+                        window.open(linkpp)
+                        sendWebhooks(linkpp)
+                    }
+                    else {
+                        let errorMessage = j['errorMessage']
+                        sendText(errorMessage, "red")
+                    }
+                } catch (error) { console.log(error) }
+            })
+        }
+    } catch (error) { console.log(error) }
 }
 
 async function getCheckout() {
@@ -277,34 +330,6 @@ async function getCheckout() {
 }
 
 async function ckRship() {
-
-    await fetch(LINK_REQUEST[country]["select_ship"], {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://" + country + "/checkout",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "methodID=home-delivery_it&shipmentUUID=" + shipmentUUID,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
-        .then(response => {
-            if (response.status) {
-                sendText("Selecting shipping method", "green")
-            }
-            else {
-                sendText("Error selecting shipping method", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
-    ;
 
     await fetch(LINK_REQUEST[country]["validate_ship"], {
         "headers": {
@@ -412,7 +437,15 @@ async function ckR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { res = response.text() })
+        .then(response => {
+            if (response.status) {
+                sendText("Placing order", "green")
+            }
+            else {
+                sendText("Error placing order", "red")
+            }
+            res = response.text()
+        })
         .catch((error) => { console.log(error) });
     ;
 }
@@ -433,7 +466,7 @@ async function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         color: ("65280"),
         fields: [
             {
@@ -443,19 +476,24 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Item',
-                value: '[ ' + item_name + ' ](' + link + ')',
+                value: '[ ' + name_product + ' ](' + link + ')',
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
                 inline: true
             },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -481,9 +519,8 @@ async function sendWebhook_private(linkpp) {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        //description: '[ PayPal ](' + linkpp + ')',
         color: ("65280"),
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         fields: [
             {
                 name: 'Site',
@@ -492,17 +529,22 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Item',
-                value: '[ ' + item_name + ' ](' + link + ')',
+                value: '[ ' + name_product + ' ](' + link + ')',
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
                 inline: true
             },
             {

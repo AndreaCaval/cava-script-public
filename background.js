@@ -283,12 +283,25 @@ function SetStatus_off() {
         localStorage.setItem("timer_zalando", "off");
     }
     if (localStorage.getItem("chekout_mode_zalando") == null) {
-        localStorage.setItem("chekout_mode_zalando", "off");
+        localStorage.setItem("chekout_mode_zalando", "Fast");
+    }
+
+    //Sns-----------------------------------------------------------------------------------------------------
+    if (localStorage.getItem("status_aco_sns") == null) {
+        localStorage.setItem("status_aco_sns", "off");
+    }
+
+    //Naked-----------------------------------------------------------------------------------------------------
+    if (localStorage.getItem("status_aco_naked") == null) {
+        localStorage.setItem("status_aco_naked", "off");
     }
 
     //Snipes-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_aco_snipes") == null) {
         localStorage.setItem("status_aco_snipes", "off");
+    }
+    if (localStorage.getItem("country_snipes") == null) {
+        localStorage.setItem("country_snipes", "off");
     }
 
     //Solebox-----------------------------------------------------------------------------------------------------
@@ -297,6 +310,14 @@ function SetStatus_off() {
     }
 
     //LOGIN
+    //Slamjam-----------------------------------------------------------------------------------------------------
+    if (localStorage.getItem("status_login_slamjam") == null) {
+        localStorage.setItem("status_login_slamjam", "off");
+    }
+    if (localStorage.getItem("email_pw_slamjam") == null) {
+        localStorage.setItem("email_pw_slamjam", "off");
+    }
+
     //Solebox-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_login_solebox") == null) {
         localStorage.setItem("status_login_solebox", "off");
@@ -328,9 +349,6 @@ checkData()
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        // console.log(sender.tab ?
-        //     "from a content script:" + sender.tab.url :
-        //     "from the extension");
         //auth-----------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "authLog") sendResponse({ farewell: localStorage.getItem("auth") });
         if (request.greeting == "authData") sendResponse({ farewell: localStorage.getItem("auth_data") });
@@ -339,15 +357,23 @@ chrome.runtime.onMessage.addListener(
         //setting--------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "webhook") sendResponse({ farewell: localStorage.getItem("id_webhook") });
         if (request.greeting == "delay") sendResponse({ farewell: localStorage.getItem("delay") });
+        //sns------------------------------------------------------------------------------------------------------------------------        
+        if (request.greeting == "sns") sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
+        //naked------------------------------------------------------------------------------------------------------------------------
+        if (request.greeting == "naked") sendResponse({ farewell: localStorage.getItem("status_aco_naked") });
         //snipes------------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "snipes") sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
         if (request.greeting == "snipes_login") sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
         if (request.greeting == "email_pw_snipes") sendResponse({ farewell: localStorage.getItem("email_pw_snipes") });
+        if (request.greeting == "country_snipes") sendResponse({ farewell: localStorage.getItem("country_snipes") });
+        //slamjam------------------------------------------------------------------------------------------------------------------------
+        if (request.greeting == "slamjam_login") sendResponse({ farewell: localStorage.getItem("status_login_slamjam") });
+        if (request.greeting == "email_pw_slamjam") sendResponse({ farewell: localStorage.getItem("email_pw_slamjam") });
         //solebox------------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "solebox") sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
         if (request.greeting == "solebox_login") sendResponse({ farewell: localStorage.getItem("status_login_solebox") });
         if (request.greeting == "email_pw_solebox") sendResponse({ farewell: localStorage.getItem("email_pw_solebox") });
-        //zalndo---------------------------------------------------------------------------------------------------------------------
+        //zalando---------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "zalando") sendResponse({ farewell: localStorage.getItem("status_aco_zalando") });
         if (request.greeting == "email_pw_zalando") sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
         if (request.greeting == "couponZ") sendResponse({ farewell: localStorage.getItem("coupon_zalando") });
@@ -407,7 +433,7 @@ chrome.runtime.onMessage.addListener(
 
                     if (user_in_server) {
                         let d = new Date()
-                        d = addDays(d, 3)
+                        d = addDays(d, 7)
                         let day = String(d.getDate() * parseInt(CRYPTO_KEY_INT_2))
                         let month = String(d.getMonth() * parseInt(CRYPTO_KEY_INT_1))
                         let year = String(d.getFullYear() * parseInt(CRYPTO_KEY_INT_3))

@@ -3,6 +3,9 @@ debugger
 var url_private = ''; var version = '';
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
 
+let img_product = "https://www.fashionsauce.com/img/stores/solebox.png"; let price_product = ""; let name_product = ""; let size_product = "";
+let ck_time = 0; let ck_start = 0;
+
 var link = document.location.href
 var country = link.split('/')[3]
 
@@ -10,9 +13,8 @@ var html = document.createElement('html')
 var address_id = ""; var address_type = ""; var snipes_store = ""; var post_office_number = ""; var pack_station_number = ""; var post_number = ""; var country_code = "";
 var suite = ""; var street = ""; var city = ""; var address1 = ""; var address2 = ""; var last_name = ""; var first_name = ""; var title = "";
 var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = ""; var email = ""; var phone = "";
-var img = "https://www.fashionsauce.com/img/stores/solebox.png"; var price = ""; var item_name = ""; var item_size = "";
 var csrf_token = "";
-var pid_size = ""; var pid = ""; var size = ""; var cart = 0; var cart2 = false
+var pid_size = ""; var pid = ""; var size = ""; var cart = false
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -22,25 +24,37 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
-    return n//Il max è incluso e il min è incluso 
+    return n
 }
 
 async function sendText(text, color) {
     document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
 }
 
+async function addButton() {
+    let btn1 = document.getElementById("CavaScripts")
+    btn1.insertAdjacentHTML("beforeend", '<input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
+
+    let btn_solver = document.getElementById('btn_solver')
+    btn_solver.addEventListener("click", function () {
+        let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
+        window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
+    });
+}
+
 async function main() {
 
+    ck_start = performance.now()
     csrf_token = document.getElementsByName('csrf_token')[0].value
 
-    pidd = link.split('-')
+    let pidd = link.split('-')
     pidd = pidd[pidd.length - 1].substring(0, 16)
     if (pidd.includes("html")) {
-        sendText("trying atc...", "white")
+        sendText("trying atc...", "blue")
         pid = pidd.substring(0, 8)
         atc()
     } else {
-        sendText("trying atc fast...", "white")
+        sendText("trying atc fast...", "blue")
         pidsize = pidd.substring(0, 16)
         atcRfast()
     }
@@ -49,21 +63,32 @@ async function main() {
 async function atc() {
 
     try {
-        //instock
-        var sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
-        var n = getRandomIntInclusive(0, sizes.length - 1)
-        sizes[n].click()
-        await sleep(2000)
-        var btn = document.getElementsByClassName('f-pdp-button f-pdp-button--active js-btn-add-to-cart')[0]
-        pid = btn.getAttribute('data-pid')
-        size = btn.getAttribute('data-variables')
-        size = size.substring(1, size.length - 1)
-        j = JSON.parse(size)
-        size = j['selectedValueId']
-        atcR()
+        let btn_1 = document.getElementsByClassName('f-pdp-button f-pdp-button--active js-btn-add-to-cart')[0]
+        if (btn_1 != undefined && btn_1.getAttribute('data-pid').length > 8) {
+            pidsize = btn_1.getAttribute('data-pid')
+            atcRfast()
+        }
+        else {
+            var sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
+            var n = getRandomIntInclusive(0, sizes.length - 1)
+            sizes[n].click()
+            await sleep(1500)
+            let btn_2 = document.getElementsByClassName('f-pdp-button f-pdp-button--active js-btn-add-to-cart')[0]
+            pid = btn_2.getAttribute('data-pid')
+            size = btn_2.getAttribute('data-variables')
+            size = size.substring(1, size.length - 1)
+            j = JSON.parse(size)
+            size = j['selectedValueId']
+            atcR()
+        }
     }
     catch (error) {
-        console.log(error)
+        if (error == "TypeError: Cannot read property 'click' of undefined") {
+            sendText("Item out of stock", "red")
+        }
+        else {
+            console.log(error)
+        }
     }
 }
 
@@ -86,7 +111,7 @@ async function atcR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { checkRes(response, "r") })
+        .then(response => { checkRes(response) })
         .catch((error) => { console.log(error) });
     ;
 }
@@ -109,35 +134,42 @@ async function atcRfast() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { checkRes(response, "rfast") })
+        .then(response => { checkRes(response) })
         .catch((error) => { console.log(error) });
     ;
 }
 
-async function checkRes(response, t) {
-    cart = cart + 1
-    status = response.status
-    if (response.url == "https://www.solebox.com/" + country + "/add-product?format=ajax") {
-        if (status == '201' || status == '200') {
-            sendText("Carting...", "white")
+async function checkRes(response) {
+    sendText("Carting...", "blue")
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
+    let message = res["message"]
+    let errorMessage = res["errorMessage"]
+    console.log(message)
+
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            sendText("Carted", "green")
             main2()
-        } else {
-            sendText("Error carting", "red")
-            let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
-            window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
-            await sleep(5000)
-            if (cart == 2) {
+        }
+        else {
+            if (message == "The selected item is not available any more." || message == "Der gewünschte Artikel ist leider nicht mehr verfügbar.") {
+                sendText("Item out of stock", "red")
+            }
+            else {
+                sendText("Error carting, open solver", "red")
+                addButton()
+                await sleep(7000)
                 location.reload()
-            } else {
-                if (t == "r") {
-                    atcR()
-                } else {
-                    atcRfast()
-                }
             }
         }
     } else {
-        sendText("Error carting", "red")
+        if (errorMessage != undefined)
+            sendText(errorMessage, "red")
+        else
+            sendText("Error carting", "red")
     }
 }
 
@@ -147,15 +179,8 @@ async function main2() {
         await ress.then(function (result) {
             html.innerHTML = result
         })
-        if (cart2 == false) {
-            try { img = html.querySelectorAll('img')[5].getAttribute('data-src') }
-            catch (error) { console.log(error) }
-            try { price = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "") }
-            catch (error) { console.log(error) }
-            try { item_name = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "") }
-            catch (error) { console.log(error) }
-            try { item_size = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent }
-            catch (error) { console.log(error) }
+        if (cart == false) {
+            sendText("Getting shipping info...", "blue")
             try {
                 var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
                 address_id = rdbtn.getAttribute("data-id")
@@ -185,6 +210,17 @@ async function main2() {
 
                 csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
 
+                sendText("Getting shipping info", "green")
+                try {
+                    img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+                    price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+                    name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+                    size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
+                }
+                catch (error) {
+                    console.log(error)
+                    sendText("Error getting product info", "red")
+                }
             } catch (error) {
                 console.log(error)
                 sendText("Error getting shipping info", "red")
@@ -195,15 +231,19 @@ async function main2() {
             await ckRpp()
 
             await ckR()
-            res.then(function (result) {
-                //console.log(result)
+            await res.then(function (result) {
                 var j = JSON.parse(result)
                 try {
                     var linkpp = j["continueUrl"]
                     if (linkpp != null) {
+                        ck_time = (performance.now() - ck_start) / 1000
                         sendText("Checked out", "green")
                         window.open(linkpp)
                         sendWebhooks(linkpp)
+                    }
+                    else {
+                        let errorMessage = j['errorMessage']
+                        sendText(errorMessage, "red")
                     }
                 } catch (error) { console.log(error) }
             })
@@ -376,7 +416,7 @@ async function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         color: ("65280"),
         fields: [
             {
@@ -386,19 +426,24 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Item',
-                value: '[ ' + item_name + ' ](' + link + ')',
+                value: '[ ' + name_product + ' ](' + link + ')',
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
                 inline: true
             },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -424,9 +469,8 @@ async function sendWebhook_private(linkpp) {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        //description: '[ PayPal ](' + linkpp + ')',
         color: ("65280"),
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         fields: [
             {
                 name: 'Site',
@@ -435,24 +479,29 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Item',
-                value: '[ ' + item_name + ' ](' + link + ')',
+                value: '[ ' + name_product + ' ](' + link + ')',
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
                 inline: true
             },
             {
                 name: 'Checkout link',
                 value: '[ PayPal ](' + linkpp + ')',
                 inline: true
-            },
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),

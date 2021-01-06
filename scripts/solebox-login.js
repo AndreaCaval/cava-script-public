@@ -1,6 +1,6 @@
 debugger
 
-var email = ""; var pw = ""
+var email = ""; var pw = ""; var status_aco = ""; var status_login = ""
 var link = document.location.href
 var country = link.split('/')[3]
 
@@ -19,7 +19,7 @@ async function checkLogin() {
 
     eval(script)
     if (dataLayer[0]["userLoginStatus"] == false) {
-        sendText("Logging in...", "white")
+        sendText("Logging in...", "blue")
         if (email != "" && email != null && email != "off" && email != undefined || pw != "" && pw != null && pw != "off" && pw != undefined) {
             login()
         } else {
@@ -114,6 +114,14 @@ chrome.runtime.sendMessage({ greeting: "email_pw_solebox" }, function (response)
     pw = x.split(':')[1]
 });
 
+chrome.runtime.sendMessage({ greeting: "solebox" }, function (response) {
+    status_aco = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "solebox_login" }, function (response) {
+    status_login = response.farewell
+});
+
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         chrome.runtime.sendMessage({ greeting: "solebox_login" }, function (response) {
@@ -125,13 +133,17 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     textBox()
 });
 
-
 async function textBox() {
+    let color_aco = ""; let color_login = ""
+    if (status_aco == "off") { color_aco = "red" }
+    else { color_aco = "green" }
+    if (status_login == "off") { color_login = "red" }
+    else { color_login = "green" }
     try {
         var btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0].parentNode
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 100px; z-index: 1000; min-width: 300px; background-color: lightgrey; padding: 5px 10px; color: white; border-radius: 10px;">'
-            + ' <p id="statusSolebox">Status solebox</p></div>');
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">'
+            + ' <p id="statusSolebox">Status solebox</p>'
+            + " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     }
     catch (error) { console.log(error) }
 }
-

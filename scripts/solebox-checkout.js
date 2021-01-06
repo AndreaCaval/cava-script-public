@@ -2,37 +2,32 @@ debugger
 
 var url_private = ''; var version = '';
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
+
+let img_product = "https://www.fashionsauce.com/img/stores/solebox.png"; let price_product = ""; let name_product = ""; let size_product = "";
+let ck_time = 0; let ck_start = 0; 
+
 var link = document.location.href
 var country = link.split("/")[3]
 var html = document.createElement('html')
 var address_id = ""; var address_type = ""; var snipes_store = ""; var post_office_number = ""; var pack_station_number = ""; var post_number = ""; var country_code = "";
 var suite = ""; var street = ""; var city = ""; var address1 = ""; var address2 = ""; var last_name = ""; var first_name = ""; var title = "";
-var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = ""; var email = ""; var phone = "";
+var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = ""; var email = ""; var phone = ""; var postal_code = ""; let shippingMethodID = ""
 var csrf_token = "";
-var img = "https://www.fashionsauce.com/img/stores/solebox.png"; var price = ""; var item_name = ""; var size = "";
 
 async function sendText(text, color) {
     document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
 }
 
 async function main() {
+
     try {
         if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€") {
+            ck_start = performance.now()
             await getCheckout()
             await ress.then(function (result) {
                 html.innerHTML = result
             })
-
-            sendText("Getting shipping info", "white")
-
-            try { img = html.querySelectorAll('img')[5].getAttribute('data-src') }
-            catch (error) { console.log(error) }
-            try { price = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "") }
-            catch (error) { console.log(error) }
-            try { item_name = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "") }
-            catch (error) { console.log(error) }
-            try { item_size = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent }
-            catch (error) { console.log(error) }
+            sendText("Getting shipping info...", "blue")
             try {
                 var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
                 address_id = rdbtn.getAttribute("data-id")
@@ -63,6 +58,16 @@ async function main() {
                 csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
 
                 sendText("Getting shipping info", "green")
+                try {
+                    img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+                    price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+                    name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+                    size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
+                }
+                catch (error) {
+                    sendText("Error getting product info", "red")
+                    console.log(error)
+                }
             } catch (error) {
                 console.log(error)
                 sendText("Error getting shipping info", "red")
@@ -74,14 +79,18 @@ async function main() {
 
             await ckR()
             res.then(function (result) {
-                //console.log(result)
                 var j = JSON.parse(result)
                 try {
                     var linkpp = j["continueUrl"]
                     if (linkpp != null) {
+                        ck_time = (performance.now() - ck_start) / 1000
                         sendText("Checked out", "green")
                         window.open(linkpp)
                         sendWebhooks(linkpp)
+                    }
+                    else {
+                        let errorMessage = j['errorMessage']
+                        sendText(errorMessage, "red")
                     }
                 } catch (error) { console.log(error) }
             })
@@ -251,7 +260,7 @@ async function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         color: ("65280"),
         fields: [
             {
@@ -261,19 +270,24 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Item',
-                value: item_name,
+                value: name_product,
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
                 inline: true
             },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -299,9 +313,8 @@ async function sendWebhook_private(linkpp) {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        //description: '[ PayPal ](' + linkpp + ')',
         color: ("65280"),
-        thumbnail: { url: img },
+        thumbnail: { url: img_product },
         fields: [
             {
                 name: 'Site',
@@ -310,17 +323,22 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Item',
-                value: item_name,
+                value: name_product,
                 inline: true
             },
             {
                 name: 'Size',
-                value: item_size,
+                value: size_product,
                 inline: true
             },
             {
                 name: 'Price',
-                value: price,
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Time',
+                value: ck_time.toString().substring(0, 11),
                 inline: true
             },
             {
@@ -361,4 +379,5 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
         });
     }
 });
+
 

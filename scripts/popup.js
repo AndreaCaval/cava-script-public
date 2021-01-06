@@ -91,19 +91,19 @@ async function getNetworkIP() {
     let found = false;
     let resolve;
     const promise = new Promise((res) => {
-    resolve = res;
+        resolve = res;
     });
     const pc = new RTCPeerConnection({ iceServers: [] });
-    
+
     pc.addEventListener("icecandidate", (e) => {
-    if (!e.candidate || found) return;
-    resolve(e.candidate.address);
-    found = true;
+        if (!e.candidate || found) return;
+        resolve(e.candidate.address);
+        found = true;
     });
-    
+
     pc.createDataChannel("");
     pc.createOffer().then((desc) => pc.setLocalDescription(desc));
-    
+
     return promise;
 }
 
@@ -165,6 +165,11 @@ $(function () {
         if (localStorage.getItem("status_aco_solebox") == "on") { $('#Status_aco_solebox').prop('checked', true); }
         //Snipes
         if (localStorage.getItem("status_aco_snipes") == "on") { $('#Status_aco_snipes').prop('checked', true); }
+        //Sns
+        if (localStorage.getItem("status_aco_sns") == "on") { $('#Status_aco_sns').prop('checked', true); }
+        //Naked
+        if (localStorage.getItem("status_aco_naked") == "on") { $('#Status_aco_naked').prop('checked', true); }
+
 
         //gestisco i click delle checkbox
         //Zalando
@@ -179,18 +184,32 @@ $(function () {
         $('#Status_aco_snipes').click(function () {
             if ($("#Status_aco_snipes").is(':checked')) { localStorage.setItem("status_aco_snipes", "on"); } else { localStorage.setItem("status_aco_snipes", "off"); }
         });
+        //Sns
+        $('#Status_aco_sns').click(function () {
+            if ($("#Status_aco_sns").is(':checked')) { localStorage.setItem("status_aco_sns", "on"); } else { localStorage.setItem("status_aco_sns", "off"); }
+        });
+        //Naked
+        $('#Status_aco_naked').click(function () {
+            if ($("#Status_aco_naked").is(':checked')) { localStorage.setItem("status_aco_naked", "on"); } else { localStorage.setItem("status_aco_naked", "off"); }
+        });
 
         //---------------------------------------------------------------------
 
         //GESTIONE PAGINA Login------------------------------------------------
 
         //contollo se le variabili sono on e in caso checko la casella
+        //SlamJam
+        if (localStorage.getItem("status_login_slamjam") == "on") { $('#Status_login_slamjam').prop('checked', true); }
         //Solebox
         if (localStorage.getItem("status_login_solebox") == "on") { $('#Status_login_solebox').prop('checked', true); }
         //Snipes
         if (localStorage.getItem("status_login_snipes") == "on") { $('#Status_login_snipes').prop('checked', true); }
 
         //gestisco i click delle checkbox
+        //SlamJam
+        $('#Status_login_slamjam').click(function () {
+            if ($("#Status_login_slamjam").is(':checked')) { localStorage.setItem("status_login_slamjam", "on"); } else { localStorage.setItem("status_login_slamjam", "off"); }
+        });
         //Solebox
         $('#Status_login_solebox').click(function () {
             if ($("#Status_login_solebox").is(':checked')) { localStorage.setItem("status_login_solebox", "on"); } else { localStorage.setItem("status_login_solebox", "off"); }
@@ -290,13 +309,32 @@ $(function () {
             $("#email_snipes").val(email);
             $("#pw_snipes").val(pw);
         }
+        if (localStorage.getItem("country_snipes") != "off") { $("#country_snipes").val(localStorage.getItem("country_snipes")); }
         //gestisco il click del bottone salva
         $("#btn_save_snipes").click(function () {
             var e = $("#email_snipes").val();
             var p = $("#pw_snipes").val();
-
+            var c = $("#country_snipes").val();
             if (e != '' && p != '') { localStorage.setItem("email_pw_snipes", e + ":" + p); } else { localStorage.setItem("email_pw_snipes", "off"); }
+
+            if (c != '') { localStorage.setItem("country_snipes", c); } else { localStorage.setItem("country_snipes", "off"); }
         });
         //---------------------------------------------------------------------
+
+        //GESTIONE PAGINA SLAMJAM----------------------------------------------
+        //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+        if (localStorage.getItem("email_pw_slamjam") != "off") {
+            var email = localStorage.getItem("email_pw_slamjam").split(':')[0]
+            var pw = localStorage.getItem("email_pw_slamjam").split(':')[1]
+            $("#email_slamjam").val(email);
+            $("#pw_slamjam").val(pw);
+        }
+        //gestisco il click del bottone salva
+        $("#btn_save_slamjam").click(function () {
+            var e = $("#email_slamjam").val();
+            var p = $("#pw_slamjam").val();
+
+            if (e != '' && p != '') { localStorage.setItem("email_pw_slamjam", e + ":" + p); } else { localStorage.setItem("email_pw_slamjam", "off"); }
+        });
     }
 });

@@ -30,6 +30,23 @@
   },
   "content_scripts": [
     {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs": ["https://www.sneakersnstuff.com/*/product/*"],
+      "js": ["scripts/sns-atc.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs":  ["https://www.nakedcph.com/*/product/*"],
+      "js": ["scripts/naked-atc.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["https://www.slamjam.com/*"],
+      "js": ["scripts/slamjam-login.js"],
+      "all_frames": true
+    },
+    {
       "matches":["https://www.solebox.com/*"],
       "js": ["scripts/solebox-login.js"],
       "all_frames": true
