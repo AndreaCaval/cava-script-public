@@ -5,7 +5,8 @@ var link = document.location.href
 var country = link.split("/")[2]
 
 async function sendText(text, color) {
-    document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
+    try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
+    catch (error) { }
 }
 
 async function changeCountry() {
@@ -34,9 +35,7 @@ async function checkLogin() {
                 sendText("Login data error", "red")
             }
         }
-    } catch (error) {
-        console.log(error)
-    }
+    } catch (error) { }
 }
 
 async function login() {
@@ -48,7 +47,6 @@ async function login() {
         await res.then(function (result) {
             html2.innerHTML = result
         })
-        //html2.innerHTML = html
         csrf_token = html2.querySelectorAll("[name='csrf_token']")[0].value
         span = html2.querySelectorAll('span')
         for (var i = 0; i < span.length; i++) {
@@ -66,7 +64,6 @@ async function login() {
         for (var i = 0; i < span.length; i++) {
             if (span[i].getAttribute('data-id') != null) {
                 span = span[i]
-                console.log(span)
             }
         }
         data_id = span.getAttribute('data-id')
@@ -91,7 +88,10 @@ async function login() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) { sendText("Logged in", "green") }
+            if (response.status == 200 || response.status == 201) {
+                sendText("Logged in", "green")
+            }
+            else { sendText("Error logging in", "red") }
         })
         .catch((error) => { console.log(error) });
     ;
@@ -159,11 +159,9 @@ async function textBox() {
     else { color_login = "green" }
     try {
         var btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0].parentNode
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">'
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">'
             + ' <p id="statusSnipes">Status snipes</p> '
             + " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     }
-    catch (error) {
-        console.log(error)
-    }
+    catch (error) { }
 }

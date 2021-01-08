@@ -4,7 +4,7 @@ var url_private = ''; var version = '';
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
 
 let img_product = "https://www.fashionsauce.com/img/stores/solebox.png"; let price_product = ""; let name_product = ""; let size_product = "";
-let ck_time = 0; let ck_start = 0; 
+let ck_time = 0; let ck_start = 0;
 
 var link = document.location.href
 var country = link.split("/")[3]
@@ -15,13 +15,14 @@ var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = "";
 var csrf_token = "";
 
 async function sendText(text, color) {
-    document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
+    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
+    catch (error) { }
 }
 
 async function main() {
 
     try {
-        if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€") {
+        if (document.getElementsByClassName('t-error')[0] == undefined && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€") {
             ck_start = performance.now()
             await getCheckout()
             await ress.then(function (result) {
@@ -66,21 +67,20 @@ async function main() {
                 }
                 catch (error) {
                     sendText("Error getting product info", "red")
-                    console.log(error)
+
                 }
             } catch (error) {
-                console.log(error)
+
                 sendText("Error getting shipping info", "red")
             }
 
             await ckRship()
-
             await ckRpp()
-
             await ckR()
-            res.then(function (result) {
-                var j = JSON.parse(result)
+
+            await res.then(function (result) {
                 try {
+                    var j = JSON.parse(result)
                     var linkpp = j["continueUrl"]
                     if (linkpp != null) {
                         ck_time = (performance.now() - ck_start) / 1000
@@ -92,11 +92,18 @@ async function main() {
                         let errorMessage = j['errorMessage']
                         sendText(errorMessage, "red")
                     }
-                } catch (error) { console.log(error) }
+                } catch (error) { }
             })
         }
+        else if (document.getElementsByClassName('t-error')[0] != undefined) {
+            sendText("Item not available", "red")
+        }
+        else if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "0,00€" || document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "") {
+            sendText("Item not found", "red")
+        }
+        else { sendText("Item out of stock", "red") }
 
-    } catch (error) { console.log(error) }
+    } catch (error) { }
 }
 
 async function getCheckout() {
@@ -142,7 +149,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Getting shipping rates", "green")
             }
             else {
@@ -170,7 +177,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting shipping", "green")
             }
             else {
@@ -182,6 +189,7 @@ async function ckRship() {
 }
 
 async function ckRpp() {
+
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-SubmitPayment?format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -200,7 +208,7 @@ async function ckRpp() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting payment", "green")
             }
             else {
@@ -212,6 +220,7 @@ async function ckRpp() {
 }
 
 async function ckR() {
+
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-PlaceOrder?format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -232,7 +241,7 @@ async function ckR() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Placing order", "green")
             }
             else {

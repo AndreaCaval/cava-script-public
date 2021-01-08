@@ -2,11 +2,11 @@ debugger
 
 var url_private = ''; var version = '';
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
+var url_error = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
 
 const LINK_REQUEST = {
     "www.snipes.it": {
         "add_product": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Cart-AddProduct?format=ajax",
-        "select_ship": "https://ww.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutServices-SubmitPayment?format=ajax",
@@ -14,7 +14,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.nl": {
         "add_product": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Cart-AddProduct?format=ajax",
-        "select_ship": "https://ww.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutServices-SubmitPayment?format=ajax",
@@ -22,7 +21,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.fr": {
         "add_product": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Cart-AddProduct?format=ajax",
-        "select_ship": "https://ww.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutServices-SubmitPayment?format=ajax",
@@ -30,7 +28,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.com": {
         "add_product": "https://www.snipes.com/add-product?format=ajax",
-        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SubmitShipping?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutServices-SubmitPayment?format=ajax",
@@ -38,7 +35,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.ch": {
         "add_product": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Cart-AddProduct?format=ajax",
-        "select_ship": "https://ww.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutServices-SubmitPayment?format=ajax",
@@ -46,7 +42,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.es": {
         "add_product": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Cart-AddProduct?format=ajax",
-        "select_ship": "https://ww.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-SubmitPayment?format=ajax",
@@ -54,7 +49,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.be": {
         "add_product": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Cart-AddProduct?format=ajax",
-        "select_ship": "https://ww.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-SubmitPayment?format=ajax",
@@ -62,7 +56,6 @@ const LINK_REQUEST = {
     },
     "www.snipes.at": {
         "add_product": "https://www.snipes.at/add-product?format=ajax",
-        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
@@ -95,22 +88,26 @@ function getRandomIntInclusive(min, max) {
 }
 
 async function sendText(text, color) {
-    document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
+    try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
+    catch (error) { }
 }
 
 async function main() {
-    ck_start = performance.now()
-    csrf_token = document.getElementsByName('csrf_token')[0].value
 
-    pidd = link.split('-')
-    pidd = pidd[pidd.length - 1].substring(0, 22)
-    if (pidd.includes("html")) {
-        pid = pidd.substring(0, 14)
-        atc()
-    } else {
-        pidsize = pidd.substring(0, 22)
-        atcRfast()
-    }
+    try {
+        ck_start = performance.now()
+        try { csrf_token = document.getElementsByName('csrf_token')[0].value }
+        catch (error) { }
+        pidd = link.split('-')
+        pidd = pidd[pidd.length - 1].substring(0, 22)
+        if (pidd.includes("html")) {
+            pid = pidd.substring(0, 14)
+            atc()
+        } else {
+            pidsize = pidd.substring(0, 22)
+            atcRfast()
+        }
+    } catch (error) { }
 }
 
 async function atc() {
@@ -135,9 +132,7 @@ async function atc() {
             atcR()
         }
     }
-    catch (error) {
-        console.log(error)
-    }
+    catch (error) { }
 }
 
 async function atcR() {
@@ -200,7 +195,6 @@ async function checkRes(response) {
     let message = res["message"]
     let errorType = res["errorType"]
     let errorMessage = res["errorMessage"]
-    console.log(message)
 
     if (status == 200 || status == 201) {
         if (error == false) {
@@ -219,10 +213,15 @@ async function checkRes(response) {
             }
         }
     } else {
-        if (errorMessage != undefined)
-            sendText(errorMessage, "red")
-        else
-            sendText("Error carting", "red")
+        if (errorMessage != undefined && errorMessage != "undefined") {
+            if (errorMessage.includes("non siamo riusciti a salvare l'indirizzo di fatturazione")) {
+                sendText("Error getting shipping", "red")
+            } else {
+                sendText(errorMessage, "red")
+                errorWebhook()
+            }
+        }
+        else { sendText("Error carting", "red") }
     }
 }
 
@@ -269,22 +268,19 @@ async function main2() {
                 }
                 catch (error) {
                     sendText("Error getting product info", "red")
-                    console.log(error)
                 }
 
             } catch (error) {
-                console.log(error)
                 sendText("Error getting shipping info", "red")
             }
 
             await ckRship()
-
             await ckRpp()
-
             await ckR()
-            res.then(function (result) {
-                var j = JSON.parse(result)
+
+            await res.then(function (result) {
                 try {
+                    var j = JSON.parse(result)
                     var linkpp = j["continueUrl"]
                     if (linkpp != null) {
                         ck_time = (performance.now() - ck_start) / 1000
@@ -296,10 +292,11 @@ async function main2() {
                         let errorMessage = j['errorMessage']
                         sendText(errorMessage, "red")
                     }
-                } catch (error) { console.log(error) }
+                } catch (error) { }
             })
         }
-    } catch (error) { console.log(error) }
+        else { sendText("Item out of stock/ Item not available", "red") }
+    } catch (error) { }
 }
 
 async function getCheckout() {
@@ -349,7 +346,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Validating address", "green")
             }
             else {
@@ -377,7 +374,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting shipping", "green")
             }
             else {
@@ -408,7 +405,7 @@ async function ckRpp() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting payment", "green")
             }
             else {
@@ -438,7 +435,7 @@ async function ckR() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Placing order", "green")
             }
             else {
@@ -455,6 +452,38 @@ function sendWebhooks(linkpp) {
         sendWebhook_public()
         sendWebhook_private(linkpp)
     }
+}
+
+async function errorWebhook(errorMessage) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Snipes ATC Error",
+        color: ("16744192"),
+        fields: [
+            {
+                name: 'Message',
+                value: errorMessage,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
 }
 
 async function sendWebhook_public() {
@@ -491,7 +520,7 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Time',
-                value: ck_time.toString().substring(0, 11),
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
                 inline: true
             }
         ],
@@ -544,7 +573,7 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Time',
-                value: ck_time.toString().substring(0, 11),
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
                 inline: true
             },
             {

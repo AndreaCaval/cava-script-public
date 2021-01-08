@@ -5,27 +5,31 @@ var link = document.location.href
 var country = link.split('/')[3]
 
 async function sendText(text, color) {
-    document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
+    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
+    catch (error) { }
 }
 
 async function checkLogin() {
-    var script = ""
-    var scripts = document.getElementsByTagName('script')
-    for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].textContent.includes('userLoginStatus')) {
-            script = scripts[i].textContent
+    try {
+        var script = ""
+        var scripts = document.getElementsByTagName('script')
+        for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i].textContent.includes('userLoginStatus')) {
+                script = scripts[i].textContent
+            }
         }
-    }
 
-    eval(script)
-    if (dataLayer[0]["userLoginStatus"] == false) {
-        sendText("Logging in...", "blue")
-        if (email != "" && email != null && email != "off" && email != undefined || pw != "" && pw != null && pw != "off" && pw != undefined) {
-            login()
-        } else {
-            sendText("Login data error", "red")
+        eval(script)
+        if (dataLayer[0]["userLoginStatus"] == false) {
+            sendText("Logging in...", "blue")
+            if (email != "" && email != null && email != "off" && email != undefined || pw != "" && pw != null && pw != "off" && pw != undefined) {
+                login()
+            } else {
+                sendText("Login data error", "red")
+            }
         }
     }
+    catch (error) { }
 }
 
 async function login() {
@@ -37,7 +41,6 @@ async function login() {
         await res.then(function (result) {
             html2.innerHTML = result
         })
-        //html2.innerHTML = html
         csrf_token = html2.querySelectorAll("[name='csrf_token']")[0].value
         span = html2.querySelectorAll('span')
         for (var i = 0; i < span.length; i++) {
@@ -55,7 +58,6 @@ async function login() {
         for (var i = 0; i < span.length; i++) {
             if (span[i].getAttribute('data-id') != null) {
                 span = span[i]
-                console.log(span)
             }
         }
         data_id = span.getAttribute('data-id')
@@ -79,7 +81,12 @@ async function login() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { if (response.status) { sendText("Logged in", "green") } })
+        .then(response => {
+            if (response.status == 200 || response.status == 201) {
+                sendText("Logged in", "green")
+            }
+            else { sendText("Error logging in", "red") }
+        })
         .catch((error) => { console.log(error) });
     ;
 }
@@ -141,9 +148,9 @@ async function textBox() {
     else { color_login = "green" }
     try {
         var btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0].parentNode
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">'
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">'
             + ' <p id="statusSolebox">Status solebox</p>'
             + " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     }
-    catch (error) { console.log(error) }
+    catch (error) { }
 }

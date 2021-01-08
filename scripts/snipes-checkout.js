@@ -121,22 +121,19 @@ async function main() {
             }
             catch (error) {
                 sendText("Error getting product info", "red")
-                console.log(error)
             }
 
         } catch (error) {
-            console.log(error)
             sendText("Error getting shipping info", "red")
         }
 
         await ckRship()
-
         await ckRpp()
-
         await ckR()
-        res.then(function (result) {
-            var j = JSON.parse(result)
+
+        await res.then(function (result) {
             try {
+                var j = JSON.parse(result)
                 var linkpp = j["continueUrl"]
                 if (linkpp != null) {
                     ck_time = (performance.now() - ck_start) / 1000
@@ -148,9 +145,16 @@ async function main() {
                     let errorMessage = j['errorMessage']
                     sendText(errorMessage, "red")
                 }
-            } catch (error) { console.log(error) }
+            } catch (error) { }
         })
     }
+    else if (document.getElementsByClassName('t-error')[0] != undefined) {
+        sendText("Item not available", "red")
+    }
+    else if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "0,00€" || document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "") {
+        sendText("Item not found", "red")
+    }
+    else { sendText("Item out of stock", "red") }
 }
 
 async function getCheckout() {
@@ -196,7 +200,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Validating address", "green")
             }
             else {
@@ -224,7 +228,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting shipping", "green")
             }
             else {
@@ -236,6 +240,7 @@ async function ckRship() {
 }
 
 async function ckRpp() {
+
     await fetch(LINK_REQUEST[country]["submit_payment"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -254,7 +259,7 @@ async function ckRpp() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting payment", "green")
             }
             else {
@@ -266,6 +271,7 @@ async function ckRpp() {
 }
 
 async function ckR() {
+
     await fetch(LINK_REQUEST[country]["submit_order"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -284,7 +290,7 @@ async function ckR() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Placing order", "green")
             }
             else {

@@ -2,6 +2,7 @@ debugger
 
 var url_private = ''; var version = '';
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
+var url_error = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
 
 let img_product = "https://www.fashionsauce.com/img/stores/solebox.png"; let price_product = ""; let name_product = ""; let size_product = "";
 let ck_time = 0; let ck_start = 0;
@@ -28,36 +29,42 @@ function getRandomIntInclusive(min, max) {
 }
 
 async function sendText(text, color) {
-    document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
+    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
+    catch (error) { }
 }
 
 async function addButton() {
-    let btn1 = document.getElementById("CavaScripts")
-    btn1.insertAdjacentHTML("beforeend", '<input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
+    try {
+        let btn1 = document.getElementById("CavaScripts")
+        btn1.insertAdjacentHTML("beforeend", '<input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
 
-    let btn_solver = document.getElementById('btn_solver')
-    btn_solver.addEventListener("click", function () {
-        let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
-        window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
-    });
+        let btn_solver = document.getElementById('btn_solver')
+        btn_solver.addEventListener("click", function () {
+            let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
+            window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
+        });
+    } catch (error) { }
 }
 
 async function main() {
+    try {
+        ck_start = performance.now()
+        try { csrf_token = document.getElementsByName('csrf_token')[0].value }
+        catch (error) { }
+        let pidd = link.split('-')
+        pidd = pidd[pidd.length - 1].substring(0, 16)
 
-    ck_start = performance.now()
-    csrf_token = document.getElementsByName('csrf_token')[0].value
-
-    let pidd = link.split('-')
-    pidd = pidd[pidd.length - 1].substring(0, 16)
-    if (pidd.includes("html")) {
-        sendText("trying atc...", "blue")
-        pid = pidd.substring(0, 8)
-        atc()
-    } else {
-        sendText("trying atc fast...", "blue")
-        pidsize = pidd.substring(0, 16)
-        atcRfast()
+        if (pidd.includes("html")) {
+            sendText("trying atc...", "blue")
+            pid = pidd.substring(0, 8)
+            atc()
+        } else {
+            sendText("trying atc fast...", "blue")
+            pidsize = pidd.substring(0, 16)
+            atcRfast()
+        }
     }
+    catch (error) { }
 }
 
 async function atc() {
@@ -83,11 +90,8 @@ async function atc() {
         }
     }
     catch (error) {
-        if (error == "TypeError: Cannot read property 'click' of undefined") {
+        if (error == "TypeError: Cannot read property 'click' of undefined" || error == "TypeError: Cannot read property 'getAttribute' of undefined") {
             sendText("Item out of stock", "red")
-        }
-        else {
-            console.log(error)
         }
     }
 }
@@ -140,6 +144,7 @@ async function atcRfast() {
 }
 
 async function checkRes(response) {
+
     sendText("Carting...", "blue")
     let status = response.status
     let res = await response.text()
@@ -147,7 +152,6 @@ async function checkRes(response) {
     let error = res["error"]
     let message = res["message"]
     let errorMessage = res["errorMessage"]
-    console.log(message)
 
     if (status == 200 || status == 201) {
         if (error == false) {
@@ -166,10 +170,11 @@ async function checkRes(response) {
             }
         }
     } else {
-        if (errorMessage != undefined)
+        if (errorMessage != "undefined" && errorMessage != undefined) {
             sendText(errorMessage, "red")
-        else
-            sendText("Error carting", "red")
+            errorWebhook(errorMessage)
+        }
+        else { sendText("Error carting", "red") }
     }
 }
 
@@ -218,22 +223,19 @@ async function main2() {
                     size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
                 }
                 catch (error) {
-                    console.log(error)
                     sendText("Error getting product info", "red")
                 }
             } catch (error) {
-                console.log(error)
                 sendText("Error getting shipping info", "red")
             }
 
             await ckRship()
-
             await ckRpp()
-
             await ckR()
+
             await res.then(function (result) {
-                var j = JSON.parse(result)
                 try {
+                    var j = JSON.parse(result)
                     var linkpp = j["continueUrl"]
                     if (linkpp != null) {
                         ck_time = (performance.now() - ck_start) / 1000
@@ -245,10 +247,11 @@ async function main2() {
                         let errorMessage = j['errorMessage']
                         sendText(errorMessage, "red")
                     }
-                } catch (error) { console.log(error) }
+                } catch (error) { }
             })
         }
-    } catch (error) { console.log(error) }
+        else { sendText("Item out of stock/ Item not available", "red") }
+    } catch (error) { }
 }
 
 async function getCheckout() {
@@ -298,7 +301,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Getting shipping rates", "green")
             }
             else {
@@ -326,7 +329,7 @@ async function ckRship() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting shipping", "green")
             }
             else {
@@ -356,7 +359,7 @@ async function ckRpp() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
+            if (response.status == 200 || response.status == 201) {
                 sendText("Submitting payment", "green")
             }
             else {
@@ -368,6 +371,7 @@ async function ckRpp() {
 }
 
 async function ckR() {
+
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-PlaceOrder?format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -388,8 +392,8 @@ async function ckR() {
         "credentials": "include"
     })
         .then(response => {
-            if (response.status) {
-                sendText("Placing order", "green")
+            if (response.status == 200 || response.status == 201) {
+                sendText("Placing order...", "blue")
             }
             else {
                 sendText("Error placing order", "red")
@@ -405,6 +409,38 @@ async function sendWebhooks(linkpp) {
         await sendWebhook_public()
         await sendWebhook_private(linkpp)
     }
+}
+
+async function errorWebhook(errorMessage) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Solebox ATC Error",
+        color: ("16744192"),
+        fields: [
+            {
+                name: 'Message',
+                value: errorMessage,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
 }
 
 async function sendWebhook_public() {
