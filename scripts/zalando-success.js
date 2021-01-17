@@ -1,4 +1,4 @@
-debugger
+//debugger
 
 var img = ''; var nomep = ''; var sizep = ''; var email = ''; var version = ''; var sku = ''; var quantity = ''; var url_personal = ""; let discord_name = ""
 var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
@@ -29,13 +29,21 @@ async function foundData() {
     n = email.split(" ").splice(-1)
     email = n[n.length - 1]
 
-    await sendWebhook_public()
-    await sendWebhook_private()
+    console.log(email)
+    console.log(sizep)
+    console.log(nomep)
+    console.log(quantity)
+    console.log(sizep)
+
+
+    sendWebhook_public()
+    sendWebhook_private()
+    sendWebhook_personal()
 
     if (sku != "")
         atc()
 
-    await sleep(1000)
+    await sleep(10000)
     document.location = 'https://' + zalandoUrl + '/cart'
 }
 
@@ -81,12 +89,9 @@ async function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        title: ":fire: Pokemon catturato! :fire:",
         description: nomep,
         color: ("65280"),
-        thumbnail: {
-            url: img,
-        },
+        thumbnail: { url: img, },
         fields: [
             {
                 name: 'Size',
@@ -130,9 +135,7 @@ async function sendWebhook_private() {
         title: ":fire: Pokemon catturato! :fire:",
         description: nomep,
         color: ("65280"),
-        thumbnail: {
-            url: img,
-        },
+        thumbnail: { url: img, },
         fields: [
             {
                 name: 'Size',
@@ -181,9 +184,7 @@ async function sendWebhook_personal() {
         title: ":fire: Pokemon catturato! :fire:",
         description: nomep,
         color: ("65280"),
-        thumbnail: {
-            url: img,
-        },
+        thumbnail: { url: img, },
         fields: [
             {
                 name: 'Size',
@@ -214,11 +215,11 @@ async function sendWebhook_personal() {
                 name: '\u200B',
                 value: '\u200B',
                 inline: true
-            },
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
-            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pok%C3%A9ball.png/480px-Pok%C3%A9ball.png',
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
         },
     }
 
@@ -238,7 +239,7 @@ chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
-    url_private = response.farewell
+    url_personal = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
@@ -249,7 +250,15 @@ chrome.runtime.sendMessage({ greeting: "skuzalando" }, function (response) {
     sku = response.farewell
 });
 
-foundData()
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+    if (response.farewell == 'on') {
+        chrome.runtime.sendMessage({ greeting: "zalando" }, function (response) {
+            if (response.farewell == 'on') {
+                foundData();
+            }
+        });
+    }
+});
 
 
 

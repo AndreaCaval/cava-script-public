@@ -1,8 +1,13 @@
 debugger
 
 var coupon = ''; var xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5); var res = ''; var version = ""; let ckmode = ""
-var zalandoUrl = location.href.split('/')[2]
+let linkkk = document.location.href
+var zalandoUrl = linkkk.split('/')[2]
 var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function errorWebhook(res) {
     var request = new XMLHttpRequest();
@@ -37,7 +42,7 @@ async function errorWebhook(res) {
 }
 
 async function main() {
-    if (ck == "Fast") {
+    if (ckmode == "Fast") {
         checkoutConfirm()
     } 
     else if (ckmode == "Browser") {
@@ -183,7 +188,7 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         chrome.runtime.sendMessage({ greeting: "zalando" }, function (response) {
             if (response.farewell == 'on') {
-                checkoutConfirm()
+                main()
             }
         });
     }
