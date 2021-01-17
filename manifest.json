@@ -30,6 +30,12 @@
   },
   "content_scripts": [
     {
+      "matches":["https://discord.com/channels/*"],
+      "exclude_globs":["https://discord.com/channels/@me/*"],
+      "js": ["scripts/autoclick.js"],
+      "all_frames": false
+    },
+    {
       "matches":["http://*/*", "https://*/*"],
       "include_globs": ["https://www.sneakersnstuff.com/*/product/*"],
       "js": ["scripts/sns-atc.js"],
@@ -39,11 +45,6 @@
       "matches":["http://*/*", "https://*/*"],
       "include_globs":  ["https://www.nakedcph.com/*/product/*"],
       "js": ["scripts/naked-atc.js"],
-      "all_frames": true
-    },
-    {
-      "matches":["https://www.slamjam.com/*"],
-      "js": ["scripts/slamjam-login.js"],
       "all_frames": true
     },
     {

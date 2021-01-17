@@ -4,7 +4,7 @@ const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
 const version = '1.0.0'
-const webhook_url = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
+const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const SERVER_ID = "726167965182984253"
 const DISCORD_URI_ENDPOINT = 'https://discord.com/api/oauth2/authorize';
 const DISCORD_URI_TOKEN = "https://discord.com/api/oauth2/token"
@@ -270,20 +270,14 @@ function SetStatus_off() {
     if (localStorage.getItem("sku_zalando") == null) {
         localStorage.setItem("sku_zalando", "off");
     }
-    if (localStorage.getItem("preload_sku_zalando") == null) {
-        localStorage.setItem("preload_sku_zalando", "off");
+    if (localStorage.getItem("cart_mode_zalando") == null) {
+        localStorage.setItem("cart_mode_zalando", "Fast");
     }
-    if (localStorage.getItem("status_preload_sku_zalando") == null) {
-        localStorage.setItem("status_preload_sku_zalando", "off");
+    if (localStorage.getItem("checkout_mode_zalando") == null) {
+        localStorage.setItem("checkout_mode_zalando", "Fast");
     }
-    if (localStorage.getItem("link_zalando") == null) {
-        localStorage.setItem("link_zalando", "off");
-    }
-    if (localStorage.getItem("timer_zalando") == null) {
-        localStorage.setItem("timer_zalando", "off");
-    }
-    if (localStorage.getItem("chekout_mode_zalando") == null) {
-        localStorage.setItem("chekout_mode_zalando", "Fast");
+    if (localStorage.getItem("payment_zalando") == null) {
+        localStorage.setItem("payment_zalando", "Cad");
     }
 
     //Sns-----------------------------------------------------------------------------------------------------
@@ -296,43 +290,32 @@ function SetStatus_off() {
         localStorage.setItem("status_aco_naked", "off");
     }
 
-    //Snipes-----------------------------------------------------------------------------------------------------
+    //Snipes-ACO----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_aco_snipes") == null) {
         localStorage.setItem("status_aco_snipes", "off");
     }
     if (localStorage.getItem("country_snipes") == null) {
         localStorage.setItem("country_snipes", "off");
     }
-
-    //Solebox-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_aco_solebox") == null) {
-        localStorage.setItem("status_aco_solebox", "off");
-    }
-
-    //LOGIN
-    //Slamjam-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_login_slamjam") == null) {
-        localStorage.setItem("status_login_slamjam", "off");
-    }
-    if (localStorage.getItem("email_pw_slamjam") == null) {
-        localStorage.setItem("email_pw_slamjam", "off");
-    }
-
-    //Solebox-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_login_solebox") == null) {
-        localStorage.setItem("status_login_solebox", "off");
-    }
-    if (localStorage.getItem("email_pw_solebox") == null) {
-        localStorage.setItem("email_pw_solebox", "off");
-    }
-
-    //Snipes-----------------------------------------------------------------------------------------------------
+    //Snipes-Login----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_login_snipes") == null) {
         localStorage.setItem("status_login_snipes", "off");
     }
     if (localStorage.getItem("email_pw_snipes") == null) {
         localStorage.setItem("email_pw_snipes", "off");
     }
+
+    //Solebox-ACO----------------------------------------------------------------------------------------------------
+    if (localStorage.getItem("status_aco_solebox") == null) {
+        localStorage.setItem("status_aco_solebox", "off");
+    }
+    //Solebox-Login----------------------------------------------------------------------------------------------------
+    if (localStorage.getItem("status_login_solebox") == null) {
+        localStorage.setItem("status_login_solebox", "off");
+    }
+    if (localStorage.getItem("email_pw_solebox") == null) {
+        localStorage.setItem("email_pw_solebox", "off");
+    }   
 
     //Setting-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("id_webhook") == null) {
@@ -352,6 +335,8 @@ chrome.runtime.onMessage.addListener(
         //auth-----------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "authLog") sendResponse({ farewell: localStorage.getItem("auth") });
         if (request.greeting == "authData") sendResponse({ farewell: localStorage.getItem("auth_data") });
+        //discord data--------------------------------------------------------------------------------------------------------------------
+        if (request.greeting == "discord_name") sendResponse({ farewell: localStorage.getItem("discord_tag") });
         //version--------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "version") sendResponse({ farewell: version });
         //setting--------------------------------------------------------------------------------------------------------------------
@@ -366,9 +351,6 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "snipes_login") sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
         if (request.greeting == "email_pw_snipes") sendResponse({ farewell: localStorage.getItem("email_pw_snipes") });
         if (request.greeting == "country_snipes") sendResponse({ farewell: localStorage.getItem("country_snipes") });
-        //slamjam------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "slamjam_login") sendResponse({ farewell: localStorage.getItem("status_login_slamjam") });
-        if (request.greeting == "email_pw_slamjam") sendResponse({ farewell: localStorage.getItem("email_pw_slamjam") });
         //solebox------------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "solebox") sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
         if (request.greeting == "solebox_login") sendResponse({ farewell: localStorage.getItem("status_login_solebox") });
@@ -378,9 +360,9 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "email_pw_zalando") sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
         if (request.greeting == "couponZ") sendResponse({ farewell: localStorage.getItem("coupon_zalando") });
         if (request.greeting == "skuzalando") sendResponse({ farewell: localStorage.getItem("sku_zalando") });
-        if (request.greeting == "linkzalando") sendResponse({ farewell: localStorage.getItem("link_zalando") });
-        if (request.greeting == "timerzalando") sendResponse({ farewell: localStorage.getItem("timer_zalando") });
-        if (request.greeting == "chekoutmodezalando") sendResponse({ farewell: localStorage.getItem("chekout_mode_zalando") });
+        if (request.greeting == "cartmodezalando") sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
+        if (request.greeting == "checkoutmodezalando") sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
+        if (request.greeting == "paymentmodezalando") sendResponse({ farewell: localStorage.getItem("payment_mode_zalando") });
         if (request.greeting == "successZ") { setCoupon() };
         //auth
         if (request.greeting == 'login') {

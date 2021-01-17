@@ -3,8 +3,10 @@ debugger
 let name_product = ''; let size_product = ''; let price_product = "";
 const img_product = "https://pbs.twimg.com/profile_images/1182285202191720448/tKRS_qIF_400x400.png"
 
-var url_private = ''; var version = ''; var delay = 1000
+var url_personal = ''; var version = ''; var delay = 1000; let discord_name = ""
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
+var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
+const url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
 var link = document.location.href
 var country = link.split('/')[3]
 
@@ -41,9 +43,14 @@ async function atc() {
             variant_id = sizes[n].value
             await atcR()
         }
-        else { errorRefresh() }
+        else {
+            errorRefresh()
+        }
     }
-    catch (error) { errorRefresh() }
+    catch (error) {
+        errorWebhook(error)
+        errorRefresh()
+    }
 }
 
 async function atcR() {
@@ -90,7 +97,7 @@ async function checkRes(response) {
         sizes[n].click()
         document.getElementsByClassName("product-form__btn btn")[0].click()
         await sleep(5000)
-        
+
         if (document.getElementsByClassName("cart-items")[0] != undefined) {
             try {
                 let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
@@ -102,7 +109,10 @@ async function checkRes(response) {
                 price_product = jj["price"]
                 sendWebhooks()
             }
-            catch (error) { errorRefresh }
+            catch (error) {
+                errorWebhook(error)
+                errorRefresh
+            }
         }
         else {
             errorRefresh()
@@ -113,11 +123,88 @@ async function checkRes(response) {
 async function sendWebhooks() {
     sendWebhook_private()
     sendWebhook_public()
+    sendWebhook_personal()
+}
+
+async function errorWebhook(msg_error) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "SNS Error",
+        color: ("16744192"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg_error + '```',
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
 }
 
 function sendWebhook_public() {
     var request = new XMLHttpRequest();
     request.open("POST", url_public);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: ":fire: Pokemon catturato! :fire:",
+        description: '[' + name_product + '](' + link + ')',
+        color: ("65280"),
+        thumbnail: { url: img_product },
+        fields: [
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Site',
+                value: 'SNS',
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+function sendWebhook_personal() {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_personal);
     request.setRequestHeader('Content-type', 'application/json');
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -186,6 +273,11 @@ function sendWebhook_private() {
                 name: 'Site',
                 value: 'SNS',
                 inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: discord_name,
+                inline: true
             }
         ],
         footer: {
@@ -208,7 +300,11 @@ chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
-    url_private = response.farewell
+    url_personal = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+    discord_name = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {

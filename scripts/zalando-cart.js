@@ -1,6 +1,6 @@
 debugger
 
-var delay = ''; var display = ''; var id = ''; var coupon = 'off'; var list_sku = ""; var list_sku_input = ""
+var delay = ''; var display = ''; var id = ''; var coupon = 'off'; var list_sku = ""; var list_sku_input = ""; let cartmode = ""
 var xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).split('=')[1];
 var zalandoUrl = location.href.split('/')[2]
 
@@ -11,7 +11,7 @@ function sleep(ms) {
 async function buttonAtc() {
     try {
         var btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0].parentNode
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 40px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">'
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 400px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">'
             + '<p>Cava Scripts Info</p> <p id="rCount">Request count: 0</p> <p id="rDelay">Delay: 0ms</p>'
             + '<input style="text-align: center; background-color:black; width:120px; float:left; margin:5px;" id="btnZatc" type="submit" value="ATC">'
             + '<input style="text-align: center; background-color:black; width:120px; float:right; margin:5px;" id="btnZatc_clear" type="submit" value="CLEAR">'
@@ -66,9 +66,6 @@ async function atc_clear() {
         na = j['out_of_stock_articles']
     })
 
-    //console.log(idCart)
-    //console.log(na)
-
     for (var i = 0; i < na.length; i++) {
         await sleep(200)
         await fetch("https://www.zalando.it/api/cart-gateway/carts/" + idCart + "/items/" + na[i]['simple_sku'], {
@@ -99,8 +96,6 @@ async function atc_clear() {
             });
         ;
     }
-
-
 }
 
 async function atc() {
@@ -237,7 +232,21 @@ async function setDelay() {
     catch (error) { console.log(error) }
 }
 
-async function checkStock() {
+function main() {
+
+    if (cartmode == "Fast") {
+        checkStockGetCheckout()
+    } else if (cartmode == "Browser") {
+        checkStockRefresh()
+    }
+}
+
+async function checkStockRefresh() {
+    await sleep(parseInt(delay))
+    document.location = "https://" + zalandoUrl + "/checkout/confirm"
+}
+
+async function checkStockGetCheckout() {
 
     try {
         var punto = 0
@@ -307,112 +316,9 @@ async function checkoutConfirm() {
     }
 }
 
-async function GetConfirm(html) {//not in work
-
-    var checkoutid = ''; var flowid = ''; var etag = ''; var coupn;
-    display.textContent = 'Getting confirm ...'
-
-    var html2 = document.createElement('html')
-    html2.innerHTML = html
-
-
-    var page = html2.querySelectorAll('[data-props]')[0].getAttribute('data-props')
-    page = page.substring(0, page.length)
-
-    var x = JSON.parse(page)
-
-    etag = x.model.eTag
-    etag = etag.replace('"', '')
-    etag = etag.replace('"', '')
-    etag = '"' + '\\' + '"' + etag + '\\' + '"' + '"'
-
-    checkoutid = x.model.checkoutId
-    try {
-        coupn = x.model.coupons
-    }
-    catch (error) { console.log(error) }
-
-    try {
-        if (coupn.length == 0 && coupon != 'off') {
-            flowid = x.flowId
-            await CouponCode(flowid)
-        }
-    }
-    catch (error) { console.log(error) }
-
-    await checkoutBuyNow(etag, checkoutid)
-
-    res.then(function (result) {
-        if (result == '{"title":"Xsrf Error", "detail": "Failed to validate token"}') {
-            console.log('CHECKOUT ERROR ...')
-            location.reload()
-        } else if (result == '{"url":"/checkout/success"}') {
-            document.location = 'https://' + zalandoUrl + '/checkout/success'
-        } else {
-            console.log('CHECKOUT ERROR ...')
-            location.reload()
-        }
-    })
-
-}
-
-async function CouponCode(flowid) {//not in work
-
-    display.textContent = 'Adding coupon ...'
-
-    await fetch("https://" + zalandoUrl + "/api/checkout/redeem", {
-        "headers": {
-            "accept": "application/json",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-xsrf-token": xsrf,
-            "x-zalando-checkout-app": "web",
-            "x-zalando-footer-mode": "desktop",
-            "x-zalando-header-mode": "desktop"
-        },
-        "referrer": "https://" + zalandoUrl + "/checkout/confirm",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"code\":\"" + coupon + "\",\"pageRenderFlowId\":\"" + flowid + "\"}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
-        .then(response => console.log(response.status))
-        .catch((error) => { console.log(error) });
-    ;
-}
-
-async function checkoutBuyNow(etag, checkoutid) {//not in work
-
-    display.textContent = 'Checking out ...'
-
-    await fetch("https://" + zalandoUrl + "/api/checkout/buy-now", {
-        "headers": {
-            "accept": "application/json",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-xsrf-token": xsrf,
-            "x-zalando-checkout-app": "web",
-            "x-zalando-footer-mode": "desktop",
-            "x-zalando-header-mode": "desktop"
-        },
-        "referrer": "https://" + zalandoUrl + "/checkout/confirm",
-        "referrerPolicy": "no-referrer-when-downgrade",
-        "body": '{\"checkoutId\":  \"' + checkoutid + '\",\"eTag\":' + etag + '}',
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
-        .then(response => { res = response.text() })
-        .catch((error) => { console.log(error) });
-    ;
-}
+chrome.runtime.sendMessage({ greeting: "cartmodezalando" }, function (response) {
+    cartmode = response.farewell
+});
 
 chrome.runtime.sendMessage({ greeting: "couponZ" }, function (response) {
     coupon = response.farewell
@@ -430,7 +336,7 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         chrome.runtime.sendMessage({ greeting: "zalando" }, function (response) {
             if (response.farewell == 'on') {
-                checkStock()
+                main()
             }
         });
     }

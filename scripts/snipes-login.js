@@ -3,6 +3,8 @@ debugger
 var email = ""; var pw = ""; var status_login = ""; var status_aco = ""; let country_snipes = ""
 var link = document.location.href
 var country = link.split("/")[2]
+var url_errors = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
+
 
 async function sendText(text, color) {
     try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
@@ -10,14 +12,18 @@ async function sendText(text, color) {
 }
 
 async function changeCountry() {
-    let url_product = link.split(country)
-    if (country_snipes != 'off' && country.split('.')[2] != country_snipes) {
-        location.replace('https://www.snipes.' + country_snipes + "" + url_product[1])
+    try {
+        let url_product = link.split(country)
+        if (country_snipes != 'off' && country.split('.')[2] != country_snipes) {
+            location.replace('https://www.snipes.' + country_snipes + "" + url_product[1])
+        }
     }
+    catch (error) { errorWebhook(error, "changeCountry") }
 }
 
 async function checkLogin() {
     try {
+
         var script = ""
         var scripts = document.getElementsByTagName('script')
         for (var i = 0; i < scripts.length; i++) {
@@ -35,40 +41,45 @@ async function checkLogin() {
                 sendText("Login data error", "red")
             }
         }
-    } catch (error) { }
+    }
+    catch (error) { errorWebhook(error, "checkLogin") }
 }
 
 async function login() {
-    var csrf_token; var span; var data_id; var data_value
-    var html2 = document.createElement('html')
-    if (link != "https://www.snipes." + country + "/login") {
+    try {
+        var csrf_token; var span; var data_id; var data_value
+        var html2 = document.createElement('html')
+        if (link != "https://www.snipes." + country + "/login") {
 
-        await getLogin()
-        await res.then(function (result) {
-            html2.innerHTML = result
-        })
-        csrf_token = html2.querySelectorAll("[name='csrf_token']")[0].value
-        span = html2.querySelectorAll('span')
-        for (var i = 0; i < span.length; i++) {
-            if (span[i].getAttribute('data-id') != null) {
-                span = span[i]
+            await getLogin()
+            await res.then(function (result) {
+                html2.innerHTML = result
+            })
+            //html2.innerHTML = html
+            csrf_token = html2.querySelectorAll("[name='csrf_token']")[0].value
+            span = html2.querySelectorAll('span')
+            for (var i = 0; i < span.length; i++) {
+                if (span[i].getAttribute('data-id') != null) {
+                    span = span[i]
+                }
             }
+            data_id = span.getAttribute('data-id')
+            data_value = span.getAttribute('data-value')
         }
-        data_id = span.getAttribute('data-id')
-        data_value = span.getAttribute('data-value')
-    }
-    else {
+        else {
 
-        csrf_token = document.getElementsByName("csrf_token")[0].value
-        span = document.getElementsByTagName('span')
-        for (var i = 0; i < span.length; i++) {
-            if (span[i].getAttribute('data-id') != null) {
-                span = span[i]
+            csrf_token = document.getElementsByName("csrf_token")[0].value
+            span = document.getElementsByTagName('span')
+            for (var i = 0; i < span.length; i++) {
+                if (span[i].getAttribute('data-id') != null) {
+                    span = span[i]
+                    console.log(span)
+                }
             }
+            data_id = span.getAttribute('data-id')
+            data_value = span.getAttribute('data-value')
         }
-        data_id = span.getAttribute('data-id')
-        data_value = span.getAttribute('data-value')
-    }
+    } catch (error) { errorWebhook(error, "login") }
 
     await fetch("https://" + country + "/authentication?rurl=1&format=ajax", {
         "headers": {
@@ -93,7 +104,7 @@ async function login() {
             }
             else { sendText("Error logging in", "red") }
         })
-        .catch((error) => { console.log(error) });
+        .catch((error) => { errorWebhook(error, "authentication") });
     ;
 }
 
@@ -117,8 +128,45 @@ async function getLogin() {
         "credentials": "include"
     })
         .then(response => { res = response.text() })
-        .catch((error) => { console.log(error) });
+        .catch((error) => { errorWebhook(error, "getLogin") });
     ;
+}
+
+async function errorWebhook(msg_error, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_errors);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Snipes Login Error",
+        color: ("16744192"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg_error + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
 }
 
 chrome.runtime.sendMessage({ greeting: "country_snipes" }, function (response) {
@@ -163,5 +211,5 @@ async function textBox() {
             + ' <p id="statusSnipes">Status snipes</p> '
             + " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     }
-    catch (error) { }
+    catch (error) { errorWebhook(error, "textBox") }
 }

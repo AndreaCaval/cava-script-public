@@ -1,10 +1,10 @@
 debugger
 
-var coupon = ''; var xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5); var res = ''; var version = ""
+var coupon = ''; var xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5); var res = ''; var version = ""; let ckmode = ""
 var zalandoUrl = location.href.split('/')[2]
-var url_error = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
+var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
 
-async function sendWebhook_public(res) {
+async function errorWebhook(res) {
     var request = new XMLHttpRequest();
     request.open("POST", url_error);
     request.setRequestHeader('Content-type', 'application/json');
@@ -12,18 +12,18 @@ async function sendWebhook_public(res) {
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
     var myEmbed = {
-        title: "CHEKOUT",
-        color: ("65280"),
+        title: "Zalando CK Error",
+        color: ("16744192"),
         fields: [
             {
                 name: 'Response',
-                value: res,
+                value: "```" + res + "```",
                 inline: true
             }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
-            icon_url: 'https://dewey.tailorbrands.com/production/brand_version_mockup_image/408/4056202408_8d7b6135-adfd-4d2c-ba99-89726ad67711.png',
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
         },
     }
 
@@ -34,6 +34,35 @@ async function sendWebhook_public(res) {
 
     request.send(JSON.stringify(params));
 
+}
+
+async function main() {
+    if (ck == "Fast") {
+        checkoutConfirm()
+    } 
+    else if (ckmode == "Browser") {
+        checkoutClick()
+    }
+}
+
+async function checkoutClick() {
+
+    let btn = document.getElementsByClassName("z-1-button__content")
+    if (btn.length != 0) {
+        for (let i = 0; i < 5; i++) {
+
+            btn[0].click()
+
+        }
+        await sleep(2500)
+        if (linkkk == "https://" + zalandoUrl + "/checkout/confirm") {
+            location.reload()
+        }
+    }
+    else {
+        await sleep(500)
+        location.reload()
+    }
 }
 
 async function checkoutConfirm() {
@@ -73,7 +102,7 @@ async function checkoutConfirm() {
             } else {
                 location.reload()
             }
-            sendWebhook_public(result)
+            errorWebhook(result)
         })
     } catch (error) {
         location.reload()
@@ -134,6 +163,10 @@ async function checkoutBuyNow(etag, checkoutid) {
         .catch((error) => { console.log(error) });
     ;
 }
+
+chrome.runtime.sendMessage({ greeting: "checkoutmodezalando" }, function (response) {
+    ckmode = response.farewell
+});
 
 chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
     version = response.farewell

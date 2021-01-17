@@ -1,62 +1,57 @@
 debugger
 
-var url_private = ''; var version = '';
+var url_personal = ""; var version = ""; let discord_name = ""
+var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
+var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
 
 var link = document.location.href
 var country = link.split("/")[2]
+
 const LINK_REQUEST = {
     "www.snipes.it": {
-        "select_ship": "https://ww.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.nl": {
-        "select_ship": "https://ww.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.fr": {
-        "select_ship": "https://ww.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.com": {
-        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SubmitShipping?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.ch": {
-        "select_ship": "https://ww.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.es": {
-        "select_ship": "https://ww.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.be": {
-        "select_ship": "https://ww.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-SubmitPayment?format=ajax",
         "submit_order": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.at": {
-        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
@@ -64,6 +59,8 @@ const LINK_REQUEST = {
     }
 
 }
+
+let count_checkResValidateShip = 0; let count_checkResSubmitShipping = 0; let count_checkResSubmitPayment = 0
 
 let ck_time = 0; let ck_start = 0;
 let img_product = ""; let name_product = ""; let price_product = ""; let size_product = ""
@@ -75,89 +72,34 @@ var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = "";
 var csrf_token = "";
 
 async function sendText(text, color) {
-    document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>"
+    try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
+    catch (error) { }
 }
 
 async function main() {
-    if (document.getElementsByClassName('t-error')[0] == undefined && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "") {
-        ck_start = performance.now()
-        await getCheckout()
-        await ress.then(function (result) {
-            html.innerHTML = result
-        })
-        sendText("Getting shipping info...", "blue")
-        try {
-            var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
-            address_id = rdbtn.getAttribute("data-id")
-            snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
-            post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
-            pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
-            post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
-            postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
-            country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
-            suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
-            street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
-            city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
-            address1 = street + "," + suite
-            address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
-            last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
-            first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
-            title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
 
-            originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
-            shipmentUUID = originalShipmentUUID
-            shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
-            address_selector = rdbtn.getAttribute("value")
-
-            email = html.querySelector('[aria-label="Email"]').getAttribute('value')
-
-            csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
-            sendText("Getting shipping info", "green")
-            try {
-                img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
-                price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
-                name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
-                size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
-            }
-            catch (error) {
-                sendText("Error getting product info", "red")
-            }
-
-        } catch (error) {
-            sendText("Error getting shipping info", "red")
+    try {
+        if (document.getElementsByClassName('t-error')[0] == undefined && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "") {
+            ck_start = performance.now()
+            await getCheckout()
+            await ress.then(function (result) {
+                html.innerHTML = result
+            })
+            gettingShipping()
         }
+        else if (document.getElementsByClassName('t-error')[0] != undefined) {
+            sendText("Item not available", "red")
+        }
+        else if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "0,00€" || document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "") {
+            sendText("Item not found", "red")
+        }
+        else { sendText("Item out of stock", "red") }
 
-        await ckRship()
-        await ckRpp()
-        await ckR()
-
-        await res.then(function (result) {
-            try {
-                var j = JSON.parse(result)
-                var linkpp = j["continueUrl"]
-                if (linkpp != null) {
-                    ck_time = (performance.now() - ck_start) / 1000
-                    sendText("Checked out", "green")
-                    window.open(linkpp)
-                    sendWebhooks(linkpp)
-                }
-                else {
-                    let errorMessage = j['errorMessage']
-                    sendText(errorMessage, "red")
-                }
-            } catch (error) { }
-        })
-    }
-    else if (document.getElementsByClassName('t-error')[0] != undefined) {
-        sendText("Item not available", "red")
-    }
-    else if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "0,00€" || document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "") {
-        sendText("Item not found", "red")
-    }
-    else { sendText("Item out of stock", "red") }
+    } catch (error) { errorWebhook(error, "main") }
 }
 
 async function getCheckout() {
+
     await fetch("https://" + country + "/checkout", {
         "headers": {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -180,8 +122,64 @@ async function getCheckout() {
     ;
 }
 
-async function ckRship() {
+async function gettingShipping() {
 
+    sendText("Getting shipping info...", "blue")
+    try {
+        var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
+        address_id = rdbtn.getAttribute("data-id")
+        snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
+        post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
+        pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
+        post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
+        postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
+        country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
+        suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
+        street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
+        city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
+        address1 = street + "," + suite
+        address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
+        last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
+        first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
+        title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
+
+        originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
+        shipmentUUID = originalShipmentUUID
+        shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
+        address_selector = rdbtn.getAttribute("value")
+
+        email = html.querySelector('[aria-label="Email"]').getAttribute('value')
+        try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') }
+        catch (error) { }
+
+        csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
+
+        sendText("Getting shipping info", "green")
+        try {
+            img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+            price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+            name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+            size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
+        }
+        catch (error) {
+            sendText("Error getting product info", "red")
+            errorWebhook(error, "getting product")
+        }
+
+        ValidateShipping()
+
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
+            errorWebhook(error, "getting shipping")
+
+        sendText("Error getting shipping info", "red")
+    }
+
+}
+
+async function ValidateShipping() {
+
+    sendText("Validating address...", "blue")
     await fetch(LINK_REQUEST[country]["validate_ship"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -199,17 +197,38 @@ async function ckRship() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Validating address", "green")
-            }
-            else {
-                sendText("Error validating address", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResValidateShipping(response) })
+        .catch((error) => { errorWebhook(error, "ValidateShipping fetch") });
     ;
+}
 
+async function checkResValidateShipping(response) {
+
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        sendText("Validating address", "green")
+        SubmitShipping()
+    } else {
+        resInfoWebook(res, "checkResValidateShipping")
+        sendText("Error validating address, open solver", "red")
+        addButton()
+        await sleep(7000)
+        if (count_checkResValidateShipping == 0) {
+            count_checkResValidateShipping++
+            ValidateShipping()
+        } else {
+            main()
+        }
+
+    }
+}
+
+async function SubmitShipping() {
+
+    sendText("Submitting ship...", "blue")
     await fetch(LINK_REQUEST[country]["submit_ship"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -227,20 +246,37 @@ async function ckRship() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Submitting shipping", "green")
-            }
-            else {
-                sendText("Error submitting shipping", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResSubmitShipping(response) })
+        .catch((error) => { errorWebhook(error, "SubmitShipping fetch") });
     ;
 }
 
-async function ckRpp() {
+async function checkResSubmitShipping(response) {
 
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        sendText("Submit shipping", "green")
+        SubmitPayment()
+    } else {
+        resInfoWebook(res, "checkResSubmitShipping")
+        sendText("Error submitting shipping, open solver", "red")
+        addButton()
+        await sleep(7000)
+        if (count_checkResSubmitShipping == 0) {
+            count_checkResSubmitShipping++
+            SubmitShipping()
+        } else {
+            main()
+        }
+    }
+}
+
+async function SubmitPayment() {
+
+    sendText("Submittin payment...", "blue")
     await fetch(LINK_REQUEST[country]["submit_payment"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -258,20 +294,45 @@ async function ckRpp() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Submitting payment", "green")
-            }
-            else {
-                sendText("Error submitting payment", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResSubmitPayment(response) })
+        .catch((error) => { errorWebhook(error, "SubmitPayment fetch") });
     ;
 }
 
-async function ckR() {
+async function checkResSubmitPayment(response) {
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
 
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            sendText("Submit payment", "green")
+            PlaceOrder()
+        }
+        else {
+            resInfoWebook(res, "checkResSubmitPayment_1")
+            sendText("Error submitting payment, open solver", "red")
+            addButton()
+            await sleep(7000)
+            if (count_checkResSubmitPayment == 0) {
+                count_checkResSubmitPayment++
+                SubmitPayment()
+            } else {
+                main()
+            }
+        }
+
+    } else {
+        resInfoWebook(res, "checkResSubmitPayment_2")
+        sendText("Error submitting payment", "red")
+        main()
+    }
+}
+
+async function PlaceOrder() {
+
+    sendText("Placing order...", "blue")
     await fetch(LINK_REQUEST[country]["submit_order"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -289,24 +350,138 @@ async function ckR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Placing order", "green")
+        .then(response => { checkResPlaceOrder(response) })
+        .catch((error) => { errorWebhook(error, "PlaceOrder fetch") });
+    ;
+}
+
+async function checkResPlaceOrder(response) {
+
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
+    var linkpp = res["continueUrl"]
+    let errorMessage = res['errorMessage']
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            if (linkpp != null) {
+                ck_time = (performance.now() - ck_start) / 1000
+                sendText("Checked out", "green")
+                window.open(linkpp)
+                sendWebhooks(linkpp)
             }
             else {
-                sendText("Error placing order", "red")
+                resInfoWebook(res, "checkResPlaceOrder_1")
+                if (errorMessage == "undefined" || errorMessage == undefined) {
+                    main()
+                }
+                else {
+                    sendText(errorMessage, "red")
+                    errorWebhook(errorMessage, "checkResPlaceOrder1")
+                    main()
+                }
             }
-            res = response.text()
-        })
-        .catch((error) => { console.log(error) });
-    ;
+        }
+        else {
+            resInfoWebook(res, "checkResPlaceOrder_2")
+            if (errorMessage == "undefined" || errorMessage == undefined) {
+                main()
+            }
+            else {
+                sendText(errorMessage, "red")
+                errorWebhook(errorMessage, "checkResPlaceOrder2")
+                main()
+            }
+        }
+
+    }
+    else {
+        sendText("Error placing order", "red")
+        main()
+    }
 }
 
 function sendWebhooks(linkpp) {
     if (linkpp != null) {
         sendWebhook_public()
-        sendWebhook_private(linkpp)
+        sendWebhook_private()
+        sendWebhook_personal(linkpp)
     }
+}
+
+async function errorWebhook(msg_error, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Snipes CK Error",
+        color: ("16744192"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg_error + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function resInfoWebook(msg, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Snipes CK Info",
+        color: ("0"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
 }
 
 async function sendWebhook_public() {
@@ -343,7 +518,7 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Time',
-                value: ck_time.toString().substring(0, 11),
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
                 inline: true
             }
         ],
@@ -362,7 +537,7 @@ async function sendWebhook_public() {
 
 }
 
-async function sendWebhook_private(linkpp) {
+async function sendWebhook_private() {
     var request = new XMLHttpRequest();
     request.open("POST", url_private);
     request.setRequestHeader('Content-type', 'application/json');
@@ -395,13 +570,71 @@ async function sendWebhook_private(linkpp) {
                 inline: true
             },
             {
-                name: 'Checkout link',
-                value: '[ PayPal ](' + linkpp + ')',
+                name: 'Time',
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: discord_name,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhook_personal(linkpp) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_personal);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: ":fire: Pokemon catturato! :fire:",
+        color: ("65280"),
+        thumbnail: { url: img_product },
+        fields: [
+            {
+                name: 'Site',
+                value: 'Snipes',
+                inline: true
+            },
+            {
+                name: 'Item',
+                value: name_product,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
                 inline: true
             },
             {
                 name: 'Time',
-                value: ck_time.toString().substring(0, 11),
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
+                inline: true
+            },
+            {
+                name: 'Checkout link',
+                value: '[ PayPal ](' + linkpp + ')',
                 inline: true
             }
         ],
@@ -425,7 +658,11 @@ chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
-    url_private = response.farewell
+    url_personal = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+    discord_name = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {

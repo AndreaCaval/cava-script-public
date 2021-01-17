@@ -10,7 +10,6 @@ async function payment() {
     if (button.length != 0) {
         button[0].click()
     }
-
 }
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {

@@ -1,10 +1,14 @@
 debugger
 
-var url_private = ''; var version = '';
+var url_personal = ""; var version = ""; let discord_name = ""
+var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
+var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
 
 let img_product = "https://www.fashionsauce.com/img/stores/solebox.png"; let price_product = ""; let name_product = ""; let size_product = "";
 let ck_time = 0; let ck_start = 0;
+
+let count_checkResShippingRates = 0; let count_checkResSubmitShipping = 0; let count_checkResSubmitPayment = 0
 
 var link = document.location.href
 var country = link.split("/")[3]
@@ -14,9 +18,26 @@ var suite = ""; var street = ""; var city = ""; var address1 = ""; var address2 
 var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = ""; var email = ""; var phone = ""; var postal_code = ""; let shippingMethodID = ""
 var csrf_token = "";
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function sendText(text, color) {
     try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
     catch (error) { }
+}
+
+async function addButton() {
+    try {
+        let btn1 = document.getElementById("CavaScripts")
+        btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
+
+        let btn_solver = document.getElementById('btn_solver')
+        btn_solver.addEventListener("click", function () {
+            let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
+            window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
+        });
+    } catch (error) { }
 }
 
 async function main() {
@@ -28,72 +49,7 @@ async function main() {
             await ress.then(function (result) {
                 html.innerHTML = result
             })
-            sendText("Getting shipping info...", "blue")
-            try {
-                var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
-                address_id = rdbtn.getAttribute("data-id")
-                address_type = rdbtn.getAttribute('data-address-type').replaceAll(" ", "+")
-                snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
-                post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
-                pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
-                post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
-                postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
-                country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
-                suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
-                street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
-                city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
-                address1 = street + "," + suite
-                address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
-                last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
-                first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
-                title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
-
-                originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
-                shipmentUUID = originalShipmentUUID
-                shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
-                address_selector = rdbtn.getAttribute("value")
-
-                email = html.querySelector('[class="js-field f-form-control f-textinput"]').getAttribute('value')
-                phone = html.querySelector('[class="js-field f-form-control f-textinput"').getAttribute('value')
-
-                csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
-
-                sendText("Getting shipping info", "green")
-                try {
-                    img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
-                    price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
-                    name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
-                    size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
-                }
-                catch (error) {
-                    sendText("Error getting product info", "red")
-
-                }
-            } catch (error) {
-
-                sendText("Error getting shipping info", "red")
-            }
-
-            await ckRship()
-            await ckRpp()
-            await ckR()
-
-            await res.then(function (result) {
-                try {
-                    var j = JSON.parse(result)
-                    var linkpp = j["continueUrl"]
-                    if (linkpp != null) {
-                        ck_time = (performance.now() - ck_start) / 1000
-                        sendText("Checked out", "green")
-                        window.open(linkpp)
-                        sendWebhooks(linkpp)
-                    }
-                    else {
-                        let errorMessage = j['errorMessage']
-                        sendText(errorMessage, "red")
-                    }
-                } catch (error) { }
-            })
+            gettingShipping()
         }
         else if (document.getElementsByClassName('t-error')[0] != undefined) {
             sendText("Item not available", "red")
@@ -103,10 +59,14 @@ async function main() {
         }
         else { sendText("Item out of stock", "red") }
 
-    } catch (error) { }
+    } catch (error) {
+        if (error == "TypeError: Cannot read property 'textContent' of undefined")
+            errorWebhook(error, "main all")
+    }
 }
 
 async function getCheckout() {
+
     await fetch("https://www.solebox.com/" + country + "/checkout", {
         "headers": {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -125,12 +85,68 @@ async function getCheckout() {
         "credentials": "include"
     })
         .then(response => { ress = response.text() })
-        .catch((error) => { console.log(error) });
+        .catch((error) => { errorWebhook(error, "getCheckout fetch") });
     ;
 }
 
-async function ckRship() {
+async function gettingShipping() {
 
+    sendText("Getting shipping info...", "blue")
+    try {
+        var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
+        address_id = rdbtn.getAttribute("data-id")
+        address_type = rdbtn.getAttribute('data-address-type').replaceAll(" ", "+")
+        snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
+        post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
+        pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
+        post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
+        postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
+        country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
+        suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
+        street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
+        city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
+        address1 = street + "," + suite
+        address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
+        last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
+        first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
+        title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
+
+        originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
+        shipmentUUID = originalShipmentUUID
+        shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
+        address_selector = rdbtn.getAttribute("value")
+
+        email = html.querySelector('[class="js-field f-form-control f-textinput"]').getAttribute('value')
+        phone = html.querySelector('[class="js-field f-form-control f-textinput"').getAttribute('value')
+
+        csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
+        sendText("Getting shipping info", "green")
+
+        try {
+            img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+            price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+            name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+            size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
+        }
+        catch (error) {
+            errorWebhook(error, "getting product")
+            sendText("Error getting product info", "red")
+        }
+
+        ShippingRates()
+
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'getAttribute' of undefined") {
+            errorWebhook(error, "getting shipping")
+        }
+        sendText("Error getting shipping info", "red")
+    }
+
+}
+
+async function ShippingRates() {
+
+    sendText("getting shipping rates...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-ShippingRates?format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -148,17 +164,39 @@ async function ckRship() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Getting shipping rates", "green")
-            }
-            else {
-                sendText("Error getting shipping rates", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResShippingRates(response) })
+        .catch((error) => { errorWebhook(error, "ShippingRates fetch") });
     ;
+}
 
+async function checkResShippingRates(response) {
+
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        sendText("Shipping rates", "green")
+        SubmitShipping()
+    } else {
+        resInfoWebook(res, "checkResShippingRates")
+        //sendText("Error getting shipping rates", "red")
+        sendText("Error getting shipping rates, open solver", "red")
+        addButton()
+        await sleep(7000)
+        if (count_checkResShippingRates == 0) {
+            count_checkResShippingRates++
+            ShippingRates()
+        } else {
+            main()
+        }
+
+    }
+}
+
+async function SubmitShipping() {
+
+    sendText("submitting ship...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-SubmitShipping?region=europe&country=undefined&addressId=" + address_id + "&format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -176,20 +214,38 @@ async function ckRship() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Submitting shipping", "green")
-            }
-            else {
-                sendText("Error submitting shipping", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResSubmitShipping(response) })
+        .catch((error) => { errorWebhook(error, "SubmitShipping fetch") });
     ;
 }
 
-async function ckRpp() {
+async function checkResSubmitShipping(response) {
 
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        sendText("Submit shipping", "green")
+        SubmitPayment()
+    } else {
+        resInfoWebook(res, "checkResSubmitShipping")
+        //sendText("Error submitting shipping", "red")
+        sendText("Error submitting shipping, open solver", "red")
+        addButton()
+        await sleep(7000)
+        if (count_checkResSubmitShipping == 0) {
+            count_checkResSubmitShipping++
+            SubmitShipping()
+        } else {
+            main()
+        }
+    }
+}
+
+async function SubmitPayment() {
+
+    sendText("submittimg payment...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-SubmitPayment?format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -207,20 +263,46 @@ async function ckRpp() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Submitting payment", "green")
-            }
-            else {
-                sendText("Error submitting payment", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResSubmitPayment(response) })
+        .catch((error) => { errorWebhook(error, "SubmitPayment fetch") });
     ;
 }
 
-async function ckR() {
+async function checkResSubmitPayment(response) {
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
 
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            sendText("Submit payment", "green")
+            PlaceOrder()
+        }
+        else {
+            resInfoWebook(res, "checkResSubmitPayment_1")
+            //sendText("Error submitting payment", "red")
+            sendText("Error submitting payment, open solver", "red")
+            addButton()
+            await sleep(7000)
+            if (count_checkResSubmitPayment == 0) {
+                count_checkResSubmitPayment++
+                SubmitPayment()
+            } else {
+                main()
+            }
+        }
+
+    } else {
+        resInfoWebook(res, "checkResSubmitPayment_2")
+        sendText("Error submitting payment", "red")
+        main()
+    }
+}
+
+async function PlaceOrder() {
+
+    sendText("placing order...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-PlaceOrder?format=ajax", {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -240,24 +322,139 @@ async function ckR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Placing order", "green")
+        .then(response => { checkResPlaceOrder(response) })
+        .catch((error) => { errorWebhook(error, "PlaceOrder fetch") });
+    ;
+}
+
+async function checkResPlaceOrder(response) {
+
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
+    var linkpp = res["continueUrl"]
+    let errorMessage = res['errorMessage']
+
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            if (linkpp != null) {
+                ck_time = (performance.now() - ck_start) / 1000
+                sendText("Checked out", "green")
+                window.open(linkpp)
+                sendWebhooks(linkpp)
             }
             else {
-                sendText("Error placing order", "red")
+                resInfoWebook(res, "checkResPlaceOrder_1")
+                if (errorMessage == "undefined" || errorMessage == undefined) {
+                    main()
+                }
+                else {
+                    sendText(errorMessage, "red")
+                    errorWebhook(errorMessage, "checkResPlaceOrder1")
+                    main()
+                }
             }
-            res = response.text()
-        })
-        .catch((error) => { console.log(error) });
-    ;
+        }
+        else {
+            resInfoWebook(res, "checkResPlaceOrder_2")
+            if (errorMessage == "undefined" || errorMessage == undefined) {
+                main()
+            }
+            else {
+                sendText(errorMessage, "red")
+                errorWebhook(errorMessage, "checkResPlaceOrder2")
+                main()
+            }
+        }
+
+    }
+    else {
+        sendText("Error placing order", "red")
+        main()
+    }
 }
 
 async function sendWebhooks(linkpp) {
     if (linkpp != null) {
-        await sendWebhook_public()
-        await sendWebhook_private(linkpp)
+        sendWebhook_public()
+        sendWebhook_private()
+        sendWebhook_personal(linkpp)
     }
+}
+
+async function errorWebhook(msg_error, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Solebox CK Error",
+        color: ("16744192"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg_error + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function resInfoWebook(msg, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Solebox CK Info",
+        color: ("0"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
 }
 
 async function sendWebhook_public() {
@@ -294,7 +491,7 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Time',
-                value: ck_time.toString().substring(0, 11),
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
                 inline: true
             }
         ],
@@ -313,9 +510,67 @@ async function sendWebhook_public() {
 
 }
 
-async function sendWebhook_private(linkpp) {
+async function sendWebhook_private() {
     var request = new XMLHttpRequest();
     request.open("POST", url_private);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: ":fire: Pokemon catturato! :fire:",
+        thumbnail: { url: img_product },
+        color: ("65280"),
+        fields: [
+            {
+                name: 'Site',
+                value: 'Solebox',
+                inline: true
+            },
+            {
+                name: 'Item',
+                value: name_product,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Time',
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: discord_name,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhook_personal(linkpp) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_personal);
     request.setRequestHeader('Content-type', 'application/json');
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -347,7 +602,7 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Time',
-                value: ck_time.toString().substring(0, 11),
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
                 inline: true
             },
             {
@@ -376,7 +631,11 @@ chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
-    url_private = response.farewell
+    url_personal = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+    discord_name = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {

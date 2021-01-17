@@ -1,12 +1,14 @@
 debugger
 
-var url_private = ''; var version = '';
+var url_personal = ""; var version = ""; let discord_name = ""
+var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
 var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
-var url_error = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
+var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
 
 const LINK_REQUEST = {
     "www.snipes.it": {
         "add_product": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Cart-AddProduct?format=ajax",
+        "select_ship": "https://ww.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutServices-SubmitPayment?format=ajax",
@@ -14,6 +16,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.nl": {
         "add_product": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Cart-AddProduct?format=ajax",
+        "select_ship": "https://ww.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutServices-SubmitPayment?format=ajax",
@@ -21,6 +24,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.fr": {
         "add_product": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Cart-AddProduct?format=ajax",
+        "select_ship": "https://ww.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutServices-SubmitPayment?format=ajax",
@@ -28,6 +32,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.com": {
         "add_product": "https://www.snipes.com/add-product?format=ajax",
+        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SubmitShipping?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutServices-SubmitPayment?format=ajax",
@@ -35,6 +40,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.ch": {
         "add_product": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Cart-AddProduct?format=ajax",
+        "select_ship": "https://ww.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutServices-SubmitPayment?format=ajax",
@@ -42,6 +48,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.es": {
         "add_product": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Cart-AddProduct?format=ajax",
+        "select_ship": "https://ww.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-SubmitPayment?format=ajax",
@@ -49,6 +56,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.be": {
         "add_product": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Cart-AddProduct?format=ajax",
+        "select_ship": "https://ww.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "submit_payment": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutServices-SubmitPayment?format=ajax",
@@ -56,6 +64,7 @@ const LINK_REQUEST = {
     },
     "www.snipes.at": {
         "add_product": "https://www.snipes.at/add-product?format=ajax",
+        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
         "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
@@ -66,6 +75,8 @@ const LINK_REQUEST = {
 
 let ck_time = 0; let ck_start = 0;
 let img_product = ""; let price_product = ""; let name_product = ""; let size_product = ""
+
+let count_checkResAtc = 0; let count_checkResValidateShip = 0; let count_checkResSubmitShipping = 0; let count_checkResSubmitPayment = 0
 
 var link = document.location.href
 var country = link.split('/')[2]
@@ -92,12 +103,24 @@ async function sendText(text, color) {
     catch (error) { }
 }
 
+async function addButton() {
+    try {
+        let btn1 = document.getElementById("CavaScripts")
+        btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
+
+        let btn_solver = document.getElementById('btn_solver')
+        btn_solver.addEventListener("click", function () {
+            let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
+            window.open('https://' + country + '/cart', 'test', params)
+        });
+    } catch (error) { }
+}
+
 async function main() {
 
     try {
         ck_start = performance.now()
-        try { csrf_token = document.getElementsByName('csrf_token')[0].value }
-        catch (error) { }
+        csrf_token = document.getElementsByName('csrf_token')[0].value
         pidd = link.split('-')
         pidd = pidd[pidd.length - 1].substring(0, 22)
         if (pidd.includes("html")) {
@@ -107,7 +130,10 @@ async function main() {
             pidsize = pidd.substring(0, 22)
             atcRfast()
         }
-    } catch (error) { }
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'value' of undefined")
+            errorWebhook(error, "main")
+    }
 }
 
 async function atc() {
@@ -132,7 +158,14 @@ async function atc() {
             atcR()
         }
     }
-    catch (error) { }
+    catch (error) {
+        if (error == "TypeError: Cannot read property 'click' of undefined" || error == "TypeError: Cannot read property 'getAttribute' of undefined" || error == "TypeError: Cannot read property 'value' of undefined") {
+            sendText("Item out of stock", "red")
+        }
+        else {
+            errorWebhook(error, "atc")
+        }
+    }
 }
 
 async function atcR() {
@@ -155,7 +188,7 @@ async function atcR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { checkRes(response) })
+        .then(response => { checkRes(response, 'atcR') })
         .catch((error) => { console.log(error) });
     ;
 }
@@ -180,12 +213,12 @@ async function atcRfast() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => { checkRes(response) })
+        .then(response => { checkRes(response, 'atcRfast') })
         .catch((error) => { console.log(error) });
     ;
 }
 
-async function checkRes(response) {
+async function checkRes(response, atc) {
 
     sendText("Carting...", "blue")
     let status = response.status
@@ -195,8 +228,10 @@ async function checkRes(response) {
     let message = res["message"]
     let errorType = res["errorType"]
     let errorMessage = res["errorMessage"]
+    console.log(message)
 
     if (status == 200 || status == 201) {
+        // if (message == "Aggiunto" || message == "Hinzugefügt" || message == "Toegevoegd" || message == "Ajouté" || message == "Agregado") {
         if (error == false) {
             sendText("Carted", "green")
             main2()
@@ -208,18 +243,39 @@ async function checkRes(response) {
             else if (errorType == "productLimitation") {
                 sendText("Max quantity for this item", "red")
             }
+            else if (message == "undefined") {
+                sendText("Error carting, open solver", "red")
+            }
             else {
-                sendText("Error carting", "red")
+                sendText("Error carting, open solver", "red")
+                addButton()
+                await sleep(7000)
+                if (count_checkResAtc == 0) {
+                    count_checkResAtc++
+                    if (atc == 'atcR') {
+                        atcR()
+                    } else {
+                        atcRfast()
+                    }
+
+                } else {
+                    location.reload()
+                }
             }
         }
     } else {
         if (errorMessage != undefined && errorMessage != "undefined") {
             if (errorMessage.includes("non siamo riusciti a salvare l'indirizzo di fatturazione")) {
                 sendText("Error getting shipping", "red")
-            } else {
-                sendText(errorMessage, "red")
-                errorWebhook()
             }
+            else if (errorMessage == "Too many requests") {
+                sendText("Too many requests", "red")
+            }
+            else {
+                sendText(errorMessage, "red")
+                errorWebhook(errorMessage, "checkRes")
+            }
+
         }
         else { sendText("Error carting", "red") }
     }
@@ -232,74 +288,14 @@ async function main2() {
             html.innerHTML = result
         })
         if (cart == false) {
-            sendText("Getting shipping info...", "blue")
-            try {
-                var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
-                address_id = rdbtn.getAttribute("data-id")
-                snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
-                post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
-                pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
-                post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
-                postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
-                country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
-                suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
-                street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
-                city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
-                address1 = street + "," + suite
-                address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
-                last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
-                first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
-                title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
-
-                originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
-                shipmentUUID = originalShipmentUUID
-                shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
-                address_selector = rdbtn.getAttribute("value")
-
-                email = html.querySelector('[aria-label="Email"]').getAttribute('value')
-
-                csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
-                sendText("Getting shipping info", "green")
-                try {
-                    img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
-                    price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
-                    name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
-                    size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
-                }
-                catch (error) {
-                    sendText("Error getting product info", "red")
-                }
-
-            } catch (error) {
-                sendText("Error getting shipping info", "red")
-            }
-
-            await ckRship()
-            await ckRpp()
-            await ckR()
-
-            await res.then(function (result) {
-                try {
-                    var j = JSON.parse(result)
-                    var linkpp = j["continueUrl"]
-                    if (linkpp != null) {
-                        ck_time = (performance.now() - ck_start) / 1000
-                        sendText("Checked out", "green")
-                        window.open(linkpp)
-                        sendWebhooks(linkpp)
-                    }
-                    else {
-                        let errorMessage = j['errorMessage']
-                        sendText(errorMessage, "red")
-                    }
-                } catch (error) { }
-            })
+            gettingShipping()
         }
         else { sendText("Item out of stock/ Item not available", "red") }
-    } catch (error) { }
+    } catch (error) { errorWebhook(error, "main2 all") }
 }
 
 async function getCheckout() {
+
     await fetch("https://" + country + "/checkout", {
         "headers": {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -322,12 +318,68 @@ async function getCheckout() {
             if (response.url == "https://" + country + "/cart")
                 cart = true
         })
-        .catch((error) => { console.log(error) });
+        .catch((error) => { errorWebhook(error, "getCheckout fetch") });
     ;
 }
 
-async function ckRship() {
+async function gettingShipping() {
 
+    sendText("Getting shipping info...", "blue")
+    try {
+        var rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
+        address_id = rdbtn.getAttribute("data-id")
+        snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
+        post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
+        pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
+        post_number = rdbtn.getAttribute('data-post-number').replaceAll(" ", "+")
+        postal_code = rdbtn.getAttribute('data-postal-code').replaceAll(" ", "+")
+        country_code = rdbtn.getAttribute('data-country-code').replaceAll(" ", "+")
+        suite = rdbtn.getAttribute('data-suite').replaceAll(" ", "+")
+        street = rdbtn.getAttribute('data-street').replaceAll(" ", "+")
+        city = rdbtn.getAttribute('data-city').replaceAll(" ", "+")
+        address1 = street + "," + suite
+        address2 = rdbtn.getAttribute('data-address2').replaceAll(" ", "+")
+        last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
+        first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
+        title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
+
+        originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
+        shipmentUUID = originalShipmentUUID
+        shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
+        address_selector = rdbtn.getAttribute("value")
+
+        email = html.querySelector('[aria-label="Email"]').getAttribute('value')
+        try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') }
+        catch (error) { }
+
+        csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
+
+        sendText("Getting shipping info", "green")
+        try {
+            img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+            price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+            name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+            size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
+        }
+        catch (error) {
+            sendText("Error getting product info", "red")
+            errorWebhook(error, "getting product")
+        }
+
+        ValidateShipping()
+
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
+            errorWebhook(error, "getting shipping")
+
+        sendText("Error getting shipping info", "red")
+    }
+
+}
+
+async function ValidateShipping() {
+
+    sendText("Validating address...", "blue")
     await fetch(LINK_REQUEST[country]["validate_ship"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -345,17 +397,39 @@ async function ckRship() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Validating address", "green")
-            }
-            else {
-                sendText("Error validating address", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResValidateShipping(response) })
+        .catch((error) => { errorWebhook(error, "ValidateShipping fetch") });
     ;
+}
 
+async function checkResValidateShipping(response) {
+
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        sendText("Validating address", "green")
+        SubmitShipping()
+    } else {
+        resInfoWebook(res, "checkResValidateShipping")
+        //sendText("Error getting shipping rates", "red")
+        sendText("Error validating address, open solver", "red")
+        addButton()
+        await sleep(7000)
+        if (count_checkResValidateShipping == 0) {
+            count_checkResValidateShipping++
+            ValidateShipping()
+        } else {
+            main2()
+        }
+
+    }
+}
+
+async function SubmitShipping() {
+
+    sendText("Submitting ship...", "blue")
     await fetch(LINK_REQUEST[country]["submit_ship"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -373,20 +447,38 @@ async function ckRship() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Submitting shipping", "green")
-            }
-            else {
-                sendText("Error submitting shipping", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResSubmitShipping(response) })
+        .catch((error) => { errorWebhook(error, "SubmitShipping fetch") });
     ;
 }
 
-async function ckRpp() {
+async function checkResSubmitShipping(response) {
 
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        sendText("Submit shipping", "green")
+        SubmitPayment()
+    } else {
+        resInfoWebook(res, "checkResSubmitShipping")
+        //sendText("Error submitting shipping", "red")
+        sendText("Error submitting shipping, open solver", "red")
+        addButton()
+        await sleep(7000)
+        if (count_checkResSubmitShipping == 0) {
+            count_checkResSubmitShipping++
+            SubmitShipping()
+        } else {
+            main2()
+        }
+    }
+}
+
+async function SubmitPayment() {
+
+    sendText("Submittin payment...", "blue")
     await fetch(LINK_REQUEST[country]["submit_payment"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -404,19 +496,46 @@ async function ckRpp() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Submitting payment", "green")
-            }
-            else {
-                sendText("Error submitting payment", "red")
-            }
-        })
-        .catch((error) => { console.log(error) });
+        .then(response => { checkResSubmitPayment(response) })
+        .catch((error) => { errorWebhook(error, "SubmitPayment fetch") });
     ;
 }
 
-async function ckR() {
+async function checkResSubmitPayment(response) {
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
+
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            sendText("Submit payment", "green")
+            PlaceOrder()
+        }
+        else {
+            resInfoWebook(res, "checkResSubmitPayment_1")
+            //sendText("Error submitting payment", "red")
+            sendText("Error submitting payment, open solver", "red")
+            addButton()
+            await sleep(7000)
+            if (count_checkResSubmitPayment == 0) {
+                count_checkResSubmitPayment++
+                SubmitPayment()
+            } else {
+                main2()
+            }
+        }
+
+    } else {
+        resInfoWebook(res, "checkResSubmitPayment_2")
+        sendText("Error submitting payment", "red")
+        main2()
+    }
+}
+
+async function PlaceOrder() {
+
+    sendText("Placing order...", "blue")
     await fetch(LINK_REQUEST[country]["submit_order"], {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
@@ -434,27 +553,67 @@ async function ckR() {
         "mode": "cors",
         "credentials": "include"
     })
-        .then(response => {
-            if (response.status == 200 || response.status == 201) {
-                sendText("Placing order", "green")
+        .then(response => { checkResPlaceOrder(response) })
+        .catch((error) => { errorWebhook(error, "PlaceOrder fetch") });
+    ;
+}
+
+async function checkResPlaceOrder(response) {
+
+    let status = response.status
+    let res = await response.text()
+    res = JSON.parse(res)
+    let error = res["error"]
+    var linkpp = res["continueUrl"]
+    let errorMessage = res['errorMessage']
+    if (status == 200 || status == 201) {
+        if (error == false) {
+            if (linkpp != null) {
+                ck_time = (performance.now() - ck_start) / 1000
+                sendText("Checked out", "green")
+                window.open(linkpp)
+                sendWebhooks(linkpp)
             }
             else {
-                sendText("Error placing order", "red")
+                resInfoWebook(res, "checkResPlaceOrder_1")
+                if (errorMessage == "undefined" || errorMessage == undefined) {
+                    main2()
+                }
+                else {
+                    sendText(errorMessage, "red")
+                    errorWebhook(errorMessage, "checkResPlaceOrder1")
+                    main2()
+                }
             }
-            res = response.text()
-        })
-        .catch((error) => { console.log(error) });
-    ;
+        }
+        else {
+            resInfoWebook(res, "checkResPlaceOrder_2")
+            if (errorMessage == "undefined" || errorMessage == undefined) {
+                main2()
+            }
+            else {
+                sendText(errorMessage, "red")
+                errorWebhook(errorMessage, "checkResPlaceOrder2")
+                main2()
+            }
+        }
+
+    }
+    else {
+        sendText("Error placing order", "red")
+        main2()
+    }
 }
 
 function sendWebhooks(linkpp) {
     if (linkpp != null) {
         sendWebhook_public()
-        sendWebhook_private(linkpp)
+        sendWebhook_private()
+        sendWebhook_personal(linkpp)
     }
 }
 
-async function errorWebhook(errorMessage) {
+async function errorWebhook(msg_error, position) {
     var request = new XMLHttpRequest();
     request.open("POST", url_error);
     request.setRequestHeader('Content-type', 'application/json');
@@ -467,7 +626,49 @@ async function errorWebhook(errorMessage) {
         fields: [
             {
                 name: 'Message',
-                value: errorMessage,
+                value: '```' + msg_error + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function resInfoWebook(msg, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: "Snipes ATC Info",
+        color: ("0"),
+        fields: [
+            {
+                name: 'Message',
+                value: '```' + msg + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
                 inline: true
             }
         ],
@@ -505,7 +706,7 @@ async function sendWebhook_public() {
             },
             {
                 name: 'Item',
-                value: '[ ' + name_product + ' ](' + link + ')',
+                value: name_product,
                 inline: true
             },
             {
@@ -539,7 +740,7 @@ async function sendWebhook_public() {
 
 }
 
-async function sendWebhook_private(linkpp) {
+async function sendWebhook_private() {
     var request = new XMLHttpRequest();
     request.open("POST", url_private);
     request.setRequestHeader('Content-type', 'application/json');
@@ -558,7 +759,65 @@ async function sendWebhook_private(linkpp) {
             },
             {
                 name: 'Item',
-                value: '[ ' + name_product + ' ](' + link + ')',
+                value: name_product,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Time',
+                value: "||" + ck_time.toString().substring(0, 11) + "||",
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: discord_name,
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhook_personal(linkpp) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_personal);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: ":fire: Pokemon catturato! :fire:",
+        color: ("65280"),
+        thumbnail: { url: img_product },
+        fields: [
+            {
+                name: 'Site',
+                value: 'Snipes',
+                inline: true
+            },
+            {
+                name: 'Item',
+                value: name_product,
                 inline: true
             },
             {
@@ -580,7 +839,7 @@ async function sendWebhook_private(linkpp) {
                 name: 'Checkout link',
                 value: '[ PayPal ](' + linkpp + ')',
                 inline: true
-            },
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -597,6 +856,18 @@ async function sendWebhook_private(linkpp) {
 
 }
 
+chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
+    version = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
+    url_personal = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+    discord_name = response.farewell
+});
+
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         chrome.runtime.sendMessage({ greeting: "snipes" }, function (response) {
@@ -606,13 +877,3 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
         });
     }
 });
-
-chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
-    version = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
-    url_private = response.farewell
-});
-
-

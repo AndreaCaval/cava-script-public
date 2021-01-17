@@ -31,24 +31,29 @@
             <label>Coupon Code: </label>
             <input style="float: right;" type="text" id="couponZ" placeholder="es: XYZ;XYZ;XYZ">
             <br><br>
-            <label>Product Link: </label>
-            <input style="float: right;" type="text" id="linkZ" placeholder="es: xyz;xyz;xyz">
-            <br><br>
             <label>Sku: </label>
             <input style="float: right;" type="text" id="skuZ" placeholder="es: XYZ;XYZ;XYZ">
             <br><br>
-            <label>Preload Sku: </label>
-            <input style="float: right;" type="text" id="preloadskuZ" placeholder="es: JOC12N01C-A110160000">
+            <!-- <label style="float: left;">Payment: </label>
+            <select style="float: right; width: 177px;" id="paymentMode">
+                <option id="Cad">Cad</option>
+                <option id="Paypal">Paypal</option>
+                <option id="Card">Card</option>
+                <option id="Sofort">Sofort</option>
+            </select>
+            <br><br> -->
+            <label style="float: left;">Cart Mode: </label>
+            <select style="float: right; width: 177px;" id="cartMode">
+                <option id="Fast">Fast</option>
+                <option id="Browser">Browser</option>
+            </select>
             <br><br>
-            <label>Timer: </label>
-            <input style="float: right;" type="text" id="timerZ" placeholder="es: 09:00:00">
-            <br><br>
-            <label style="float: left;">Checkout Mode: </label>
+            <label style="float: left;">CK Mode: </label>
             <select style="float: right; width: 177px;" id="checkoutMode">
-        <option id="normal">Normal</option>
-        <option id="safe">Safe</option>
-        <option id="fast">Fast</option>
-      </select>
+                <option id="Manual">Manual</option>
+                <option id="Fast">Fast</option>
+                <option id="Browser">Browser</option>
+            </select>
             <br><br>
             <input style="text-align: center; width: 100%;" class='btn' id="btnZ" type="submit" value="Save">
             <br><br>
@@ -56,7 +61,8 @@
     </div>
     <footer>
         <p style="float:left; display:block;">
-            <a href="https://twitter.com/CavaScripts" target="_blank"><img style="float:left; display:block;" src="/icons/iconpk.png" height="15" width="15"></a>
+            <a href="https://twitter.com/CavaScripts" target="_blank"><img style="float:left; display:block;"
+                    src="/icons/iconpk.png" height="15" width="15"></a>
         </p>
         <p id="version" style="float:left;"></p>
     </footer>

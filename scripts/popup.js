@@ -1,7 +1,7 @@
 debugger
 
 const version = 'Cava-Scripts 1.0.0'
-const webhook_url = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
+const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" 
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
@@ -170,7 +170,6 @@ $(function () {
         //Naked
         if (localStorage.getItem("status_aco_naked") == "on") { $('#Status_aco_naked').prop('checked', true); }
 
-
         //gestisco i click delle checkbox
         //Zalando
         $('#Status_aco_zalando').click(function () {
@@ -198,18 +197,12 @@ $(function () {
         //GESTIONE PAGINA Login------------------------------------------------
 
         //contollo se le variabili sono on e in caso checko la casella
-        //SlamJam
-        if (localStorage.getItem("status_login_slamjam") == "on") { $('#Status_login_slamjam').prop('checked', true); }
         //Solebox
         if (localStorage.getItem("status_login_solebox") == "on") { $('#Status_login_solebox').prop('checked', true); }
         //Snipes
         if (localStorage.getItem("status_login_snipes") == "on") { $('#Status_login_snipes').prop('checked', true); }
 
         //gestisco i click delle checkbox
-        //SlamJam
-        $('#Status_login_slamjam').click(function () {
-            if ($("#Status_login_slamjam").is(':checked')) { localStorage.setItem("status_login_slamjam", "on"); } else { localStorage.setItem("status_login_slamjam", "off"); }
-        });
         //Solebox
         $('#Status_login_solebox').click(function () {
             if ($("#Status_login_solebox").is(':checked')) { localStorage.setItem("status_login_solebox", "on"); } else { localStorage.setItem("status_login_solebox", "off"); }
@@ -233,6 +226,12 @@ $(function () {
             if (id != '') { localStorage.setItem("id_webhook", id); } else { localStorage.setItem("id_webhook", "off"); }
             if (d != '') { localStorage.setItem("delay", d); } else { localStorage.setItem("delay", "0"); }
         });
+        
+        //Autoclick
+        if (localStorage.getItem("autoclick") == "on") { $('#Autoclick').prop('checked', true); }
+        $('#Autoclick').click(function () {
+            if ($("#Autoclick").is(':checked')) { localStorage.setItem("autoclick", "on"); } else { localStorage.setItem("autoclick", "off"); }
+        });
 
         //gestisco il bottone test webhook
         $("#btnWebhook").click(function () {
@@ -252,35 +251,31 @@ $(function () {
         }
         //contollo se sono già presenti nello storage e in caso li inserisco nell' input
         if (localStorage.getItem("coupon_zalando") != "off") { $("#couponZ").val(localStorage.getItem("coupon_zalando")); }
-        if (localStorage.getItem("link_zalando") != "off") { $("#linkZ").val(localStorage.getItem("link_zalando")); }
         if (localStorage.getItem("sku_zalando") != "off") { $("#skuZ").val(localStorage.getItem("sku_zalando")); }
-        if (localStorage.getItem("preload_sku_zalando") != "off") { $("#preloadskuZ").val(localStorage.getItem("preload_sku_zalando")); }
-        if (localStorage.getItem("timer_zalando") != "off") { $("#timer").val(localStorage.getItem("timer_zalando")); }
+        if (localStorage.getItem("cart_mode_zalando") != "off") { $("#cartMode").val(localStorage.getItem("cart_mode_zalando")); }
         if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#checkoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
+        if (localStorage.getItem("payment_zalando") != "off") { $("paymentMode").val(localStorage.getItem("payment_zalando")); }
         //gestisco il click del bottone salva
         $("#btnZ").click(function () {
             var e = $("#email_zalando").val();
             var p = $("#pw_zalando").val();
-            var l = $("#linkZ").val();
             var c = $("#couponZ").val();
             var s = $("#skuZ").val();
-            var ps = $("#preloadskuZ").val();
-            var t = $("#timer").val();
+            var cart = $("#cartMode").val();
             var ck = $("#checkoutMode").val();
+            var ppp = $("#paymentMode").val();            
 
             if (e != '' && p != '') { localStorage.setItem("email_pw_zalando", e + ":" + p); } else { localStorage.setItem("email_pw_zalando", "off"); }
 
             if (c != '') { localStorage.setItem("coupon_zalando", c); } else { localStorage.setItem("coupon_zalando", "off"); }
 
-            if (l != '') { localStorage.setItem("link_zalando", l); } else { localStorage.setItem("link_zalando", "off"); }
-
             if (s != '') { localStorage.setItem("sku_zalando", s); } else { localStorage.setItem("sku_zalando", "off"); }
 
-            if (ps != '') { localStorage.setItem("preload_sku_zalando", ps); } else { localStorage.setItem("preload_sku_zalando", "off"); }
+            if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "Fast"); }
 
-            if (t != '') { localStorage.setItem("timer_zalando", t); } else { localStorage.setItem("timer_zalando", "off"); }
+            if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "Fast"); }
 
-            if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "off"); }
+            if (ppp != '') { localStorage.setItem("payment_zalando", ppp); } else { localStorage.setItem("payment_zalando", "Cad"); }
         });
         //---------------------------------------------------------------------
 
@@ -320,21 +315,5 @@ $(function () {
             if (c != '') { localStorage.setItem("country_snipes", c); } else { localStorage.setItem("country_snipes", "off"); }
         });
         //---------------------------------------------------------------------
-
-        //GESTIONE PAGINA SLAMJAM----------------------------------------------
-        //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
-        if (localStorage.getItem("email_pw_slamjam") != "off") {
-            var email = localStorage.getItem("email_pw_slamjam").split(':')[0]
-            var pw = localStorage.getItem("email_pw_slamjam").split(':')[1]
-            $("#email_slamjam").val(email);
-            $("#pw_slamjam").val(pw);
-        }
-        //gestisco il click del bottone salva
-        $("#btn_save_slamjam").click(function () {
-            var e = $("#email_slamjam").val();
-            var p = $("#pw_slamjam").val();
-
-            if (e != '' && p != '') { localStorage.setItem("email_pw_slamjam", e + ":" + p); } else { localStorage.setItem("email_pw_slamjam", "off"); }
-        });
     }
 });
