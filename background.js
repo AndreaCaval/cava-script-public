@@ -276,9 +276,6 @@ function SetStatus_off() {
     if (localStorage.getItem("checkout_mode_zalando") == null) {
         localStorage.setItem("checkout_mode_zalando", "Fast");
     }
-    if (localStorage.getItem("payment_zalando") == null) {
-        localStorage.setItem("payment_zalando", "Cad");
-    }
 
     //Sns-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_aco_sns") == null) {
@@ -362,7 +359,6 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "skuzalando") sendResponse({ farewell: localStorage.getItem("sku_zalando") });
         if (request.greeting == "cartmodezalando") sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
         if (request.greeting == "checkoutmodezalando") sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
-        if (request.greeting == "paymentmodezalando") sendResponse({ farewell: localStorage.getItem("payment_mode_zalando") });
         if (request.greeting == "successZ") { setCoupon() };
         //auth
         if (request.greeting == 'login') {

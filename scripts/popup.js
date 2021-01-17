@@ -254,7 +254,6 @@ $(function () {
         if (localStorage.getItem("sku_zalando") != "off") { $("#skuZ").val(localStorage.getItem("sku_zalando")); }
         if (localStorage.getItem("cart_mode_zalando") != "off") { $("#cartMode").val(localStorage.getItem("cart_mode_zalando")); }
         if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#checkoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
-        if (localStorage.getItem("payment_zalando") != "off") { $("paymentMode").val(localStorage.getItem("payment_zalando")); }
         //gestisco il click del bottone salva
         $("#btnZ").click(function () {
             var e = $("#email_zalando").val();
@@ -263,7 +262,6 @@ $(function () {
             var s = $("#skuZ").val();
             var cart = $("#cartMode").val();
             var ck = $("#checkoutMode").val();
-            var ppp = $("#paymentMode").val();            
 
             if (e != '' && p != '') { localStorage.setItem("email_pw_zalando", e + ":" + p); } else { localStorage.setItem("email_pw_zalando", "off"); }
 
@@ -275,7 +273,6 @@ $(function () {
 
             if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "Fast"); }
 
-            if (ppp != '') { localStorage.setItem("payment_zalando", ppp); } else { localStorage.setItem("payment_zalando", "Cad"); }
         });
         //---------------------------------------------------------------------
 
