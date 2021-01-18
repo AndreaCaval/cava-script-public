@@ -140,6 +140,8 @@ async function gettingShipping() {
             errorWebhook(error, "getting shipping")
         }
         sendText("Error getting shipping info", "red")
+        await sleep(1000)
+        main()
     }
 
 }

@@ -1,4 +1,4 @@
-//debugger
+debugger
 
 var img = ''; var nomep = ''; var sizep = ''; var email = ''; var version = ''; var sku = ''; var quantity = ''; var url_personal = ""; let discord_name = ""
 var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
@@ -28,13 +28,6 @@ async function foundData() {
     email = document.querySelectorAll('[aria-live="polite"]')[0].textContent;
     n = email.split(" ").splice(-1)
     email = n[n.length - 1]
-
-    console.log(email)
-    console.log(sizep)
-    console.log(nomep)
-    console.log(quantity)
-    console.log(sizep)
-
 
     sendWebhook_public()
     sendWebhook_private()

@@ -220,15 +220,21 @@ async function atcRfast() {
 
 async function checkRes(response, atc) {
 
-    sendText("Carting...", "blue")
-    let status = response.status
-    let res = await response.text()
-    res = JSON.parse(res)
-    let error = res["error"]
-    let message = res["message"]
-    let errorType = res["errorType"]
-    let errorMessage = res["errorMessage"]
-    console.log(message)
+    let status = ""; let error = ""; let message = ""; let errorType = ""; let errorMessage = ""
+    try {
+        sendText("Carting...", "blue")
+        status = response.status
+        let res = await response.text()
+        res = JSON.parse(res)
+        error = res["error"]
+        message = res["message"]
+        errorType = res["errorType"]
+        errorMessage = res["errorMessage"]
+
+    } catch (error) {
+        errorWebhook(error, "checkRes")
+        location.reload()
+    }
 
     if (status == 200 || status == 201) {
         // if (message == "Aggiunto" || message == "Hinzugefügt" || message == "Toegevoegd" || message == "Ajouté" || message == "Agregado") {
@@ -279,6 +285,7 @@ async function checkRes(response, atc) {
         }
         else { sendText("Error carting", "red") }
     }
+
 }
 
 async function main2() {
@@ -373,6 +380,8 @@ async function gettingShipping() {
             errorWebhook(error, "getting shipping")
 
         sendText("Error getting shipping info", "red")
+        await sleep(1000)
+        main2()
     }
 
 }

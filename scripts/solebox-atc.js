@@ -36,14 +36,16 @@ async function sendText(text, color) {
 
 async function addButton() {
     try {
-        let btn1 = document.getElementById("CavaScripts")
-        btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
+        if (document.getElementById("btn_solver") == undefined || document.getElementById("btn_solver") == null) {
+            let btn1 = document.getElementById("CavaScripts")
+            btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
 
-        let btn_solver = document.getElementById('btn_solver')
-        btn_solver.addEventListener("click", function () {
-            let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
-            window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
-        });
+            let btn_solver = document.getElementById("btn_solver")
+            btn_solver.addEventListener("click", function () {
+                let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
+                window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
+            });
+        }
     } catch (error) { }
 }
 
@@ -153,13 +155,20 @@ async function atcRfast() {
 
 async function checkResAtc(response, atc) {
 
-    sendText("Carting...", "blue")
-    let status = response.status
-    let res = await response.text()
-    res = JSON.parse(res)
-    let error = res["error"]
-    let message = res["message"]
-    let errorMessage = res["errorMessage"]
+    let status = ""; let error = ""; let message = ""; let errorMessage = ""
+    try {
+        sendText("Carting...", "blue")
+        status = response.status
+        let res = await response.text()
+        res = JSON.parse(res)
+        error = res["error"]
+        message = res["message"]
+        errorMessage = res["errorMessage"]
+
+    } catch (error) {
+        errorWebhook(error, "checkRes")
+        location.reload()
+    }
 
     if (status == 200 || status == 201) {
         if (error == false) {
@@ -291,6 +300,8 @@ async function gettingShipping() {
             errorWebhook(error, "getting shipping")
 
         sendText("Error getting shipping info", "red")
+        await sleep(1000)
+        main2()
     }
 
 }
