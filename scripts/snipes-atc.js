@@ -49,10 +49,10 @@ const LINK_REQUEST = {
     "www.snipes.es": {
         "add_product": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Cart-AddProduct?format=ajax",
         "select_ship": "https://ww.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
-        "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutAddressServices-Validate?format=ajax",
+        "validate_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutAddressServices-Validate?format=ajax",
         "submit_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
-        "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-SubmitPayment?format=ajax",
-        "submit_order": "https://www.snipes.com/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-PlaceOrder?format=ajax"
+        "submit_payment": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-SubmitPayment?format=ajax",
+        "submit_order": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutServices-PlaceOrder?format=ajax"
     },
     "www.snipes.be": {
         "add_product": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Cart-AddProduct?format=ajax",
@@ -64,11 +64,11 @@ const LINK_REQUEST = {
     },
     "www.snipes.at": {
         "add_product": "https://www.snipes.at/add-product?format=ajax",
-        "select_ship": "https://ww.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
-        "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
-        "submit_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
-        "submit_payment": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
-        "submit_order": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-PlaceOrder?format=ajax"
+        "select_ship": "https://ww.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
+        "validate_ship": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
+        "submit_ship": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SubmitShipping?format=ajax",
+        "submit_payment": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-SubmitPayment?format=ajax",
+        "submit_order": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutServices-PlaceOrder?format=ajax"
     }
 
 }
@@ -355,7 +355,8 @@ async function gettingShipping() {
         shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
         address_selector = rdbtn.getAttribute("value")
 
-        email = html.querySelector('[aria-label="Email"]').getAttribute('value')
+        try { email = html.querySelector('[aria-label="Email"]').getAttribute('value') }
+        catch (error) { email = html.querySelector('[inputmode="email"]').getAttribute('value') }
         try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') }
         catch (error) { }
 
@@ -641,6 +642,11 @@ async function errorWebhook(msg_error, position) {
             {
                 name: 'Position',
                 value: position,
+                inline: true
+            },
+            {
+                name: 'Discord',
+                value: discord_name,
                 inline: true
             }
         ],
