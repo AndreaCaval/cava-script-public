@@ -1,9 +1,8 @@
 <!doctype html>
-<!--pagina autologin-->
-<html lang="en">
+<!--pagina delle impostazioni di kickz-->
+<html>
 
 <head>
-    <meta charset="UTF-8">
     <link rel="stylesheet" href="styles.css">
     <script src="/scripts/jquery.js"></script>
     <script src="/scripts/jquery.min.js"></script>
@@ -15,32 +14,27 @@
     <ul>
         <li><a href="popup-site-aco.html">ACO</a></li>
         <li><a href="popup-site-autologin.html">Login</a></li>
+        <li><a href="popup-site-profile.html">Profile</a></li>
         <li><a href="popup-setting.html">Setting</a></li>
         <li><a href="popup-info.html ">Info</a></li>
     </ul>
+    <p style="text-align: center;">Kickz</p>
     <div style="padding:15px;">
-        <div style="float:left;">
-            <a style="font-size:14px" class="site" href="popup-site-solebox.html">Solebox</a>
-            <br><br>
-            <a style="font-size:14px" class="site" href="popup-site-snipes.html">Snipes</a>
-            <br><br>
-            <a style="font-size:14px" class="site" href="popup-site-kickz.html">Kickz</a>
-        </div>
-        <div style="float:right;" id="div_checkbox">
-            <input type="checkbox" id="Status_login_solebox" name="Solebox">
-            <br><br>
-            <input type="checkbox" id="Status_login_snipes" name="Snipes">
-            <br><br>
-            <input type="checkbox" id="Status_login_kickz" name="Kickz">
-        </div>
+        <label>Email: </label>
+        <input style="float: right;" type="text" id="email_kickz" placeholder="es: cavascript@gmail.com">
+        <br><br>
+        <label>Password: </label>
+        <input style="float: right;" type="text" id="pw_kickz" placeholder="es: cavascript">
+        <br><br>
+        <input style="text-align: center; width: 100%;" class='btn' id="btn_save_kickz" type="submit" value="Save">
     </div>
-
     <footer>
         <p style="float:left; display:block;">
             <a href="https://twitter.com/CavaScripts" target="_blank"><img style="float:left; display:block;" src="/icons/iconpk.png" height="15" width="15"></a>
         </p>
         <p id="version" style="float:left;"></p>
     </footer>
+
 </body>
 
 </html>

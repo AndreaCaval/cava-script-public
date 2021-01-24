@@ -1,4 +1,4 @@
-//debugger
+debugger
 
 const button = document.querySelector("button")
 if (button.getAttribute("id") == "button_in") sing_in()

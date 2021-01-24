@@ -18,13 +18,16 @@ async function foundData() {
     nomep = nomep + " " + nomep2
     if (parseInt(quantity) != 1) {
         for (var i = 0; i < quantity; i++) {
-            sizep += document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6 + x].textContent + ",";
+            sizep += document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6 + x].textContent + " - ";
             x += 2
         }
     }
     else {
         sizep = document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6].textContent;
     }
+
+    sizep = sizep.replace(/[^\d,.-]/g, '')
+
     email = document.querySelectorAll('[aria-live="polite"]')[0].textContent;
     n = email.split(" ").splice(-1)
     email = n[n.length - 1]
@@ -225,8 +228,6 @@ async function sendWebhook_personal() {
 
 }
 
-chrome.runtime.sendMessage({ greeting: "successZ" });
-
 chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
     version = response.farewell
 });
@@ -252,8 +253,3 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
         });
     }
 });
-
-
-
-
-

@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Cava-Scripts-1",
   "description": "botterboycava",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icons": {
     "128": "icons/iconpk.png"
   },
@@ -29,6 +29,16 @@
     "persistent": false
   },
   "content_scripts": [
+    {
+      "matches":["https://www.kickz.com/*/cart"],
+      "js": ["scripts/kickz-cart.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["https://www.kickz.com/*"],
+      "js": ["scripts/kickz-atc.js", "scripts/kickz-login.js"],
+      "all_frames": false
+    },
     {
       "matches":["https://discord.com/channels/*"],
       "exclude_globs":["https://discord.com/channels/@me/*"],
@@ -88,9 +98,15 @@
     },
     {
       "matches":["http://*/*", "https://*/*"],
-      "exclude_globs":["https://*.zalando.*/cart*", "https://*.zalando.*/zalando-newsletter*", "https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*", "https://*.zalando.*/checkout/address", "https://checkout.payment.zalando.com*", "https://*.zalando.*/checkout/confirm*", "https://*.zalando.*/checkout/success*"],
-      "include_globs": ["*.zalando.*"],
-      "js": ["scripts/zalando-mini-display.js"],
+      "include_globs":  ["https://*.zalando.*/myaccount*"],
+      "exclude_globs": ["https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*"],
+      "js": ["scripts/zalando-account.js"],
+      "all_frames": true
+    },
+    {
+      "matches":["http://*/*", "https://*/*"],
+      "include_globs": ["https://*.zalando.*/zalando-newsletter/"],
+      "js": ["scripts/zalando-coupon-generator.js"],
       "all_frames": true
     },
     {

@@ -276,6 +276,9 @@ function SetStatus_off() {
     if (localStorage.getItem("checkout_mode_zalando") == null) {
         localStorage.setItem("checkout_mode_zalando", "Fast");
     }
+    if (localStorage.getItem("zalando_delay_cart") == null) {
+        localStorage.setItem("zalando_delay_cart", "0");
+    }
 
     //Sns-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_aco_sns") == null) {
@@ -314,6 +317,18 @@ function SetStatus_off() {
         localStorage.setItem("email_pw_solebox", "off");
     }   
 
+    //Kickz-ACO
+    if (localStorage.getItem("status_aco_kickz") == null) {
+        localStorage.setItem("status_aco_kickz", "off");
+    }
+    //Kickz-Login
+    if (localStorage.getItem("status_login_kickz") == null) {
+        localStorage.setItem("status_login_kickz", "off");
+    }
+    if (localStorage.getItem("email_pw_kickz") == null) {
+        localStorage.setItem("email_pw_kickz", "off");
+    }
+
     //Setting-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("id_webhook") == null) {
         localStorage.setItem("id_webhook", "off");
@@ -343,6 +358,10 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "sns") sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
         //naked------------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "naked") sendResponse({ farewell: localStorage.getItem("status_aco_naked") });
+        //kickz------------------------------------------------------------------------------------------------------------------------
+        if (request.greeting == "kickz") sendResponse({ farewell: localStorage.getItem("status_aco_kickz") });
+        if (request.greeting == "kickz_login") sendResponse({ farewell: localStorage.getItem("status_login_kickz") });
+        if (request.greeting == "email_pw_kickz") sendResponse({ farewell: localStorage.getItem("email_pw_kickz") });
         //snipes------------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "snipes") sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
         if (request.greeting == "snipes_login") sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
@@ -355,8 +374,7 @@ chrome.runtime.onMessage.addListener(
         //zalando---------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "zalando") sendResponse({ farewell: localStorage.getItem("status_aco_zalando") });
         if (request.greeting == "email_pw_zalando") sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
-        if (request.greeting == "couponZ") sendResponse({ farewell: localStorage.getItem("coupon_zalando") });
-        if (request.greeting == "skuzalando") sendResponse({ farewell: localStorage.getItem("sku_zalando") });
+        if (request.greeting == "zalandodelaycart") sendResponse({ farewell: localStorage.getItem("zalando_delay_cart") });
         if (request.greeting == "cartmodezalando") sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
         if (request.greeting == "checkoutmodezalando") sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
         if (request.greeting == "successZ") { setCoupon() };

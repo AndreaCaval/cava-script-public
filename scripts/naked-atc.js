@@ -3,7 +3,7 @@ debugger
 let name_product = ''; let size_product = ''; let price_product = "";
 const img_product = "https://pbs.twimg.com/profile_images/582179018419482624/RppHUjBa_400x400.jpg"
 
-let url_personal = ''; let version = ''; let delay = 1000; let discord_name = ""
+let url_personal = ''; let version = ''; let delay = "0"; let discord_name = ""
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
 var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
 const url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
@@ -26,7 +26,7 @@ function getRandomIntInclusive(min, max) {
 }
 
 async function errorRefresh() {
-    await sleep(delay)
+    await sleep(parseInt(delay))
     location.reload()
 }
 
@@ -161,7 +161,7 @@ function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        description: '[' + name_product + '](' + link + ')',
+        description: name_product,
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [
@@ -205,7 +205,7 @@ function sendWebhook_personal() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        description: '[' + name_product + '](' + link + ')',
+        description: name_product,
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [
@@ -249,7 +249,7 @@ function sendWebhook_private() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        description: '[' + name_product + '](' + link + ')',
+        description: name_product,
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [
@@ -288,6 +288,10 @@ function sendWebhook_private() {
     request.send(JSON.stringify(params));
 
 }
+
+chrome.runtime.sendMessage({ greeting: "delay" }, function (response) {
+    delay = response.farewell
+});
 
 chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
     version = response.farewell

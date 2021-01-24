@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.0'
+const version = 'Cava-Scripts 1.0.1'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" 
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
@@ -250,29 +250,21 @@ $(function () {
             $("#pw_zalando").val(pw);
         }
         //contollo se sono già presenti nello storage e in caso li inserisco nell' input
-        if (localStorage.getItem("coupon_zalando") != "off") { $("#couponZ").val(localStorage.getItem("coupon_zalando")); }
-        if (localStorage.getItem("sku_zalando") != "off") { $("#skuZ").val(localStorage.getItem("sku_zalando")); }
-        if (localStorage.getItem("cart_mode_zalando") != "off") { $("#cartMode").val(localStorage.getItem("cart_mode_zalando")); }
-        if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#checkoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
+        if (localStorage.getItem("cart_mode_zalando") != "off") { $("#zalandoCartMode").val(localStorage.getItem("cart_mode_zalando")); }
+        if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#zalandoCheckoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
+        $("#zalandoDelayCart").val(localStorage.getItem("zalando_delay_cart"));
         //gestisco il click del bottone salva
         $("#btnZ").click(function () {
             var e = $("#email_zalando").val();
             var p = $("#pw_zalando").val();
-            var c = $("#couponZ").val();
-            var s = $("#skuZ").val();
-            var cart = $("#cartMode").val();
-            var ck = $("#checkoutMode").val();
+            var cart = $("#zalandoCartMode").val();
+            var ck = $("#zalandoCheckoutMode").val();
+            var d2 = $("#zalandoDelayCart").val();
 
             if (e != '' && p != '') { localStorage.setItem("email_pw_zalando", e + ":" + p); } else { localStorage.setItem("email_pw_zalando", "off"); }
-
-            if (c != '') { localStorage.setItem("coupon_zalando", c); } else { localStorage.setItem("coupon_zalando", "off"); }
-
-            if (s != '') { localStorage.setItem("sku_zalando", s); } else { localStorage.setItem("sku_zalando", "off"); }
-
-            if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "Fast"); }
-
-            if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "Fast"); }
-
+            if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "off"); }
+            if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "off"); }
+            if (d2 != '') { localStorage.setItem("zalando_delay_cart", d2); } else { localStorage.setItem("zalando_delay_cart", "0"); }
         });
         //---------------------------------------------------------------------
 
@@ -310,6 +302,23 @@ $(function () {
             if (e != '' && p != '') { localStorage.setItem("email_pw_snipes", e + ":" + p); } else { localStorage.setItem("email_pw_snipes", "off"); }
 
             if (c != '') { localStorage.setItem("country_snipes", c); } else { localStorage.setItem("country_snipes", "off"); }
+        });
+        //---------------------------------------------------------------------
+
+        //GESTIONE PAGINA KICKZ----------------------------------------------
+        //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+        if (localStorage.getItem("email_pw_kickz") != "off") {
+            var email = localStorage.getItem("email_pw_kickz").split(':')[0]
+            var pw = localStorage.getItem("email_pw_kickz").split(':')[1]
+            $("#email_kickz").val(email);
+            $("#pw_kickz").val(pw);
+        }
+        //gestisco il click del bottone salva
+        $("#btn_save_kickz").click(function () {
+            var e = $("#email_kickz").val();
+            var p = $("#pw_kickz").val();
+
+            if (e != '' && p != '') { localStorage.setItem("email_pw_kickz", e + ":" + p); } else { localStorage.setItem("email_pw_kickz", "off"); }
         });
         //---------------------------------------------------------------------
     }

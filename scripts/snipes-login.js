@@ -1,6 +1,6 @@
 debugger
 
-var email = ""; var pw = ""; var status_login = ""; var status_aco = ""; let country_snipes = ""
+var email = ""; var pw = ""; var status_login = ""; var status_aco = ""; let country_snipes = ""; let discord_namee = ""; let versions = ""
 var link = document.location.href
 var country = link.split("/")[2]
 var url_errors = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
@@ -42,7 +42,10 @@ async function checkLogin() {
             }
         }
     }
-    catch (error) { errorWebhook(error, "checkLogin") }
+    catch (error) {
+        if (error != "ReferenceError: dataLayer is not defined")
+            errorWebhook(error, "checkLogin")
+    }
 }
 
 async function login() {
@@ -55,7 +58,6 @@ async function login() {
             await res.then(function (result) {
                 html2.innerHTML = result
             })
-            //html2.innerHTML = html
             csrf_token = html2.querySelectorAll("[name='csrf_token']")[0].value
             span = html2.querySelectorAll('span')
             for (var i = 0; i < span.length; i++) {
@@ -79,7 +81,10 @@ async function login() {
             data_id = span.getAttribute('data-id')
             data_value = span.getAttribute('data-value')
         }
-    } catch (error) { errorWebhook(error, "login") }
+    } catch (error) {
+        if (error != "TypeError: span.getAttribute is not a function")
+            errorWebhook(error, "login")
+    }
 
     await fetch("https://" + country + "/authentication?rurl=1&format=ajax", {
         "headers": {
@@ -152,10 +157,15 @@ async function errorWebhook(msg_error, position) {
                 name: 'Position',
                 value: position,
                 inline: true
+            },
+            {
+                name: 'Discord',
+                value: discord_namee,
+                inline: true
             }
         ],
         footer: {
-            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            text: 'Cava-Scripts ' + versions + ' | ' + String(time),
             icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
         },
     }
@@ -168,6 +178,14 @@ async function errorWebhook(msg_error, position) {
     request.send(JSON.stringify(params));
 
 }
+
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+    discord_namee = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
+    version = response.farewell
+});
 
 chrome.runtime.sendMessage({ greeting: "country_snipes" }, function (response) {
     country_snipes = response.farewell
@@ -211,5 +229,8 @@ async function textBox() {
             + ' <p id="statusSnipes">Status snipes</p> '
             + " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     }
-    catch (error) { errorWebhook(error, "textBox") }
+    catch (error) {
+        if (error != "TypeError: Cannot read property 'parentNode' of undefined")
+            errorWebhook(error, "textBox")
+    }
 }

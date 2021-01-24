@@ -36,11 +36,12 @@ async function sendText(text, color) {
 
 async function addButton() {
     try {
-        if (document.getElementById("btn_solver") == undefined || document.getElementById("btn_solver") == null) {
+        if (document.getElementById('btn_solver') == null) {
+
             let btn1 = document.getElementById("CavaScripts")
             btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
 
-            let btn_solver = document.getElementById("btn_solver")
+            let btn_solver = document.getElementById('btn_solver')
             btn_solver.addEventListener("click", function () {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
@@ -155,56 +156,58 @@ async function atcRfast() {
 
 async function checkResAtc(response, atc) {
 
-    let status = ""; let error = ""; let message = ""; let errorMessage = ""
     try {
+
         sendText("Carting...", "blue")
-        status = response.status
+        let status = response.status
         let res = await response.text()
         res = JSON.parse(res)
-        error = res["error"]
-        message = res["message"]
-        errorMessage = res["errorMessage"]
+        let error = res["error"]
+        let message = res["message"]
+        let errorMessage = res["errorMessage"]
 
-    } catch (error) {
-        errorWebhook(error, "checkRes")
-        location.reload()
-    }
-
-    if (status == 200 || status == 201) {
-        if (error == false) {
-            sendText("Carted", "green")
-            main2()
-        }
-        else {
-            if (message == "The selected item is not available any more." || message == "Der gewünschte Artikel ist leider nicht mehr verfügbar.") {
-                sendText("Item out of stock", "red")
+        if (status == 200 || status == 201) {
+            if (error == false) {
+                sendText("Carted", "green")
+                main2()
             }
             else {
-                sendText("Error carting, open solver", "red")
-                addButton()
-                await sleep(7000)
-                if (count_checkResAtc == 0) {
-                    count_checkResAtc++
-                    if (atc == 'atcR') {
-                        atcR()
-                    } else {
-                        atcRfast()
-                    }
+                if (message == "The selected item is not available any more." || message == "Der gewünschte Artikel ist leider nicht mehr verfügbar.") {
+                    sendText("Item out of stock", "red")
+                }
+                else {
+                    sendText("Error carting, open solver", "red")
+                    addButton()
+                    await sleep(7000)
+                    if (count_checkResAtc == 0) {
+                        count_checkResAtc++
+                        if (atc == 'atcR') {
+                            atcR()
+                        } else {
+                            atcRfast()
+                        }
 
-                } else {
-                    location.reload()
+                    } else {
+                        location.reload()
+                    }
                 }
             }
+        } else {
+            if (errorMessage == "Too many requests") {
+                sendText("Too many requests", "red")
+            }
+            else if (errorMessage != "undefined" && errorMessage != undefined) {
+                sendText(errorMessage, "red")
+                errorWebhook(errorMessage, "checkRes")
+            }
+            else { sendText("Error carting", "red") }
         }
-    } else {
-        if (errorMessage == "Too many requests") {
-            sendText("Too many requests", "red")
-        }
-        else if (errorMessage != "undefined" && errorMessage != undefined) {
-            sendText(errorMessage, "red")
-            errorWebhook(errorMessage, "checkRes")
-        }
-        else { sendText("Error carting", "red") }
+
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhook(errorMessage, "trycheckRes")
+
+        sendText("Error carting", "red")
     }
 }
 
@@ -300,8 +303,6 @@ async function gettingShipping() {
             errorWebhook(error, "getting shipping")
 
         sendText("Error getting shipping info", "red")
-        await sleep(1000)
-        main2()
     }
 
 }
@@ -333,25 +334,35 @@ async function ShippingRates() {
 
 async function checkResShippingRates(response) {
 
-    let status = response.status
-    let res = await response.text()
-    res = JSON.parse(res)
+    try {
 
-    if (status == 200 || status == 201) {
-        sendText("Shipping rates", "green")
-        SubmitShipping()
-    } else {
-        resInfoWebook(res, "checkResShippingRates")
-        sendText("Error getting shipping rates, open solver", "red")
-        addButton()
-        await sleep(7000)
-        if (count_checkResShippingRates == 0) {
-            count_checkResShippingRates++
-            ShippingRates()
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+
+        if (status == 200 || status == 201) {
+            sendText("Shipping rates", "green")
+            SubmitShipping()
         } else {
-            main2()
+            resInfoWebook(x, "checkResShippingRates")
+            sendText("Error getting shipping rates, open solver", "red")
+            addButton()
+            await sleep(7000)
+            if (count_checkResShippingRates == 0) {
+                count_checkResShippingRates++
+                ShippingRates()
+            } else {
+                main2()
+            }
         }
 
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhook(errorMessage, "trycheckResValidateShipping")
+
+        sendText("Error validating address", "red")
+        main2()
     }
 }
 
@@ -382,24 +393,35 @@ async function SubmitShipping() {
 
 async function checkResSubmitShipping(response) {
 
-    let status = response.status
-    let res = await response.text()
-    res = JSON.parse(res)
+    try {
 
-    if (status == 200 || status == 201) {
-        sendText("Submit shipping", "green")
-        SubmitPayment()
-    } else {
-        resInfoWebook(res, "checkResSubmitShipping")
-        sendText("Error submitting shipping, open solver", "red")
-        addButton()
-        await sleep(7000)
-        if (count_checkResSubmitShipping == 0) {
-            count_checkResSubmitShipping++
-            SubmitShipping()
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+
+        if (status == 200 || status == 201) {
+            sendText("Submit shipping", "green")
+            SubmitPayment()
         } else {
-            main2()
+            resInfoWebook(x, "checkResSubmitShipping")
+            sendText("Error submitting shipping, open solver", "red")
+            addButton()
+            await sleep(7000)
+            if (count_checkResSubmitShipping == 0) {
+                count_checkResSubmitShipping++
+                SubmitShipping()
+            } else {
+                main2()
+            }
         }
+
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhook(errorMessage, "trycheckResSubmitShipping")
+
+        sendText("Error submitting shipping", "red")
+        main2()
     }
 }
 
@@ -429,31 +451,43 @@ async function SubmitPayment() {
 }
 
 async function checkResSubmitPayment(response) {
-    let status = response.status
-    let res = await response.text()
-    res = JSON.parse(res)
-    let error = res["error"]
 
-    if (status == 200 || status == 201) {
-        if (error == false) {
-            sendText("Submit payment", "green")
-            PlaceOrder()
-        }
-        else {
-            resInfoWebook(res, "checkResSubmitPayment_1")
-            sendText("Error submitting payment, open solver", "red")
-            addButton()
-            await sleep(7000)
-            if (count_checkResSubmitPayment == 0) {
-                count_checkResSubmitPayment++
-                SubmitPayment()
-            } else {
-                main2()
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+        let error = res["error"]
+
+        if (status == 200 || status == 201) {
+            if (error == false) {
+                sendText("Submit payment", "green")
+                PlaceOrder()
             }
+            else {
+                resInfoWebook(x, "checkResSubmitPayment_1")
+                sendText("Error submitting payment, open solver", "red")
+                addButton()
+                await sleep(7000)
+                if (count_checkResSubmitPayment == 0) {
+                    count_checkResSubmitPayment++
+                    SubmitPayment()
+                } else {
+                    main2()
+                }
+            }
+
+        } else {
+            resInfoWebook(x, "checkResSubmitPayment_2")
+            sendText("Error submitting payment", "red")
+            main2()
         }
 
-    } else {
-        resInfoWebook(res, "checkResSubmitPayment_2")
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhook(errorMessage, "trycheckResSubmitPayment")
+
         sendText("Error submitting payment", "red")
         main2()
     }
@@ -488,47 +522,58 @@ async function PlaceOrder() {
 
 async function checkResPlaceOrder(response) {
 
-    let status = response.status
-    let res = await response.text()
-    res = JSON.parse(res)
-    let error = res["error"]
-    var linkpp = res["continueUrl"]
-    let errorMessage = res['errorMessage']
+    try {
 
-    if (status == 200 || status == 201) {
-        if (error == false) {
-            if (linkpp != null) {
-                ck_time = (performance.now() - ck_start) / 1000
-                sendText("Checked out", "green")
-                window.open(linkpp)
-                sendWebhooks(linkpp)
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+        let error = res["error"]
+        var linkpp = res["continueUrl"]
+        let errorMessage = res['errorMessage']
+
+        if (status == 200 || status == 201) {
+            if (error == false) {
+                if (linkpp != null) {
+                    ck_time = (performance.now() - ck_start) / 1000
+                    sendText("Checked out", "green")
+                    window.open(linkpp)
+                    sendWebhooks(linkpp)
+                }
+                else {
+                    resInfoWebook(x, "checkResPlaceOrder_1")
+                    if (errorMessage == "undefined" || errorMessage == undefined) {
+                        main2()
+                    }
+                    else {
+                        sendText(errorMessage, "red")
+                        errorWebhook(errorMessage, "checkResPlaceOrder1")
+                        main2()
+                    }
+                }
             }
             else {
-                resInfoWebook(res, "checkResPlaceOrder_1")
+                resInfoWebook(x, "checkResPlaceOrder_2")
                 if (errorMessage == "undefined" || errorMessage == undefined) {
                     main2()
                 }
                 else {
                     sendText(errorMessage, "red")
-                    errorWebhook(errorMessage, "checkResPlaceOrder1")
+                    errorWebhook(errorMessage, "checkResPlaceOrder2")
                     main2()
                 }
             }
+
         }
         else {
-            resInfoWebook(res, "checkResPlaceOrder_2")
-            if (errorMessage == "undefined" || errorMessage == undefined) {
-                main2()
-            }
-            else {
-                sendText(errorMessage, "red")
-                errorWebhook(errorMessage, "checkResPlaceOrder2")
-                main2()
-            }
+            sendText("Error placing order", "red")
+            main2()
         }
 
-    }
-    else {
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhook(errorMessage, "trycheckResPlaceOrder")
+
         sendText("Error placing order", "red")
         main2()
     }
@@ -561,6 +606,11 @@ async function errorWebhook(msg_error, position) {
             {
                 name: 'Position',
                 value: position,
+                inline: true
+            },
+            {
+                name: 'Discord',
+                value: discord_name,
                 inline: true
             }
         ],

@@ -1,6 +1,6 @@
 debugger
 
-var email = ""; var pw = ""; var status_aco = ""; var status_login = ""
+var email = ""; var pw = ""; var status_aco = ""; var status_login = ""; let discord_namee = ""; let versions = ""
 var link = document.location.href
 var country = link.split('/')[3]
 var url_errors = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
@@ -69,7 +69,7 @@ async function login() {
             data_id = span.getAttribute('data-id')
             data_value = span.getAttribute('data-value')
         }
-    } catch (error) { errorWebhook(error, "login")}
+    } catch (error) { errorWebhook(error, "login") }
 
     await fetch("https://www.solebox.com/" + country + "/authentication?rurl=1&format=ajax", {
         "headers": {
@@ -142,10 +142,15 @@ async function errorWebhook(msg_error, position) {
                 name: 'Position',
                 value: position,
                 inline: true
+            },
+            {
+                name: 'Discord',
+                value: discord_namee,
+                inline: true
             }
         ],
         footer: {
-            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            text: 'Cava-Scripts ' + versions + ' | ' + String(time),
             icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
         },
     }
@@ -158,6 +163,14 @@ async function errorWebhook(msg_error, position) {
     request.send(JSON.stringify(params));
 
 }
+
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+    discord_namee = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
+    version = response.farewell
+});
 
 chrome.runtime.sendMessage({ greeting: "email_pw_solebox" }, function (response) {
     var x = response.farewell
