@@ -1,22 +1,53 @@
 debugger
 
-var url_personal = ""; var version = ""; let discord_name = ""
-var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9"
-var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh"
-var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
+var url_personal = "";
+var version = "";
+let discord_name = "";
+var url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
+var url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
+var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA";
 
-let img_product = ""; let price_product = ""; let name_product = ""; let size_product = "";
-let ck_time = 0; let ck_start = 0
-let count_checkResAtc = 0; let count_checkResShippingRates = 0; let count_checkResSubmitShipping = 0; let count_checkResSubmitPayment = 0
+let img_product = "";
+let price_product = "";
+let name_product = "";
+let size_product = "";
+let ck_time = 0;
+let ck_start = 0;
+let count_checkResAtc = 0;
+let count_checkResShippingRates = 0;
+let count_checkResSubmitShipping = 0;
+let count_checkResSubmitPayment = 0
 
-var link = document.location.href
-var country = link.split('/')[3]
-var html = document.createElement('html')
-var address_id = ""; var address_type = ""; var snipes_store = ""; var post_office_number = ""; var pack_station_number = ""; var post_number = ""; var country_code = "";
-var suite = ""; var street = ""; var city = ""; var address1 = ""; var address2 = ""; var last_name = ""; var first_name = ""; var title = "";
-var originalShipmentUUID = ""; var shipmentUUID = ""; var address_selector = ""; var email = ""; var phone = ""; var postal_code = ""; let shippingMethodID = ""
+var link = document.location.href;
+var country = link.split('/')[3];
+var html = document.createElement('html');
+var address_id = "";
+var address_type = "";
+var snipes_store = "";
+var post_office_number = "";
+var pack_station_number = "";
+var post_number = "";
+var country_code = "";
+var suite = "";
+var street = "";
+var city = "";
+var address1 = "";
+var address2 = "";
+var last_name = "";
+var first_name = "";
+var title = "";
+var originalShipmentUUID = "";
+var shipmentUUID = "";
+var address_selector = "";
+var email = "";
+var phone = "";
+var postal_code = "";
+let shippingMethodID = ""
 var csrf_token = "";
-var pidsize = ""; var pid = ""; var size = ""; var cart = false
+var pidsize = "";
+var pid = "";
+var size = "";
+var cart = false
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -30,8 +61,7 @@ function getRandomIntInclusive(min, max) {
 }
 
 async function sendText(text, color) {
-    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" }
-    catch (error) { }
+    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function addButton() {
@@ -42,12 +72,12 @@ async function addButton() {
             btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ');
 
             let btn_solver = document.getElementById('btn_solver')
-            btn_solver.addEventListener("click", function () {
+            btn_solver.addEventListener("click", function() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 window.open('https://www.solebox.com/' + country + '/cart', 'test', params)
             });
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 
 async function main() {
@@ -65,8 +95,7 @@ async function main() {
             pidsize = pidd.substring(0, 16)
             atcRfast()
         }
-    }
-    catch (error) {
+    } catch (error) {
         if (error != "TypeError: Cannot read property 'value' of undefined")
             errorWebhook(error, "main")
     }
@@ -79,8 +108,7 @@ async function atc() {
         if (btn_1 != undefined && btn_1.getAttribute('data-pid').length > 8) {
             pidsize = btn_1.getAttribute('data-pid')
             atcRfast()
-        }
-        else {
+        } else {
             var sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
             var n = getRandomIntInclusive(0, sizes.length - 1)
             sizes[n].click()
@@ -93,12 +121,10 @@ async function atc() {
             size = j['selectedValueId']
             atcR()
         }
-    }
-    catch (error) {
+    } catch (error) {
         if (error == "TypeError: Cannot read property 'click' of undefined" || error == "TypeError: Cannot read property 'getAttribute' of undefined" || error == "SyntaxError: Unexpected end of JSON input") {
             sendText("Item out of stock", "red")
-        }
-        else {
+        } else {
             errorWebhook(error, "atc")
         }
     }
@@ -108,50 +134,48 @@ async function atcR() {
 
     sendText("Trying atc...", "blue")
     await fetch("https://www.solebox.com/" + country + "/add-product?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "pid=" + pid + "&options=%5B%7B%22optionId%22%3A%22212%22%2C%22selectedValueId%22%3A%22" + size + "%22%7D%5D&quantity=1",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "pid=" + pid + "&options=%5B%7B%22optionId%22%3A%22212%22%2C%22selectedValueId%22%3A%22" + size + "%22%7D%5D&quantity=1",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResAtc(response, 'atcR') })
-        .catch((error) => { errorWebhook(error, "atcR fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "atcR fetch") });;
 }
 
 async function atcRfast() {
 
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.solebox.com/" + country + "/add-product?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "pid=" + pidsize + "&options=&quantity=1",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "pid=" + pidsize + "&options=&quantity=1",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResAtc(response, 'atcRfast') })
-        .catch((error) => { errorWebhook(error, "atcRfast fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "atcRfast fetch") });;
 }
 
 async function checkResAtc(response, atc) {
@@ -170,12 +194,10 @@ async function checkResAtc(response, atc) {
             if (error == false) {
                 sendText("Carted", "green")
                 main2()
-            }
-            else {
+            } else {
                 if (message == "The selected item is not available any more." || message == "Der gewünschte Artikel ist leider nicht mehr verfügbar.") {
                     sendText("Item out of stock", "red")
-                }
-                else {
+                } else {
                     sendText("Error carting, open solver", "red")
                     addButton()
                     await sleep(7000)
@@ -195,17 +217,15 @@ async function checkResAtc(response, atc) {
         } else {
             if (errorMessage == "Too many requests") {
                 sendText("Too many requests", "red")
-            }
-            else if (errorMessage != "undefined" && errorMessage != undefined) {
+            } else if (errorMessage != "undefined" && errorMessage != undefined) {
                 sendText(errorMessage, "red")
                 errorWebhook(errorMessage, "checkRes")
-            }
-            else { sendText("Error carting", "red") }
+            } else { sendText("Error carting", "red") }
         }
 
     } catch (error) {
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhook(errorMessage, "trycheckRes")
+            errorWebhook(error, "trycheckRes")
 
         sendText("Error carting", "red")
     }
@@ -214,42 +234,40 @@ async function checkResAtc(response, atc) {
 async function main2() {
     try {
         await getCheckout()
-        await ress.then(function (result) {
+        await ress.then(function(result) {
             html.innerHTML = result
         })
         if (cart == false) {
             gettingShipping()
-        }
-        else { sendText("Item out of stock/ Item not available", "red") }
+        } else { sendText("Item out of stock/ Item not available", "red") }
     } catch (error) { errorWebhook(error, "main2 all") }
 }
 
 async function getCheckout() {
 
     await fetch("https://www.solebox.com/" + country + "/checkout", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/cart",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => {
             ress = response.text()
             if (response.url == "https://www.solebox.com/" + country + "/cart")
                 cart = true
         })
-        .catch((error) => { errorWebhook(error, "getCheckout fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "getCheckout fetch") });;
 }
 
 async function gettingShipping() {
@@ -290,8 +308,7 @@ async function gettingShipping() {
             price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
             name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
             size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
-        }
-        catch (error) {
+        } catch (error) {
             errorWebhook(error, "getting product")
             sendText("Error getting product info", "red")
         }
@@ -311,25 +328,24 @@ async function ShippingRates() {
 
     sendText("Getting shipping rates...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-ShippingRates?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "selected=true&id=" + address_id + "&addressType=" + address_type + "&snipesStore=" + snipes_store + "&postOfficeNumber=" + post_office_number + "&packstationNumber=" + pack_station_number + "&postNumber=" + post_number + "&postalCode=" + postal_code + "&countryCode=" + country_code + "&suite=" + suite + "&street=" + street + "&city=" + city + "&address2=" + address2 + "&lastName=" + last_name + "&firstName=" + first_name + "&title=" + title + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "selected=true&id=" + address_id + "&addressType=" + address_type + "&snipesStore=" + snipes_store + "&postOfficeNumber=" + post_office_number + "&packstationNumber=" + pack_station_number + "&postNumber=" + post_number + "&postalCode=" + postal_code + "&countryCode=" + country_code + "&suite=" + suite + "&street=" + street + "&city=" + city + "&address2=" + address2 + "&lastName=" + last_name + "&firstName=" + first_name + "&title=" + title + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResShippingRates(response) })
-        .catch((error) => { errorWebhook(error, "ShippingRates fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "ShippingRates fetch") });;
 }
 
 async function checkResShippingRates(response) {
@@ -359,7 +375,7 @@ async function checkResShippingRates(response) {
 
     } catch (error) {
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhook(errorMessage, "trycheckResValidateShipping")
+            errorWebhook(error, "trycheckResValidateShipping")
 
         sendText("Error validating address", "red")
         main2()
@@ -370,25 +386,24 @@ async function SubmitShipping() {
 
     sendText("Submitting ship...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-SubmitShipping?region=europe&country=undefined&addressId=" + address_id + "&format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=&dwfrm_shipping_shippingAddress_addressFields_firstName=&dwfrm_shipping_shippingAddress_addressFields_lastName=&dwfrm_shipping_shippingAddress_addressFields_postalCode=&dwfrm_shipping_shippingAddress_addressFields_city=&dwfrm_shipping_shippingAddress_addressFields_street=&dwfrm_shipping_shippingAddress_addressFields_suite=&dwfrm_shipping_shippingAddress_addressFields_address1=&dwfrm_shipping_shippingAddress_addressFields_address2=&dwfrm_shipping_shippingAddress_addressFields_phone=&dwfrm_shipping_shippingAddress_addressFields_countryCode=DE&serviceShippingMethod=ups-standard&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "%2C+137&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=" + phone + "&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=&dwfrm_shipping_shippingAddress_addressFields_firstName=&dwfrm_shipping_shippingAddress_addressFields_lastName=&dwfrm_shipping_shippingAddress_addressFields_postalCode=&dwfrm_shipping_shippingAddress_addressFields_city=&dwfrm_shipping_shippingAddress_addressFields_street=&dwfrm_shipping_shippingAddress_addressFields_suite=&dwfrm_shipping_shippingAddress_addressFields_address1=&dwfrm_shipping_shippingAddress_addressFields_address2=&dwfrm_shipping_shippingAddress_addressFields_phone=&dwfrm_shipping_shippingAddress_addressFields_countryCode=DE&serviceShippingMethod=ups-standard&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "%2C+137&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=" + phone + "&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResSubmitShipping(response) })
-        .catch((error) => { errorWebhook(error, "SubmitShipping fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "SubmitShipping fetch") });;
 }
 
 async function checkResSubmitShipping(response) {
@@ -418,7 +433,7 @@ async function checkResSubmitShipping(response) {
 
     } catch (error) {
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhook(errorMessage, "trycheckResSubmitShipping")
+            errorWebhook(error, "trycheckResSubmitShipping")
 
         sendText("Error submitting shipping", "red")
         main2()
@@ -429,25 +444,24 @@ async function SubmitPayment() {
 
     sendText("submittimg payment...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-SubmitPayment?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/de_DE/checkout?stage=payment",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "dwfrm_billing_paymentMethod=Paypal&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/de_DE/checkout?stage=payment",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "dwfrm_billing_paymentMethod=Paypal&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResSubmitPayment(response) })
-        .catch((error) => { errorWebhook(error, "SubmitPayment fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "SubmitPayment fetch") });;
 }
 
 async function checkResSubmitPayment(response) {
@@ -464,8 +478,7 @@ async function checkResSubmitPayment(response) {
             if (error == false) {
                 sendText("Submit payment", "green")
                 PlaceOrder()
-            }
-            else {
+            } else {
                 resInfoWebook(x, "checkResSubmitPayment_1")
                 sendText("Error submitting payment, open solver", "red")
                 addButton()
@@ -486,7 +499,7 @@ async function checkResSubmitPayment(response) {
 
     } catch (error) {
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhook(errorMessage, "trycheckResSubmitPayment")
+            errorWebhook(error, "trycheckResSubmitPayment")
 
         sendText("Error submitting payment", "red")
         main2()
@@ -497,27 +510,26 @@ async function PlaceOrder() {
 
     sendText("placing order...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-PlaceOrder?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-ch-ua": "\"Google Chrome\";v=\"87\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"87\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=placeOrder",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"87\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"87\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=placeOrder",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResPlaceOrder(response) })
-        .catch((error) => { errorWebhook(error, "PlaceOrder fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "PlaceOrder fetch") });;
 }
 
 async function checkResPlaceOrder(response) {
@@ -539,40 +551,35 @@ async function checkResPlaceOrder(response) {
                     sendText("Checked out", "green")
                     window.open(linkpp)
                     sendWebhooks(linkpp)
-                }
-                else {
+                } else {
                     resInfoWebook(x, "checkResPlaceOrder_1")
                     if (errorMessage == "undefined" || errorMessage == undefined) {
                         main2()
-                    }
-                    else {
+                    } else {
                         sendText(errorMessage, "red")
                         errorWebhook(errorMessage, "checkResPlaceOrder1")
                         main2()
                     }
                 }
-            }
-            else {
+            } else {
                 resInfoWebook(x, "checkResPlaceOrder_2")
                 if (errorMessage == "undefined" || errorMessage == undefined) {
                     main2()
-                }
-                else {
+                } else {
                     sendText(errorMessage, "red")
                     errorWebhook(errorMessage, "checkResPlaceOrder2")
                     main2()
                 }
             }
 
-        }
-        else {
+        } else {
             sendText("Error placing order", "red")
             main2()
         }
 
     } catch (error) {
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhook(errorMessage, "trycheckResPlaceOrder")
+            errorWebhook(error, "trycheckResPlaceOrder")
 
         sendText("Error placing order", "red")
         main2()
@@ -597,8 +604,7 @@ async function errorWebhook(msg_error, position) {
     var myEmbed = {
         title: "Solebox ATC Error",
         color: ("16744192"),
-        fields: [
-            {
+        fields: [{
                 name: 'Message',
                 value: '```' + msg_error + '```',
                 inline: true
@@ -639,8 +645,7 @@ async function resInfoWebook(msg, position) {
     var myEmbed = {
         title: "Solebox ATC Info",
         color: ("0"),
-        fields: [
-            {
+        fields: [{
                 name: 'Message',
                 value: '```' + msg + '```',
                 inline: true
@@ -677,15 +682,14 @@ async function sendWebhook_public() {
         title: ":fire: Pokemon catturato! :fire:",
         thumbnail: { url: img_product },
         color: ("65280"),
-        fields: [
-            {
+        fields: [{
                 name: 'Site',
                 value: 'Solebox',
                 inline: true
             },
             {
                 name: 'Item',
-                value: name_product,
+                value: '[' + name_product + '](' + link + ')',
                 inline: true
             },
             {
@@ -730,15 +734,14 @@ async function sendWebhook_private() {
         title: ":fire: Pokemon catturato! :fire:",
         thumbnail: { url: img_product },
         color: ("65280"),
-        fields: [
-            {
+        fields: [{
                 name: 'Site',
                 value: 'Solebox',
                 inline: true
             },
             {
                 name: 'Item',
-                value: name_product,
+                value: '[' + name_product + '](' + link + ')',
                 inline: true
             },
             {
@@ -788,15 +791,14 @@ async function sendWebhook_personal(linkpp) {
         title: ":fire: Pokemon catturato! :fire:",
         color: ("65280"),
         thumbnail: { url: img_product },
-        fields: [
-            {
+        fields: [{
                 name: 'Site',
                 value: 'Solebox',
                 inline: true
             },
             {
                 name: 'Item',
-                value: name_product,
+                value: '[' + name_product + '](' + link + ')',
                 inline: true
             },
             {
@@ -835,21 +837,21 @@ async function sendWebhook_personal(linkpp) {
 
 }
 
-chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "version" }, function(response) {
     version = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "webhook" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "webhook" }, function(response) {
     url_personal = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function(response) {
     discord_name = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "solebox" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "solebox" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             }

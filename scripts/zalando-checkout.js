@@ -1,6 +1,10 @@
 debugger
 
-var xsrf; var res = ''; var version = ""; let ckmode = ""; let discord_name = ""
+var xsrf;
+var res = '';
+var version = "";
+let ckmode = "";
+let discord_name = ""
 let link = document.location.href
 let country = link.split('/')[2]
 var url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA"
@@ -19,8 +23,7 @@ async function errorWebhook(res, position) {
     var myEmbed = {
         title: "Zalando CK Error",
         color: ("16744192"),
-        fields: [
-            {
+        fields: [{
                 name: 'Message',
                 value: "```" + res + "```",
                 inline: true
@@ -54,11 +57,9 @@ async function errorWebhook(res, position) {
 async function main() {
     if (ckmode == "Fast") {
         checkoutConfirm()
-    }
-    else if (ckmode == "Browser") {
+    } else if (ckmode == "Browser") {
         checkoutClick()
-    }
-    else if (ckmode == "Manual") {
+    } else if (ckmode == "Manual") {
 
     }
 }
@@ -66,8 +67,6 @@ async function main() {
 async function checkoutClick() {
 
     try {
-
-        await sleep(parseInt(delay))
         let btn = document.getElementsByClassName("z-1-button__content")
         if (btn.length != 0) {
             for (let i = 0; i < 5; i++) {
@@ -77,8 +76,7 @@ async function checkoutClick() {
             if (link == "https://" + country + "/checkout/confirm") {
                 location.reload()
             }
-        }
-        else {
+        } else {
             await sleep(500)
             location.reload()
         }
@@ -90,7 +88,8 @@ async function checkoutConfirm() {
 
     try {
 
-        var checkoutid = ''; var etag = '';
+        var checkoutid = '';
+        var etag = '';
 
         var page = document.querySelectorAll('[data-props]')[0].getAttribute('data-props')
         page = page.substring(0, page.length)
@@ -117,28 +116,27 @@ async function checkoutBuyNow(etag, checkoutid) {
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
 
     await fetch("https://" + country + "/api/checkout/buy-now", {
-        "headers": {
-            "accept": "application/json",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-xsrf-token": xsrf,
-            "x-zalando-checkout-app": "web",
-            "x-zalando-footer-mode": "desktop",
-            "x-zalando-header-mode": "desktop"
-        },
-        "referrer": "https://" + country + "/checkout/confirm",
-        "referrerPolicy": "no-referrer-when-downgrade",
-        "body": '{\"checkoutId\":  \"' + checkoutid + '\",\"eTag\":' + etag + '}',
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-xsrf-token": xsrf,
+                "x-zalando-checkout-app": "web",
+                "x-zalando-footer-mode": "desktop",
+                "x-zalando-header-mode": "desktop"
+            },
+            "referrer": "https://" + country + "/checkout/confirm",
+            "referrerPolicy": "no-referrer-when-downgrade",
+            "body": '{\"checkoutId\":  \"' + checkoutid + '\",\"eTag\":' + etag + '}',
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkRescheckoutBuyNow(response) })
-        .catch((error) => { errorWebhook(error, "checkoutBuyNow_fetch") });
-    ;
+        .catch((error) => { errorWebhook(error, "checkoutBuyNow_fetch") });;
 }
 
 async function checkRescheckoutBuyNow(response) {
@@ -157,25 +155,19 @@ async function checkRescheckoutBuyNow(response) {
 
             if (url == "/checkout/success") {
                 document.location = 'https://' + country + '/checkout/success'
-            }
-            else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error") {
+            } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error") {
                 location.reload()
-            }
-            else if (url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
+            } else if (url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
                 location.reload()
-            }
-            else if (url.startsWith("https://checkout.payment.zalando.com/3ds")) {
+            } else if (url.startsWith("https://checkout.payment.zalando.com/3ds")) {
                 document.location = url
-            }
-            else if (url.startsWith("https://www.paypal.com/checkoutnow?")) {
+            } else if (url.startsWith("https://www.paypal.com/checkoutnow?")) {
                 document.location = url
-            }
-            else {
+            } else {
                 errorWebhook(x, "checkRescheckoutBuyNow_1")
                 location.reload()
             }
-        }
-        else {
+        } else {
             errorWebhook(x, "checkRescheckoutBuyNow_2")
             await sleep(500)
             location.reload()
@@ -188,25 +180,24 @@ async function checkRescheckoutBuyNow(response) {
     }
 }
 
-chrome.runtime.sendMessage({ greeting: "discord_name" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "discord_name" }, function(response) {
     discord_name = response.farewell;
 });
 
-chrome.runtime.sendMessage({ greeting: "checkoutmodezalando" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "checkoutmodezalando" }, function(response) {
     ckmode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "version" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "version" }, function(response) {
     version = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "zalando" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "zalando" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }
         });
     }
 });
-

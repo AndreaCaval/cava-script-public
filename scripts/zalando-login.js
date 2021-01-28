@@ -40,7 +40,7 @@ async function loginR() {
 async function checkResLogin(response) {
   await sleep(10000)
   try { window.close() }
-  catch (error) { }
+  catch (error) { windows.location = "https://www.zalando.it/cart/" }
 }
 
 chrome.runtime.sendMessage({ greeting: "email_pw_zalando" }, function (response) {

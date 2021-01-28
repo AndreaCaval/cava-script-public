@@ -3,7 +3,7 @@ debugger
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
-const version = '1.0.0'
+const version = '1.0.2'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const SERVER_ID = "726167965182984253"
 const DISCORD_URI_ENDPOINT = 'https://discord.com/api/oauth2/authorize';
@@ -45,25 +45,25 @@ async function sgamatoWebhook() {
         title: "SCAM",
         color: ("16744192"),
         fields: [{
-            name: 'Email',
-            value: localStorage.getItem("discord_email"),
-            inline: true
-        },
-        {
-            name: 'Discord id',
-            value: localStorage.getItem("discord_id"),
-            inline: true
-        },
-        {
-            name: 'Discord tag',
-            value: localStorage.getItem("discord_tag"),
-            inline: true
-        },
-        {
-            name: 'Ip',
-            value: await getNetworkIP(),
-            inline: true
-        }
+                name: 'Email',
+                value: localStorage.getItem("discord_email"),
+                inline: true
+            },
+            {
+                name: 'Discord id',
+                value: localStorage.getItem("discord_id"),
+                inline: true
+            },
+            {
+                name: 'Discord tag',
+                value: localStorage.getItem("discord_tag"),
+                inline: true
+            },
+            {
+                name: 'Ip',
+                value: await getNetworkIP(),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -97,7 +97,7 @@ function checkData() {
             try {
                 let data_now = new Date
                 data = data.replace(CRYPTO_KEY_INT_1, "/")
-                //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
+                    //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
                 data = data.replace(CRYPTO_KEY_INT_3, "/")
                 data = data.split("/")
                 let day = parseInt(data[0]) / parseInt(CRYPTO_KEY_INT_2)
@@ -120,8 +120,7 @@ function checkData() {
         } else {
             scamError()
         }
-    }
-    else if (auth == "on" && data == "off") {
+    } else if (auth == "on" && data == "off") {
         scamError()
     }
 }
@@ -189,30 +188,30 @@ function loginWebhook(color, ip) {
         title: "Login",
         color: color,
         fields: [{
-            name: 'Email',
-            value: localStorage.getItem("discord_email"),
-            inline: true
-        },
-        {
-            name: 'Discord id',
-            value: localStorage.getItem("discord_id"),
-            inline: true
-        },
-        {
-            name: 'Discord tag',
-            value: localStorage.getItem("discord_tag"),
-            inline: true
-        },
-        {
-            name: 'Ip',
-            value: ip,
-            inline: true
-        },
-        {
-            name: 'Key',
-            value: localStorage.getItem("key"),
-            inline: true
-        }
+                name: 'Email',
+                value: localStorage.getItem("discord_email"),
+                inline: true
+            },
+            {
+                name: 'Discord id',
+                value: localStorage.getItem("discord_id"),
+                inline: true
+            },
+            {
+                name: 'Discord tag',
+                value: localStorage.getItem("discord_tag"),
+                inline: true
+            },
+            {
+                name: 'Ip',
+                value: ip,
+                inline: true
+            },
+            {
+                name: 'Key',
+                value: localStorage.getItem("key"),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -315,7 +314,7 @@ function SetStatus_off() {
     }
     if (localStorage.getItem("email_pw_solebox") == null) {
         localStorage.setItem("email_pw_solebox", "off");
-    }   
+    }
 
     //Kickz-ACO
     if (localStorage.getItem("status_aco_kickz") == null) {
@@ -343,7 +342,7 @@ SetStatus_off();
 checkData()
 
 chrome.runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
+    function(request, sender, sendResponse) {
         //auth-----------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "authLog") sendResponse({ farewell: localStorage.getItem("auth") });
         if (request.greeting == "authData") sendResponse({ farewell: localStorage.getItem("auth_data") });
@@ -383,7 +382,7 @@ chrome.runtime.onMessage.addListener(
             chrome.identity.launchWebAuthFlow({
                 url: create_auth_endpoint(),
                 interactive: true
-            }, async function (redirect_uri) {
+            }, async function(redirect_uri) {
                 if (chrome.runtime.lastError || redirect_uri.includes('access_denied')) {
                     console.log("Could not authenticate.");
                     sendResponse({ farewell: 'fail' });

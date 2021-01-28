@@ -1,7 +1,7 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.1'
-const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" 
+const version = 'Cava-Scripts 1.0.2'
+const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
@@ -43,25 +43,25 @@ async function sgamatoWebhook() {
         title: "SCAM",
         color: ("16744192"),
         fields: [{
-            name: 'Email',
-            value: localStorage.getItem("discord_email"),
-            inline: true
-        },
-        {
-            name: 'Discord id',
-            value: localStorage.getItem("discord_id"),
-            inline: true
-        },
-        {
-            name: 'Discord tag',
-            value: localStorage.getItem("discord_tag"),
-            inline: true
-        },
-        {
-            name: 'Ip',
-            value: await getNetworkIP(),
-            inline: true
-        }
+                name: 'Email',
+                value: localStorage.getItem("discord_email"),
+                inline: true
+            },
+            {
+                name: 'Discord id',
+                value: localStorage.getItem("discord_id"),
+                inline: true
+            },
+            {
+                name: 'Discord tag',
+                value: localStorage.getItem("discord_tag"),
+                inline: true
+            },
+            {
+                name: 'Ip',
+                value: await getNetworkIP(),
+                inline: true
+            }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -115,7 +115,7 @@ function checkData() {
             try {
                 let data_now = new Date
                 data = data.replace(CRYPTO_KEY_INT_1, "/")
-                //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
+                    //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
                 data = data.replace(CRYPTO_KEY_INT_3, "/")
                 data = data.split("/")
                 let day = parseInt(data[0]) / parseInt(CRYPTO_KEY_INT_2)
@@ -138,13 +138,12 @@ function checkData() {
         } else {
             scamError()
         }
-    }
-    else if (auth == "on" && data == "off") {
+    } else if (auth == "on" && data == "off") {
         scamError()
     }
 }
 
-$(function () {
+$(function() {
 
     if (localStorage.getItem("auth") == "off") {
         open('popup-login.html', "_self")
@@ -169,27 +168,33 @@ $(function () {
         if (localStorage.getItem("status_aco_sns") == "on") { $('#Status_aco_sns').prop('checked', true); }
         //Naked
         if (localStorage.getItem("status_aco_naked") == "on") { $('#Status_aco_naked').prop('checked', true); }
+        //Kickz
+        if (localStorage.getItem("status_aco_kickz") == "on") { $('#Status_aco_kickz').prop('checked', true); }
 
         //gestisco i click delle checkbox
         //Zalando
-        $('#Status_aco_zalando').click(function () {
+        $('#Status_aco_zalando').click(function() {
             if ($("#Status_aco_zalando").is(':checked')) { localStorage.setItem("status_aco_zalando", "on"); } else { localStorage.setItem("status_aco_zalando", "off"); }
         });
         //Solebox
-        $('#Status_aco_solebox').click(function () {
+        $('#Status_aco_solebox').click(function() {
             if ($("#Status_aco_solebox").is(':checked')) { localStorage.setItem("status_aco_solebox", "on"); } else { localStorage.setItem("status_aco_solebox", "off"); }
         });
         //Snipes
-        $('#Status_aco_snipes').click(function () {
+        $('#Status_aco_snipes').click(function() {
             if ($("#Status_aco_snipes").is(':checked')) { localStorage.setItem("status_aco_snipes", "on"); } else { localStorage.setItem("status_aco_snipes", "off"); }
         });
         //Sns
-        $('#Status_aco_sns').click(function () {
+        $('#Status_aco_sns').click(function() {
             if ($("#Status_aco_sns").is(':checked')) { localStorage.setItem("status_aco_sns", "on"); } else { localStorage.setItem("status_aco_sns", "off"); }
         });
         //Naked
-        $('#Status_aco_naked').click(function () {
+        $('#Status_aco_naked').click(function() {
             if ($("#Status_aco_naked").is(':checked')) { localStorage.setItem("status_aco_naked", "on"); } else { localStorage.setItem("status_aco_naked", "off"); }
+        });
+        //Kickz
+        $('#Status_aco_kickz').click(function() {
+            if ($("#Status_aco_kickz").is(':checked')) { localStorage.setItem("status_aco_kickz", "on"); } else { localStorage.setItem("status_aco_kickz", "off"); }
         });
 
         //---------------------------------------------------------------------
@@ -201,15 +206,21 @@ $(function () {
         if (localStorage.getItem("status_login_solebox") == "on") { $('#Status_login_solebox').prop('checked', true); }
         //Snipes
         if (localStorage.getItem("status_login_snipes") == "on") { $('#Status_login_snipes').prop('checked', true); }
+        //Kickz
+        if (localStorage.getItem("status_login_kickz") == "on") { $('#Status_login_kickz').prop('checked', true); }
 
         //gestisco i click delle checkbox
         //Solebox
-        $('#Status_login_solebox').click(function () {
+        $('#Status_login_solebox').click(function() {
             if ($("#Status_login_solebox").is(':checked')) { localStorage.setItem("status_login_solebox", "on"); } else { localStorage.setItem("status_login_solebox", "off"); }
         });
         //Snipes
-        $('#Status_login_snipes').click(function () {
+        $('#Status_login_snipes').click(function() {
             if ($("#Status_login_snipes").is(':checked')) { localStorage.setItem("status_login_snipes", "on"); } else { localStorage.setItem("status_login_snipes", "off"); }
+        });
+        //Kickz
+        $('#Status_login_kickz').click(function() {
+            if ($("#Status_login_kickz").is(':checked')) { localStorage.setItem("status_login_kickz", "on"); } else { localStorage.setItem("status_login_kickz", "off"); }
         });
 
         //---------------------------------------------------------------------
@@ -220,21 +231,21 @@ $(function () {
         $("#nDelay").val(localStorage.getItem("delay"));
 
         //gestisco il click del bottone salva
-        $("#btnSetting").click(function () {
+        $("#btnSetting").click(function() {
             var id = $("#idWebhook").val();
             var d = $("#nDelay").val();
             if (id != '') { localStorage.setItem("id_webhook", id); } else { localStorage.setItem("id_webhook", "off"); }
             if (d != '') { localStorage.setItem("delay", d); } else { localStorage.setItem("delay", "0"); }
         });
-        
+
         //Autoclick
         if (localStorage.getItem("autoclick") == "on") { $('#Autoclick').prop('checked', true); }
-        $('#Autoclick').click(function () {
+        $('#Autoclick').click(function() {
             if ($("#Autoclick").is(':checked')) { localStorage.setItem("autoclick", "on"); } else { localStorage.setItem("autoclick", "off"); }
         });
 
         //gestisco il bottone test webhook
-        $("#btnWebhook").click(function () {
+        $("#btnWebhook").click(function() {
             testWebhook()
         });
 
@@ -254,7 +265,7 @@ $(function () {
         if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#zalandoCheckoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
         $("#zalandoDelayCart").val(localStorage.getItem("zalando_delay_cart"));
         //gestisco il click del bottone salva
-        $("#btnZ").click(function () {
+        $("#btnZ").click(function() {
             var e = $("#email_zalando").val();
             var p = $("#pw_zalando").val();
             var cart = $("#zalandoCartMode").val();
@@ -277,7 +288,7 @@ $(function () {
             $("#pw_solebox").val(pw);
         }
         //gestisco il click del bottone salva
-        $("#btn_save_solebox").click(function () {
+        $("#btn_save_solebox").click(function() {
             var e = $("#email_solebox").val();
             var p = $("#pw_solebox").val();
 
@@ -295,7 +306,7 @@ $(function () {
         }
         if (localStorage.getItem("country_snipes") != "off") { $("#country_snipes").val(localStorage.getItem("country_snipes")); }
         //gestisco il click del bottone salva
-        $("#btn_save_snipes").click(function () {
+        $("#btn_save_snipes").click(function() {
             var e = $("#email_snipes").val();
             var p = $("#pw_snipes").val();
             var c = $("#country_snipes").val();
@@ -314,7 +325,7 @@ $(function () {
             $("#pw_kickz").val(pw);
         }
         //gestisco il click del bottone salva
-        $("#btn_save_kickz").click(function () {
+        $("#btn_save_kickz").click(function() {
             var e = $("#email_kickz").val();
             var p = $("#pw_kickz").val();
 
