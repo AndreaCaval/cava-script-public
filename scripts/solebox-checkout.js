@@ -154,7 +154,7 @@ async function gettingShipping() {
             price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
             name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
             size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
-            link_product = document.querySelectorAll("[class=js-product-link]")[0].href
+            try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
         } catch (error) {
             errorWebhook(error, "getting product")
             sendText("Error getting product info", "red")

@@ -101,7 +101,7 @@ async function checkRes(response) {
 
         sizes[n].click()
         document.getElementsByClassName("product-form__btn btn")[0].click()
-        await sleep(5000)
+        await sleep(10000)
 
         if (document.getElementsByClassName("cart-items")[0] != undefined) {
             try {

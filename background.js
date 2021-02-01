@@ -3,7 +3,7 @@ debugger
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
-const version = '1.0.2'
+const version = '1.0.3'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const SERVER_ID = "726167965182984253"
 const DISCORD_URI_ENDPOINT = 'https://discord.com/api/oauth2/authorize';
@@ -131,19 +131,6 @@ function addDays(date, days) {
     return result;
 }
 
-function setCoupon() {
-    var coupon = localStorage.getItem("coupon_zalando")
-    if (coupon.length < 15) {
-        localStorage.setItem("coupon_zalando", "off");
-    } else {
-        var coupon_2 = ''
-        list_coupon = coupon.split(';')
-        for (var i = 1; i < list_coupon.length; i++) {
-            coupon_2 += list_coupon[i] + ';'
-        }
-    }
-}
-
 async function getNetworkIP() {
     let found = false;
     let resolve;
@@ -263,11 +250,8 @@ function SetStatus_off() {
     if (localStorage.getItem("email_pw_zalando") == null) {
         localStorage.setItem("email_pw_zalando", "off");
     }
-    if (localStorage.getItem("coupon_zalando") == null) {
-        localStorage.setItem("coupon_zalando", "off");
-    }
-    if (localStorage.getItem("sku_zalando") == null) {
-        localStorage.setItem("sku_zalando", "off");
+    if (localStorage.getItem("drop_mode_zalando") == null) {
+        localStorage.setItem("drop_mode_zalando", "off");
     }
     if (localStorage.getItem("cart_mode_zalando") == null) {
         localStorage.setItem("cart_mode_zalando", "Fast");
@@ -277,6 +261,9 @@ function SetStatus_off() {
     }
     if (localStorage.getItem("zalando_delay_cart") == null) {
         localStorage.setItem("zalando_delay_cart", "0");
+    }
+    if (localStorage.getItem("zalando_cart_limit") == null) {
+        localStorage.setItem("zalando_cart_limit", "1");
     }
 
     //Sns-----------------------------------------------------------------------------------------------------
@@ -376,7 +363,8 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "zalandodelaycart") sendResponse({ farewell: localStorage.getItem("zalando_delay_cart") });
         if (request.greeting == "cartmodezalando") sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
         if (request.greeting == "checkoutmodezalando") sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
-        if (request.greeting == "successZ") { setCoupon() };
+        if (request.greeting == "dropmodezalando") sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
+        if (request.greeting == "cartlimitzalando") sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
         //auth
         if (request.greeting == 'login') {
             chrome.identity.launchWebAuthFlow({

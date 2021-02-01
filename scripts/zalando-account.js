@@ -6,7 +6,7 @@ function sleep(ms) {
 
 async function _main() {
     try {
-        await sleep(5000)
+        await sleep(10000)
         window.close()
     } catch (error) {}
 }

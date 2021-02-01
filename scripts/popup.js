@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.2'
+const version = 'Cava-Scripts 1.0.3'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
@@ -264,6 +264,7 @@ $(function() {
         if (localStorage.getItem("cart_mode_zalando") != "off") { $("#zalandoCartMode").val(localStorage.getItem("cart_mode_zalando")); }
         if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#zalandoCheckoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
         $("#zalandoDelayCart").val(localStorage.getItem("zalando_delay_cart"));
+        $("#zalandoCartLimit").val(localStorage.getItem("zalando_cart_limit"));
         //gestisco il click del bottone salva
         $("#btnZ").click(function() {
             var e = $("#email_zalando").val();
@@ -271,11 +272,18 @@ $(function() {
             var cart = $("#zalandoCartMode").val();
             var ck = $("#zalandoCheckoutMode").val();
             var d2 = $("#zalandoDelayCart").val();
+            var cl = $("#zalandoCartLimit").val();
 
             if (e != '' && p != '') { localStorage.setItem("email_pw_zalando", e + ":" + p); } else { localStorage.setItem("email_pw_zalando", "off"); }
             if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "off"); }
             if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "off"); }
             if (d2 != '') { localStorage.setItem("zalando_delay_cart", d2); } else { localStorage.setItem("zalando_delay_cart", "0"); }
+            if (cl != '') { localStorage.setItem("zalando_cart_limit", cl); } else { localStorage.setItem("zalando_cart_limit", "1"); }
+        });
+        //DropMode
+        if (localStorage.getItem("drop_mode_zalando") == "on") { $('#zalandoDropMode').prop('checked', true); }
+        $('#zalandoDropMode').click(function() {
+            if ($("#zalandoDropMode").is(':checked')) { localStorage.setItem("drop_mode_zalando", "on"); } else { localStorage.setItem("drop_mode_zalando", "off"); }
         });
         //---------------------------------------------------------------------
 

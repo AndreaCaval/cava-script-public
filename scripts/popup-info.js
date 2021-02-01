@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.2'
+const version = 'Cava-Scripts 1.0.3'
 const webhook_url = "https://discordapp.com/api/webhooks/772900196392239165/AuG4n_g8DB6WC208TjHjpzoMrqDn4vhQ-nnkmG2unIV5ZSjGjlAHMGs2KmZKR1I-z9xM"
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
