@@ -13,6 +13,7 @@ var size = [];
 let size_in_stock = [];
 var countryy = document.location.href.split('/')[2];
 let frsx = "";
+let link = location.href
 
 
 function sleep(ms) {
@@ -90,6 +91,7 @@ async function main() {
 }
 
 async function dropMode() {
+    let c = 0
     try {
 
         if (countryy.split('.')[1] == 'zalando') {
@@ -112,38 +114,41 @@ async function dropMode() {
                         count_cart++
                         await atcRDrop(size_in_stock[n])
                     }
-
-                } else {
-
-                    while (true) {
-                        let html = document.createElement('html')
-                        await sleep(parseInt(delay))
-                        sendText("Monitoring...", "yellow")
-                        await getProduct()
-                        await res.then(function(result) {
-                            html.innerHTML = result
-                            var s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
-                            s = s.slice(8, -2)
-                            var obj = JSON.parse(s)
-                            var sizes = obj[0].model.articleInfo.units
-                            for (var i = 0; i < sizes.length; i++) {
-                                if (sizes[i]["available"] == true) {
-                                    size_in_stock.push(sizes[i].id)
-                                }
-                            }
-                        })
-
-                        if (size_in_stock.length != 0) {
-                            for (index = 0; index < cart_limit; index++) {
-                                n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                                count_cart++
-                                await atcRDrop(size_in_stock[n])
-                            }
-                            empty_cart = false
-                        }
-
-                    }
                 }
+
+
+                while (true) {
+                    c++
+                    setCount(c)
+                    size_in_stock = []
+                    let html = document.createElement('html')
+                    await sleep(parseInt(delay))
+                    sendText("Monitoring...", "yellow")
+                    await getProduct()
+                    await res.then(function(result) {
+                        html.innerHTML = result
+                        var s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
+                        s = s.slice(8, -2)
+                        var obj = JSON.parse(s)
+                        var sizes = obj[0].model.articleInfo.units
+                        for (var i = 0; i < sizes.length; i++) {
+                            if (sizes[i]["available"] == true) {
+                                size_in_stock.push(sizes[i].id)
+                            }
+                        }
+                    })
+
+                    if (size_in_stock.length != 0) {
+                        for (index = 0; index < cart_limit; index++) {
+                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                            count_cart++
+                            await atcRDrop(size_in_stock[n])
+                        }
+                        empty_cart = false
+                    }
+
+                }
+
 
             } catch (error) {
                 if (error != "TypeError: Cannot read property 'textContent' of null")
