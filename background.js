@@ -266,6 +266,11 @@ function SetStatus_off() {
         localStorage.setItem("zalando_cart_limit", "1");
     }
 
+    //Basket4ballers
+    if (localStorage.getItem("status_aco_basket4ballers") == null) {
+        localStorage.setItem("status_aco_basket4ballers", "off");
+    }
+
     //Sns-----------------------------------------------------------------------------------------------------
     if (localStorage.getItem("status_aco_sns") == null) {
         localStorage.setItem("status_aco_sns", "off");
@@ -340,6 +345,8 @@ chrome.runtime.onMessage.addListener(
         //setting--------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "webhook") sendResponse({ farewell: localStorage.getItem("id_webhook") });
         if (request.greeting == "delay") sendResponse({ farewell: localStorage.getItem("delay") });
+        //basket4ballers------------------------------------------------------------------------------------------------------------------------
+        if (request.greeting == "basket4ballers") sendResponse({ farewell: localStorage.getItem("status_aco_basket4ballers") });
         //sns------------------------------------------------------------------------------------------------------------------------        
         if (request.greeting == "sns") sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
         //naked------------------------------------------------------------------------------------------------------------------------

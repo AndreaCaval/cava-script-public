@@ -575,16 +575,12 @@ async function sendWebhook_public() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
+        description: '[' + name_product + '](' + link_product + ')',
         thumbnail: { url: img_product },
         color: ("65280"),
         fields: [{
                 name: 'Site',
                 value: 'Snipes',
-                inline: true
-            },
-            {
-                name: 'Item',
-                value: '[' + name_product + '](' + link_product + ')',
                 inline: true
             },
             {
@@ -627,16 +623,12 @@ async function sendWebhook_private() {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        color: ("65280"),
+        description: '[' + name_product + '](' + link_product + ')',
         thumbnail: { url: img_product },
+        color: ("65280"),
         fields: [{
                 name: 'Site',
                 value: 'Snipes',
-                inline: true
-            },
-            {
-                name: 'Item',
-                value: '[' + name_product + '](' + link_product + ')',
                 inline: true
             },
             {
@@ -684,16 +676,12 @@ async function sendWebhook_personal(linkpp) {
 
     var myEmbed = {
         title: ":fire: Pokemon catturato! :fire:",
-        color: ("65280"),
+        description: '[' + name_product + '](' + link_product + ')',
         thumbnail: { url: img_product },
+        color: ("65280"),
         fields: [{
                 name: 'Site',
                 value: 'Snipes',
-                inline: true
-            },
-            {
-                name: 'Item',
-                value: '[' + name_product + '](' + link_product + ')',
                 inline: true
             },
             {

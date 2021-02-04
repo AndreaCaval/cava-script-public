@@ -97,17 +97,21 @@ async function dropMode() {
         if (countryy.split('.')[1] == 'zalando') {
 
             try {
+
+
                 await sleep(parseInt(delay))
                 sendText("Monitoring...", "yellow")
-                var s = document.getElementById('z-vegas-pdp-props').textContent
-                s = s.slice(8, -2)
-                var obj = JSON.parse(s)
-                var sizes = obj[0].model.articleInfo.units
-                for (var i = 0; i < sizes.length; i++) {
-                    if (sizes[i]["available"] == true) {
-                        size_in_stock.push(sizes[i].id)
+                try {
+                    var s = document.getElementById('z-vegas-pdp-props').textContent
+                    s = s.slice(8, -2)
+                    var obj = JSON.parse(s)
+                    var sizes = obj[0].model.articleInfo.units
+                    for (var i = 0; i < sizes.length; i++) {
+                        if (sizes[i]["available"] == true) {
+                            size_in_stock.push(sizes[i].id)
+                        }
                     }
-                }
+                } catch (error) {}
                 if (size_in_stock.length != 0) {
                     for (var i = 0; i < cart_limit; i++) {
                         n = getRandomIntInclusive(0, size_in_stock.length - 1)
@@ -127,15 +131,17 @@ async function dropMode() {
                     await getProduct()
                     await res.then(function(result) {
                         html.innerHTML = result
-                        var s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
-                        s = s.slice(8, -2)
-                        var obj = JSON.parse(s)
-                        var sizes = obj[0].model.articleInfo.units
-                        for (var i = 0; i < sizes.length; i++) {
-                            if (sizes[i]["available"] == true) {
-                                size_in_stock.push(sizes[i].id)
+                        try {
+                            var s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
+                            s = s.slice(8, -2)
+                            var obj = JSON.parse(s)
+                            var sizes = obj[0].model.articleInfo.units
+                            for (var i = 0; i < sizes.length; i++) {
+                                if (sizes[i]["available"] == true) {
+                                    size_in_stock.push(sizes[i].id)
+                                }
                             }
-                        }
+                        } catch (error) {}
                     })
 
                     if (size_in_stock.length != 0) {
@@ -156,7 +162,7 @@ async function dropMode() {
             }
         }
 
-    } catch (error) { errorWebhook(error, "searchSize_2") }
+    } catch (error) { errorWebhook(error, "diocan") }
 
 }
 

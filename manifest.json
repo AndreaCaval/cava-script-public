@@ -39,6 +39,11 @@
             "all_frames": false
         },
         {
+            "matches": ["https://www.basket4ballers.com/en/*", "https://www.basket4ballers.com/fr/*"],
+            "js": ["scripts/basket4ballers-atc.js"],
+            "all_frames": false
+        },
+        {
             "matches": ["https://discord.com/channels/*"],
             "exclude_globs": ["https://discord.com/channels/@me/*"],
             "js": ["scripts/autoclick.js"],

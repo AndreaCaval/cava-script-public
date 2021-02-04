@@ -170,6 +170,8 @@ $(function() {
         if (localStorage.getItem("status_aco_naked") == "on") { $('#Status_aco_naked').prop('checked', true); }
         //Kickz
         if (localStorage.getItem("status_aco_kickz") == "on") { $('#Status_aco_kickz').prop('checked', true); }
+        //Basket4ballers
+        if (localStorage.getItem("status_aco_basket4ballers") == "on") { $('#Status_aco_basket4ballers').prop('checked', true); }
 
         //gestisco i click delle checkbox
         //Zalando
@@ -195,6 +197,10 @@ $(function() {
         //Kickz
         $('#Status_aco_kickz').click(function() {
             if ($("#Status_aco_kickz").is(':checked')) { localStorage.setItem("status_aco_kickz", "on"); } else { localStorage.setItem("status_aco_kickz", "off"); }
+        });
+        //Basket4ballers
+        $('#Status_aco_basket4ballers').click(function() {
+            if ($("#Status_aco_basket4ballers").is(':checked')) { localStorage.setItem("status_aco_basket4ballers", "on"); } else { localStorage.setItem("status_aco_basket4ballers", "off"); }
         });
 
         //---------------------------------------------------------------------

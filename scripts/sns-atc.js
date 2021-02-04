@@ -29,7 +29,7 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
-    return n //Il max è incluso e il min è incluso 
+    return n
 }
 
 async function errorRefresh() {
@@ -39,23 +39,26 @@ async function errorRefresh() {
 
 async function atc() {
 
-    if (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
-        await sleep(12000)
-    }
-
-    sizes = document.querySelectorAll('[type="radio"]');
     try {
-        if (sizes.length != 0) {
-            n = getRandomIntInclusive(0, sizes.length - 1)
-            variant_id = sizes[n].value
-            await atcR()
-        } else {
+        if (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
+            await sleep(12000)
+        }
+
+        sizes = document.querySelectorAll('[type="radio"]');
+        try {
+            if (sizes.length != 0) {
+                n = getRandomIntInclusive(0, sizes.length - 1)
+                variant_id = sizes[n].value
+                await atcR()
+            } else {
+                errorRefresh()
+            }
+        } catch (error) {
+            errorWebhook(error, "atc_1")
             errorRefresh()
         }
-    } catch (error) {
-        errorWebhook(error)
-        errorRefresh()
-    }
+
+    } catch (error) { errorWebhook(error, "atc_2") }
 }
 
 async function atcR() {
@@ -78,50 +81,54 @@ async function atcR() {
             "credentials": "include"
         })
         .then(response => { checkRes(response) })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => { errorWebhook(error, "atcR") });;
 }
 
 async function checkRes(response) {
 
-    let status = response.status
-    let res = await response.text()
+    try {
 
-    if (status == 200 || status == 201) {
-        html.innerHTML = res
-        let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-        let j = JSON.parse(cart_size)
-        let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
-        let j_1 = JSON.parse(cart_1)
-        name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
-        price_product = j_1["price"]
-        size_product = j["converted-size-size-eu"]
-        sendWebhooks()
-        document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
-    } else {
+        let status = response.status
+        let res = await response.text()
 
-        sizes[n].click()
-        document.getElementsByClassName("product-form__btn btn")[0].click()
-        await sleep(10000)
-
-        if (document.getElementsByClassName("cart-items")[0] != undefined) {
-            try {
-                let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
-                let jj = JSON.parse(x)
-                let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-                let jjj = JSON.parse(y)
-                name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
-                size_product = jjj["converted-size-size-eu"]
-                price_product = jj["price"]
-                sendWebhooks()
-                document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
-            } catch (error) {
-                errorWebhook(error)
-                errorRefresh
-            }
+        if (status == 200 || status == 201) {
+            html.innerHTML = res
+            let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+            let j = JSON.parse(cart_size)
+            let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
+            let j_1 = JSON.parse(cart_1)
+            name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
+            price_product = j_1["price"]
+            size_product = j["converted-size-size-eu"]
+            sendWebhooks()
+            document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
         } else {
-            errorRefresh()
+
+            sizes[n].click()
+            document.getElementsByClassName("product-form__btn btn")[0].click()
+            await sleep(10000)
+
+            if (document.getElementsByClassName("cart-items")[0] != undefined) {
+                try {
+                    let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
+                    let jj = JSON.parse(x)
+                    let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+                    let jjj = JSON.parse(y)
+                    name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
+                    size_product = jjj["converted-size-size-eu"]
+                    price_product = jj["price"]
+                    sendWebhooks()
+                    document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
+                } catch (error) {
+                    errorWebhook(error, "checkRes_1")
+                    errorRefresh()
+                }
+            } else {
+                errorRefresh()
+            }
         }
-    }
+
+    } catch (error) { errorWebhook(error, "checkRes_2") }
 }
 
 async function sendWebhooks() {
@@ -130,7 +137,7 @@ async function sendWebhooks() {
     sendWebhook_personal()
 }
 
-async function errorWebhook(msg_error) {
+async function errorWebhook(msg_error, position) {
     var request = new XMLHttpRequest();
     request.open("POST", url_error);
     request.setRequestHeader('Content-type', 'application/json');
@@ -141,10 +148,21 @@ async function errorWebhook(msg_error) {
         title: "SNS Error",
         color: ("16744192"),
         fields: [{
-            name: 'Message',
-            value: '```' + msg_error + '```',
-            inline: true
-        }],
+                name: 'Message',
+                value: '```' + msg_error + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            },
+            {
+                name: 'Discord',
+                value: discord_name,
+                inline: true
+            }
+        ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
             icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
@@ -173,6 +191,10 @@ function sendWebhook_public() {
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
+                name: 'Site',
+                value: 'SNS',
+                inline: true
+            }, {
                 name: 'Size',
                 value: size_product,
                 inline: true
@@ -180,11 +202,6 @@ function sendWebhook_public() {
             {
                 name: 'Price',
                 value: price_product,
-                inline: true
-            },
-            {
-                name: 'Site',
-                value: 'SNS',
                 inline: true
             }
         ],
@@ -216,6 +233,10 @@ function sendWebhook_personal() {
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
+                name: 'Site',
+                value: 'SNS',
+                inline: true
+            }, {
                 name: 'Size',
                 value: size_product,
                 inline: true
@@ -223,11 +244,6 @@ function sendWebhook_personal() {
             {
                 name: 'Price',
                 value: price_product,
-                inline: true
-            },
-            {
-                name: 'Site',
-                value: 'SNS',
                 inline: true
             }
         ],
@@ -259,6 +275,10 @@ function sendWebhook_private() {
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
+                name: 'Site',
+                value: 'SNS',
+                inline: true
+            }, {
                 name: 'Size',
                 value: size_product,
                 inline: true
@@ -266,11 +286,6 @@ function sendWebhook_private() {
             {
                 name: 'Price',
                 value: price_product,
-                inline: true
-            },
-            {
-                name: 'Site',
-                value: 'SNS',
                 inline: true
             },
             {

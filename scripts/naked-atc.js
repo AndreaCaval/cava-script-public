@@ -29,7 +29,7 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
-    return n //Il max è incluso e il min è incluso 
+    return n
 }
 
 async function errorRefresh() {
@@ -52,9 +52,10 @@ async function atc() {
         } else {
             errorRefresh()
         }
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'value' of undefined")
-            errorWebhook(error)
+            errorWebhook(error, "atc")
         errorRefresh()
     }
 }
@@ -80,42 +81,45 @@ async function atcR() {
             "credentials": "include"
         })
         .then(response => { checkRes(response) })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => { errorWebhook(error, "atcR") });;
 }
 
 async function checkRes(response) {
 
-    let status = response.status
-    let res = await response.text()
+    try {
 
-    if (status == 200 || status == 201) {
-        html.innerHTML = res
-        name_product = html.getElementsByClassName('cart-item__brand')[0].textContent.replaceAll("\n", '') + ' | ' + html.getElementsByClassName('cart-item__name')[0].textContent.replaceAll("\n", '')
-        size_product = html.getElementsByClassName('cart-item__size')[0].textContent.replaceAll("\n", "")
-        price_product = html.getElementsByClassName('cart-item__price')[0].textContent.replaceAll("\n", "")
-        sendWebhooks()
-        document.location = "https://www.nakedcph.com/" + country + "/cart/view"
-    } else {
+        let status = response.status
+        let res = await response.text()
 
-        sizes[n].click()
-        document.getElementsByClassName("btn btn-primary product-form-submit")[0].click()
-
-        await sleep(5000)
-        if (document.getElementsByClassName("mc-item-brand")[0] != undefined) {
-            try {
-                name_product = document.getElementsByClassName("mc-item-brand")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("mc-item-name")[0].textContent.replaceAll("\n", "")
-                size_product = document.getElementsByClassName("mc-item-size")[0].textContent.replaceAll("\n", "")
-                price_product = document.getElementsByClassName("price-container")[0].textContent.replaceAll("\n", "")
-                sendWebhooks()
-            } catch (error) {
-                if (error != "TypeError: Cannot read property 'value' of undefined")
-                    errorWebhook(error)
-                errorRefresh
-            }
+        if (status == 200 || status == 201) {
+            html.innerHTML = res
+            name_product = html.getElementsByClassName('cart-item__brand')[0].textContent.replaceAll("\n", '') + ' | ' + html.getElementsByClassName('cart-item__name')[0].textContent.replaceAll("\n", '')
+            size_product = html.getElementsByClassName('cart-item__size')[0].textContent.replaceAll("\n", "")
+            price_product = html.getElementsByClassName('cart-item__price')[0].textContent.replaceAll("\n", "")
+            sendWebhooks()
+            document.location = "https://www.nakedcph.com/" + country + "/cart/view"
         } else {
-            errorRefresh()
+
+            sizes[n].click()
+            document.getElementsByClassName("btn btn-primary product-form-submit")[0].click()
+
+            await sleep(5000)
+            if (document.getElementsByClassName("mc-item-brand")[0] != undefined) {
+                try {
+                    name_product = document.getElementsByClassName("mc-item-brand")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("mc-item-name")[0].textContent.replaceAll("\n", "")
+                    size_product = document.getElementsByClassName("mc-item-size")[0].textContent.replaceAll("\n", "")
+                    price_product = document.getElementsByClassName("price-container")[0].textContent.replaceAll("\n", "")
+                    sendWebhooks()
+                } catch (error) {
+                    if (error != "TypeError: Cannot read property 'value' of undefined")
+                        errorWebhook(error, "checkRes_1")
+                    errorRefresh()
+                }
+            } else {
+                errorRefresh()
+            }
         }
-    }
+    } catch (error) { errorWebhook(error, "checkRes_2") }
 }
 
 async function sendWebhooks() {
@@ -124,7 +128,7 @@ async function sendWebhooks() {
     sendWebhook_public()
 }
 
-async function errorWebhook(msg_error) {
+async function errorWebhook(msg_error, position) {
     var request = new XMLHttpRequest();
     request.open("POST", url_error);
     request.setRequestHeader('Content-type', 'application/json');
@@ -135,10 +139,21 @@ async function errorWebhook(msg_error) {
         title: "Naked Error",
         color: ("16744192"),
         fields: [{
-            name: 'Message',
-            value: '```' + msg_error + '```',
-            inline: true
-        }],
+                name: 'Message',
+                value: '```' + msg_error + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            },
+            {
+                name: 'Discord',
+                value: discord_name,
+                inline: true
+            }
+        ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
             icon_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png',
@@ -167,6 +182,11 @@ function sendWebhook_public() {
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
+                name: 'Site',
+                value: 'Naked',
+                inline: true
+            },
+            {
                 name: 'Size',
                 value: size_product,
                 inline: true
@@ -174,11 +194,6 @@ function sendWebhook_public() {
             {
                 name: 'Price',
                 value: price_product,
-                inline: true
-            },
-            {
-                name: 'Site',
-                value: 'Naked',
                 inline: true
             }
         ],
@@ -210,6 +225,11 @@ function sendWebhook_personal() {
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
+                name: 'Site',
+                value: 'Naked',
+                inline: true
+            },
+            {
                 name: 'Size',
                 value: size_product,
                 inline: true
@@ -217,11 +237,6 @@ function sendWebhook_personal() {
             {
                 name: 'Price',
                 value: price_product,
-                inline: true
-            },
-            {
-                name: 'Site',
-                value: 'Naked',
                 inline: true
             }
         ],
@@ -253,6 +268,11 @@ function sendWebhook_private() {
         color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
+                name: 'Site',
+                value: 'Naked',
+                inline: true
+            },
+            {
                 name: 'Size',
                 value: size_product,
                 inline: true
@@ -260,11 +280,6 @@ function sendWebhook_private() {
             {
                 name: 'Price',
                 value: price_product,
-                inline: true
-            },
-            {
-                name: 'Site',
-                value: 'Naked',
                 inline: true
             },
             {
