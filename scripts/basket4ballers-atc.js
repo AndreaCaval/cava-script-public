@@ -57,7 +57,6 @@ async function main() {
                 });
 
                 cmb = true
-                console.log(size_in_stock)
 
                 n = getRandomIntInclusive(0, size_in_stock.length - 1)
 
@@ -123,7 +122,10 @@ async function checkResAtc(response) {
             document.location = "https://www.basket4ballers.com/" + country + "/commande"
         }
 
-    } catch (error) { errorWebhook(error, "checkResAtc") }
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'forEach' of undefined")
+            errorWebhook(error, "checkResAtc")
+    }
 
 }
 
