@@ -48,20 +48,28 @@ async function main() {
 
             try {
 
-                x = document.querySelectorAll('[type="text/javascript"]')[6].textContent
-                eval(x)
-
-                Object.keys(combinations).forEach(function(key) {
-                    if (combinations[key]["quantity"] != 0)
-                        size_in_stock.push(key)
+                let y = ""
+                let x = document.querySelectorAll('[type="text/javascript"]')
+                x.forEach(element => {
+                    if (element.textContent.includes("FancyboxI18nClose")) {
+                        y = element.textContent
+                    }
                 });
+                if (y != "") {
+                    eval(y)
 
-                cmb = true
+                    Object.keys(combinations).forEach(function(key) {
+                        if (combinations[key]["quantity"] != 0)
+                            size_in_stock.push(key)
+                    });
 
-                n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                    cmb = true
 
-                id_product = size_in_stock[n]
-                atcR()
+                    n = getRandomIntInclusive(0, size_in_stock.length - 1)
+
+                    id_product = size_in_stock[n]
+                    atcR()
+                }
 
             } catch (error) { errorWebhook(error, "main_1") }
         } while (cmb == false)

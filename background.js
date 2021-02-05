@@ -3,7 +3,7 @@ debugger
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
-const version = '1.0.3'
+const version = '1.0.4'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const SERVER_ID = "726167965182984253"
 const DISCORD_URI_ENDPOINT = 'https://discord.com/api/oauth2/authorize';
