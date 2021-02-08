@@ -120,7 +120,7 @@ async function sendWebhook_public() {
     var myEmbed = {
         title: ":fire: Pokemon quasi catturato! :fire:",
         description: '[' + sku_product + '](' + linkk + ')',
-        color: ("16744192"),
+        color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
                 name: 'Site',
@@ -164,7 +164,7 @@ async function sendWebhook_personal() {
     var myEmbed = {
         title: ":fire: Pokemon quasi catturato! :fire:",
         description: '[' + sku_product + '](' + linkk + ')',
-        color: ("16744192"),
+        color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
                 name: 'Site',
@@ -207,7 +207,7 @@ async function sendWebhook_private() {
     var myEmbed = {
         title: ":fire: Pokemon quasi catturato! :fire:",
         description: '[' + sku_product + '](' + linkk + ')',
-        color: ("16744192"),
+        color: ("65280"),
         thumbnail: { url: img_product },
         fields: [{
                 name: 'Site',
