@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.4'
+const version = 'Cava-Scripts 1.0.5'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
@@ -172,6 +172,8 @@ $(function() {
         if (localStorage.getItem("status_aco_kickz") == "on") { $('#Status_aco_kickz').prop('checked', true); }
         //Basket4ballers
         if (localStorage.getItem("status_aco_basket4ballers") == "on") { $('#Status_aco_basket4ballers').prop('checked', true); }
+        //Onygo
+        if (localStorage.getItem("status_aco_onygo") == "on") { $('#Status_aco_onygo').prop('checked', true); }
 
         //gestisco i click delle checkbox
         //Zalando
@@ -202,6 +204,10 @@ $(function() {
         $('#Status_aco_basket4ballers').click(function() {
             if ($("#Status_aco_basket4ballers").is(':checked')) { localStorage.setItem("status_aco_basket4ballers", "on"); } else { localStorage.setItem("status_aco_basket4ballers", "off"); }
         });
+        //Onygo
+        $('#Status_aco_onygo').click(function() {
+            if ($("#Status_aco_onygo").is(':checked')) { localStorage.setItem("status_aco_onygo", "on"); } else { localStorage.setItem("status_aco_onygo", "off"); }
+        });
 
         //---------------------------------------------------------------------
 
@@ -214,6 +220,8 @@ $(function() {
         if (localStorage.getItem("status_login_snipes") == "on") { $('#Status_login_snipes').prop('checked', true); }
         //Kickz
         if (localStorage.getItem("status_login_kickz") == "on") { $('#Status_login_kickz').prop('checked', true); }
+        //Onygo
+        if (localStorage.getItem("status_login_onygo") == "on") { $('#Status_login_onygo').prop('checked', true); }
 
         //gestisco i click delle checkbox
         //Solebox
@@ -227,6 +235,10 @@ $(function() {
         //Kickz
         $('#Status_login_kickz').click(function() {
             if ($("#Status_login_kickz").is(':checked')) { localStorage.setItem("status_login_kickz", "on"); } else { localStorage.setItem("status_login_kickz", "off"); }
+        });
+        //Onygo
+        $('#Status_login_onygo').click(function() {
+            if ($("#Status_login_onygo").is(':checked')) { localStorage.setItem("status_login_onygo", "on"); } else { localStorage.setItem("status_login_onygo", "off"); }
         });
 
         //---------------------------------------------------------------------
@@ -344,6 +356,23 @@ $(function() {
             var p = $("#pw_kickz").val();
 
             if (e != '' && p != '') { localStorage.setItem("email_pw_kickz", e + ":" + p); } else { localStorage.setItem("email_pw_kickz", "off"); }
+        });
+        //---------------------------------------------------------------------
+
+        //GESTIONE PAGINA ONYGO----------------------------------------------
+        //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+        if (localStorage.getItem("email_pw_onygo") != "off") {
+            var email = localStorage.getItem("email_pw_onygo").split(':')[0]
+            var pw = localStorage.getItem("email_pw_onygo").split(':')[1]
+            $("#email_onygo").val(email);
+            $("#pw_onygo").val(pw);
+        }
+        //gestisco il click del bottone salva
+        $("#btn_save_onygo").click(function() {
+            var e = $("#email_onygo").val();
+            var p = $("#pw_onygo").val();
+
+            if (e != '' && p != '') { localStorage.setItem("email_pw_onygo", e + ":" + p); } else { localStorage.setItem("email_pw_onygo", "off"); }
         });
         //---------------------------------------------------------------------
     }

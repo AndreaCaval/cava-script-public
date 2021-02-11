@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Cava-Scripts-1",
     "description": "botterboycava",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "icons": {
         "128": "icons/iconpk.png"
     },
@@ -60,6 +60,21 @@
             "include_globs": ["https://www.nakedcph.com/*/product/*"],
             "js": ["scripts/naked-atc.js"],
             "all_frames": true
+        },
+        {
+            "matches": ["https://www.onygo.com/*"],
+            "js": ["scripts/onygo-login.js"],
+            "all_frames": false
+        },
+        {
+            "matches": ["https://www.onygo.com/p/*"],
+            "js": ["scripts/onygo-atc.js"],
+            "all_frames": false
+        },
+        {
+            "matches": ["https://www.onygo.com/cart*"],
+            "js": ["scripts/onygo-checkout.js"],
+            "all_frames": false
         },
         {
             "matches": ["https://www.solebox.com/*"],

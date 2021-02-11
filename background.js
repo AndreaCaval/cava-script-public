@@ -3,7 +3,7 @@ debugger
 const CRYPTO_KEY_INT_1 = "32463"
 const CRYPTO_KEY_INT_2 = "90534"
 const CRYPTO_KEY_INT_3 = "45873"
-const version = '1.0.4'
+const version = '1.0.5'
 const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
 const SERVER_ID = "726167965182984253"
 const DISCORD_URI_ENDPOINT = 'https://discord.com/api/oauth2/authorize';
@@ -308,6 +308,18 @@ function SetStatus_off() {
         localStorage.setItem("email_pw_solebox", "off");
     }
 
+    //Onygo-ACO
+    if (localStorage.getItem("status_aco_onygo") == null) {
+        localStorage.setItem("status_aco_onygo", "off");
+    }
+    //Onygo-Login
+    if (localStorage.getItem("status_login_onygo") == null) {
+        localStorage.setItem("status_login_onygo", "off");
+    }
+    if (localStorage.getItem("email_pw_onygo") == null) {
+        localStorage.setItem("email_pw_onygo", "off");
+    }
+
     //Kickz-ACO
     if (localStorage.getItem("status_aco_kickz") == null) {
         localStorage.setItem("status_aco_kickz", "off");
@@ -355,6 +367,10 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "kickz") sendResponse({ farewell: localStorage.getItem("status_aco_kickz") });
         if (request.greeting == "kickz_login") sendResponse({ farewell: localStorage.getItem("status_login_kickz") });
         if (request.greeting == "email_pw_kickz") sendResponse({ farewell: localStorage.getItem("email_pw_kickz") });
+        //Onygo------------------------------------------------------------------------------------------------------------------------
+        if (request.greeting == "onygo") sendResponse({ farewell: localStorage.getItem("status_aco_onygo") });
+        if (request.greeting == "onygo_login") sendResponse({ farewell: localStorage.getItem("status_login_onygo") });
+        if (request.greeting == "email_pw_onygo") sendResponse({ farewell: localStorage.getItem("email_pw_onygo") });
         //snipes------------------------------------------------------------------------------------------------------------------------
         if (request.greeting == "snipes") sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
         if (request.greeting == "snipes_login") sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
