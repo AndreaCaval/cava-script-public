@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Cava-Scripts-1",
+    "name": "Cava-Scripts",
     "description": "botterboycava",
     "version": "1.0.5",
     "icons": {
@@ -29,139 +29,57 @@
         "persistent": false
     },
     "content_scripts": [{
-            "matches": ["https://www.kickz.com/*/cart"],
-            "js": ["scripts/kickz-cart.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["https://www.kickz.com/*"],
-            "js": ["scripts/kickz-atc.js", "scripts/kickz-login.js"],
-            "all_frames": false
-        },
-        {
-            "matches": ["https://www.basket4ballers.com/en/*", "https://www.basket4ballers.com/fr/*"],
-            "js": ["scripts/basket4ballers-atc.js"],
-            "all_frames": false
-        },
-        {
             "matches": ["https://discord.com/channels/*"],
             "exclude_globs": ["https://discord.com/channels/@me/*"],
             "js": ["scripts/autoclick.js"],
             "all_frames": false
         },
+
         {
             "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://www.sneakersnstuff.com/*/product/*"],
-            "js": ["scripts/sns-atc.js"],
+            "include_globs": ["*.zalando.*"],
+            "js": ["scripts/zalando.js"],
             "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://www.nakedcph.com/*/product/*"],
-            "js": ["scripts/naked-atc.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["https://www.onygo.com/*"],
-            "js": ["scripts/onygo-login.js"],
-            "all_frames": false
-        },
-        {
-            "matches": ["https://www.onygo.com/p/*"],
-            "js": ["scripts/onygo-atc.js"],
-            "all_frames": false
-        },
-        {
-            "matches": ["https://www.onygo.com/cart*"],
-            "js": ["scripts/onygo-checkout.js"],
-            "all_frames": false
         },
         {
             "matches": ["https://www.solebox.com/*"],
-            "js": ["scripts/solebox-login.js"],
+            "js": ["scripts/solebox.js"],
             "all_frames": true
-        },
-        {
-            "matches": ["https://www.solebox.com/*/p/*"],
-            "js": ["scripts/solebox-atc.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["https://www.solebox.com/*/cart"],
-            "js": ["scripts/solebox-checkout.js"],
+        }, {
+            "matches": ["https://www.onygo.com/*"],
+            "js": ["scripts/onygo.js"],
             "all_frames": true
         },
         {
             "matches": ["http://*/*", "https://*/*"],
             "include_globs": ["https://www.snipes.*/*"],
-            "js": ["scripts/snipes-login.js"],
+            "js": ["scripts/snipes.js"],
             "all_frames": true
         },
         {
             "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://www.snipes.*/p/*"],
-            "js": ["scripts/snipes-atc.js"],
+            "include_globs": ["https://www.nakedcph.com/*/product/*"],
+            "js": ["scripts/naked.js"],
             "all_frames": true
         },
         {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://www.snipes.*/cart"],
-            "js": ["scripts/snipes-checkout.js"],
+            "matches": ["https://www.sneakersnstuff.com/*/product/*"],
+            "js": ["scripts/sns.js"],
             "all_frames": true
         },
         {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*"],
-            "js": ["scripts/zalando-login.js"],
-            "all_frames": true
+            "matches": ["https://www.basket4ballers.com/en/*", "https://www.basket4ballers.com/fr/*"],
+            "js": ["scripts/b4b.js"],
+            "all_frames": false
         },
         {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/myaccount*"],
-            "exclude_globs": ["https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*"],
-            "js": ["scripts/zalando-account.js"],
-            "all_frames": true
+            "matches": ["https://www.kickz.com/*"],
+            "js": ["scripts/kickz.js"],
+            "all_frames": false
         },
         {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/zalando-newsletter/"],
-            "js": ["scripts/zalando-coupon-generator.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/cart*"],
-            "js": ["scripts/zalando-cart.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/checkout/address"],
-            "js": ["scripts/zalando-checkout-address.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["https://checkout.payment.zalando.com/*"],
-            "js": ["scripts/zalando-checkout-payment.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/checkout/confirm*"],
-            "js": ["scripts/zalando-checkout.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.zalando.*/checkout/success*"],
-            "js": ["scripts/zalando-success.js"],
-            "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-            "exclude_globs": ["https://*.zalando.*/cart*", "https://*.zalando.*/zalando-newsletter*", "https://*.zalando.*/welcomenoaccount/true*", "https://*.zalando.*/login?target=/myaccount*", "https://*.zalando.*/checkout/*", "https://checkout.payment.zalando.com*"],
-            "include_globs": ["*.zalando.*"],
-            "js": ["scripts/zalando-mini-display.js"],
+            "matches": ["https://www.luisaviaroma.com/*"],
+            "js": ["scripts/lvr.js"],
             "all_frames": true
         }
     ]
