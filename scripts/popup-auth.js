@@ -19,14 +19,17 @@ function sing_in() { /* popup-sign-in-script.js */
             button_in.style.transform = 'scale(1)';
         });
         button_in.addEventListener('click', () => {
-            chrome.runtime.sendMessage({ greeting: 'login' }, function(response) {
+            const license = document.getElementById("license").value
+            chrome.runtime.sendMessage({ greeting: 'login', license: license }, function(response) {
                 if (response.farewell == 'success') {
                     localStorage.setItem("auth", "on");
                     window.location.replace("/popup/popup-site-aco.html");
                 }
             });
         });
-    } catch (error) { console.log(error) }
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 function sing_out() { /* popup-sign-out-script.js */
@@ -45,8 +48,6 @@ function sing_out() { /* popup-sign-out-script.js */
         button_out.addEventListener('click', () => {
             chrome.runtime.sendMessage({ greeting: 'logout' }, function(response) {
                 if (response.farewell == 'success') {
-                    localStorage.setItem("auth", "off");
-                    localStorage.setItem("data_auth", "off");
                     localStorage.setItem("avatar", "off")
                     localStorage.setItem("discord_id", "off")
                     localStorage.setItem("discord_tag", "off")
@@ -55,5 +56,7 @@ function sing_out() { /* popup-sign-out-script.js */
                 }
             });
         });
-    } catch (error) { console.log(error) }
+    } catch (error) {
+        console.log(error)
+    }
 }

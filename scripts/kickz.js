@@ -1,3 +1,5 @@
+debugger
+
 const site = "Kickz"
 
 let link = document.location.href

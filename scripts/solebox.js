@@ -1,3 +1,5 @@
+debugger
+
 const site = "Solebox"
 
 let link = document.location.href

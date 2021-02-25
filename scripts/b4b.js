@@ -1,3 +1,5 @@
+debugger
+
 const site = "B4B"
 
 let link_product = document.location.href

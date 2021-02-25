@@ -1,175 +1,53 @@
 debugger
 
-const CRYPTO_KEY_INT_1 = "32463"
-const CRYPTO_KEY_INT_2 = "90534"
-const CRYPTO_KEY_INT_3 = "45873"
-const version = '1.0.5'
-const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl"
-const SERVER_ID = "726167965182984253"
-const DISCORD_URI_ENDPOINT = 'https://discord.com/api/oauth2/authorize';
-const DISCORD_URI_TOKEN = "https://discord.com/api/oauth2/token"
-const CLIENT_ID = encodeURIComponent('770202672313663498');
-const CLINET_SECRET = encodeURIComponent("jdRPsQmIub02zJtREIOBGayfqOkx6QDQ");
-const RESPONSE_TYPE = encodeURIComponent('token');
-const REDIRECT_URI = encodeURIComponent(chrome.identity.getRedirectURL());
-const SCOPE = encodeURIComponent('identify email guilds');
-const STATE = encodeURIComponent('meet' + Math.random().toString(36).substring(2, 15));
+const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
+
+const version = "1.0.6";
+const icon = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png";
+const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
+const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
+const url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA";
+
+const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" //login
 let user_signed_in = false;
-let user_in_server = false;
-let server = {}
-let user_data = {}
-let data_access_token = {}
-let ip = "1"
 
-function create_auth_endpoint() {
-    let nonce = encodeURIComponent(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
-    let endpoint_url = `${DISCORD_URI_ENDPOINT}
-?client_id=${CLIENT_ID}
-&redirect_uri=${REDIRECT_URI}
-&response_type=${RESPONSE_TYPE}
-&state=${STATE}
-&scope=${SCOPE}
-&nonce=${nonce}`;
+let checkLoginTimer // timer per check validità
+const LOGIN_CHECK_INTERVAL = 3600 * 24 * 1000
 
-    return endpoint_url;
-}
 
-async function sgamatoWebhook() {
-    var request = new XMLHttpRequest();
-    request.open("POST", webhook_url);
-    request.setRequestHeader('Content-type', 'application/json');
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-    var myEmbed = {
-        title: "SCAM",
-        color: ("16744192"),
-        fields: [{
-                name: 'Email',
-                value: localStorage.getItem("discord_email"),
-                inline: true
-            },
-            {
-                name: 'Discord id',
-                value: localStorage.getItem("discord_id"),
-                inline: true
-            },
-            {
-                name: 'Discord tag',
-                value: localStorage.getItem("discord_tag"),
-                inline: true
-            },
-            {
-                name: 'Ip',
-                value: await getNetworkIP(),
-                inline: true
-            }
-        ],
-        footer: {
-            text: 'Cava-Scripts ' + version + ' | ' + String(time),
-            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pok%C3%A9ball.png/480px-Pok%C3%A9ball.png',
-        },
+function setIfNotPresent(key, value) {
+    if (localStorage.getItem(key) == null) {
+        localStorage.setItem(key, value);
     }
-
-    var params = {
-        username: "",
-        embeds: [myEmbed]
-    }
-
-    request.send(JSON.stringify(params));
-
-}
-
-function scamError() {
-    alert("SCAM")
-    sgamatoWebhook()
-    localStorage.clear()
-    localStorage.setItem("data_auth", "off")
-    localStorage.setItem("auth", "off")
-    window.location.replace("/popup/popup-login.html");
 }
 
 function checkData() {
-    let data = localStorage.getItem("data_auth")
-    let auth = localStorage.getItem("auth")
-    if (data != "off" && auth != "off") {
-        if (/^\d+$/.test(data) && data.includes(parseInt(CRYPTO_KEY_INT_1)) && data.includes(parseInt(CRYPTO_KEY_INT_3))) {
-            try {
-                let data_now = new Date
-                data = data.replace(CRYPTO_KEY_INT_1, "/")
-                    //data = data.replace(CRYPTO_KEY_INT_2.toString(), "/")
-                data = data.replace(CRYPTO_KEY_INT_3, "/")
-                data = data.split("/")
-                let day = parseInt(data[0]) / parseInt(CRYPTO_KEY_INT_2)
-                let month = parseInt(data[2]) / parseInt(CRYPTO_KEY_INT_1)
-                let year = parseInt(data[1]) / parseInt(CRYPTO_KEY_INT_3)
-                let data_exp_login = new Date(year, month, day)
-                if (day > 31 || day < 0 || month > 11 || month < 0 || year > 2100 || year < 2019) {
-                    scamError()
-                } else {
-                    let data_exp_login = new Date(year, month, day)
-                    if (data_now > data_exp_login) {
-                        localStorage.setItem("data_auth", "off")
-                        localStorage.setItem("auth", "off")
-                        window.location.replace("/popup/popup-login.html")
-                    }
-                }
-            } catch (error) {
-                scamError()
-            }
-        } else {
-            scamError()
-        }
-    } else if (auth == "on" && data == "off") {
-        scamError()
+    const license = getKeyValue("license")
+    if (license != null) {
+        const machineId = getMachineId()
+        login(license, machineId)
+            .then(res => {
+                console.log(res)
+                checkLoginAtInterval(license, machineId)
+
+            })
+            .catch(e => {
+                console.log("login failed")
+                console.log(e)
+                window.location.replace("/popup/popup-login.html")
+                removeKeyValue("license")
+            })
     }
 }
 
-function addDays(date, days) {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
-async function getNetworkIP() {
-    let found = false;
-    let resolve;
-    const promise = new Promise((res) => {
-        resolve = res;
-    });
-    const pc = new RTCPeerConnection({ iceServers: [] });
-
-    pc.addEventListener("icecandidate", (e) => {
-        if (!e.candidate || found) return;
-        resolve(e.candidate.address);
-        found = true;
-    });
-
-    pc.createDataChannel("");
-    pc.createOffer().then((desc) => pc.setLocalDescription(desc));
-
-    return promise;
-}
-
-function makeid() {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < 30; i++) {
-        if (i % 6 == 0 && i != 0)
-            result += '-';
-        else
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-}
-
-function loginWebhook(color, ip) {
+function loginWebhook(isLoginSuccessful) {
     var request = new XMLHttpRequest();
     request.open("POST", webhook_url);
     request.setRequestHeader('Content-type', 'application/json');
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    let color = isLoginSuccessful ? "65280" : "16711680"
 
     var myEmbed = {
         title: "Login",
@@ -190,13 +68,8 @@ function loginWebhook(color, ip) {
                 inline: true
             },
             {
-                name: 'Ip',
-                value: ip,
-                inline: true
-            },
-            {
                 name: 'Key',
-                value: localStorage.getItem("key"),
+                value: localStorage.getItem("license"),
                 inline: true
             }
         ],
@@ -217,128 +90,80 @@ function loginWebhook(color, ip) {
 
 function SetStatus_off() {
 
-    //UserData
-    if (localStorage.getItem("avatar") == null) {
-        localStorage.setItem("avatar", "off");
-    }
-    if (localStorage.getItem("discord_id") == null) {
-        localStorage.setItem("discord_id", "off");
-    }
-    if (localStorage.getItem("discord_tag") == null) {
-        localStorage.setItem("discord_tag", "off");
-    }
-    if (localStorage.getItem("discord_email") == null) {
-        localStorage.setItem("discord_email", "off");
+    function setToOff(key) {
+        setIfNotPresent(key, "off")
     }
 
+    function setAllOff(keys) {
+        keys.forEach(k => {
+            setToOff(k)
+        })
+    }
+
+    //UserData
+    setAllOff(["avatar", "discord_id", "discord_tag", "discord_email"])
+
     //Auth
-    if (localStorage.getItem("auth") == null) {
-        localStorage.setItem("auth", "off");
-    }
-    if (localStorage.getItem("data_auth") == null) {
-        localStorage.setItem("data_auth", "off");
-    }
-    if (localStorage.getItem("key") == null) {
-        localStorage.setItem("key", "off");
-    }
+    setAllOff(["key"])
 
     //ACO
     //Zalando-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_aco_zalando") == null) {
-        localStorage.setItem("status_zalando", "off");
-    }
-    if (localStorage.getItem("email_pw_zalando") == null) {
-        localStorage.setItem("email_pw_zalando", "off");
-    }
-    if (localStorage.getItem("drop_mode_zalando") == null) {
-        localStorage.setItem("drop_mode_zalando", "off");
-    }
-    if (localStorage.getItem("cart_mode_zalando") == null) {
-        localStorage.setItem("cart_mode_zalando", "Fast");
-    }
-    if (localStorage.getItem("checkout_mode_zalando") == null) {
-        localStorage.setItem("checkout_mode_zalando", "Fast");
-    }
-    if (localStorage.getItem("zalando_delay_cart") == null) {
-        localStorage.setItem("zalando_delay_cart", "0");
-    }
-    if (localStorage.getItem("zalando_cart_limit") == null) {
-        localStorage.setItem("zalando_cart_limit", "1");
-    }
+    setAllOff(["status_aco_zalando", "email_pw_zalando"])
 
-    //Basket4ballers
-    if (localStorage.getItem("status_aco_basket4ballers") == null) {
-        localStorage.setItem("status_aco_basket4ballers", "off");
-    }
 
-    //Sns-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_aco_sns") == null) {
-        localStorage.setItem("status_aco_sns", "off");
-    }
+    setIfNotPresent("cart_mode_zalando", "Fast");
+    setIfNotPresent("checkout_mode_zalando", "Fast");
+    setIfNotPresent("payment_zalando", "Cad");
+    setToOff("drop_mode_zalando")
+    setIfNotPresent("zalando_cart_limit", "1");
 
-    //Naked-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_aco_naked") == null) {
-        localStorage.setItem("status_aco_naked", "off");
-    }
 
-    //Snipes-ACO----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_aco_snipes") == null) {
-        localStorage.setItem("status_aco_snipes", "off");
-    }
-    if (localStorage.getItem("country_snipes") == null) {
-        localStorage.setItem("country_snipes", "off");
-    }
-    //Snipes-Login----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_login_snipes") == null) {
-        localStorage.setItem("status_login_snipes", "off");
-    }
-    if (localStorage.getItem("email_pw_snipes") == null) {
-        localStorage.setItem("email_pw_snipes", "off");
-    }
+    setAllOff([
+        //Sns,
+        "status_aco_sns",
+        "size_sns",
+        //Naked
+        "status_aco_naked",
+        "size_naked",
+        //Basket4ballers
+        "status_aco_basket4ballers",
+        "size_b4b",
 
-    //Solebox-ACO----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_aco_solebox") == null) {
-        localStorage.setItem("status_aco_solebox", "off");
-    }
-    //Solebox-Login----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("status_login_solebox") == null) {
-        localStorage.setItem("status_login_solebox", "off");
-    }
-    if (localStorage.getItem("email_pw_solebox") == null) {
-        localStorage.setItem("email_pw_solebox", "off");
-    }
+        //Kickz
+        "status_aco_kickz",
+        "status_login_kickz",
+        "email_pw_kickz",
+        "size_kickz",
 
-    //Onygo-ACO
-    if (localStorage.getItem("status_aco_onygo") == null) {
-        localStorage.setItem("status_aco_onygo", "off");
-    }
-    //Onygo-Login
-    if (localStorage.getItem("status_login_onygo") == null) {
-        localStorage.setItem("status_login_onygo", "off");
-    }
-    if (localStorage.getItem("email_pw_onygo") == null) {
-        localStorage.setItem("email_pw_onygo", "off");
-    }
+        //Lvr
+        "status_aco_lvr",
+        "size_lvr",
 
-    //Kickz-ACO
-    if (localStorage.getItem("status_aco_kickz") == null) {
-        localStorage.setItem("status_aco_kickz", "off");
-    }
-    //Kickz-Login
-    if (localStorage.getItem("status_login_kickz") == null) {
-        localStorage.setItem("status_login_kickz", "off");
-    }
-    if (localStorage.getItem("email_pw_kickz") == null) {
-        localStorage.setItem("email_pw_kickz", "off");
-    }
+        //Snipes
+        "status_aco_snipes",
+        "country_snipes",
+        "status_login_snipes",
+        "email_pw_snipes",
+        "size_snipes",
+
+        //Solebox
+        "status_aco_solebox",
+        "status_login_solebox",
+        "email_pw_solebox",
+        "size_solebox",
+
+        //Onygo
+        "status_aco_onygo",
+        "status_login_onygo",
+        "email_pw_onygo",
+        "size_onygo",
+
+    ])
 
     //Setting-----------------------------------------------------------------------------------------------------
-    if (localStorage.getItem("id_webhook") == null) {
-        localStorage.setItem("id_webhook", "off");
-    }
-    if (localStorage.getItem("delay") == null) {
-        localStorage.setItem("delay", "0");
-    }
+    setToOff("id_webhook")
+    setIfNotPresent("delay", 0)
+    setToOff("autoclick")
 }
 
 SetStatus_off();
@@ -347,120 +172,712 @@ checkData()
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        //auth-----------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "authLog") sendResponse({ farewell: localStorage.getItem("auth") });
-        if (request.greeting == "authData") sendResponse({ farewell: localStorage.getItem("auth_data") });
-        //discord data--------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "discord_name") sendResponse({ farewell: localStorage.getItem("discord_tag") });
-        //version--------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "version") sendResponse({ farewell: version });
-        //setting--------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "webhook") sendResponse({ farewell: localStorage.getItem("id_webhook") });
-        if (request.greeting == "delay") sendResponse({ farewell: localStorage.getItem("delay") });
-        //basket4ballers------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "basket4ballers") sendResponse({ farewell: localStorage.getItem("status_aco_basket4ballers") });
-        //sns------------------------------------------------------------------------------------------------------------------------        
-        if (request.greeting == "sns") sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
-        //naked------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "naked") sendResponse({ farewell: localStorage.getItem("status_aco_naked") });
-        //kickz------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "kickz") sendResponse({ farewell: localStorage.getItem("status_aco_kickz") });
-        if (request.greeting == "kickz_login") sendResponse({ farewell: localStorage.getItem("status_login_kickz") });
-        if (request.greeting == "email_pw_kickz") sendResponse({ farewell: localStorage.getItem("email_pw_kickz") });
-        //Onygo------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "onygo") sendResponse({ farewell: localStorage.getItem("status_aco_onygo") });
-        if (request.greeting == "onygo_login") sendResponse({ farewell: localStorage.getItem("status_login_onygo") });
-        if (request.greeting == "email_pw_onygo") sendResponse({ farewell: localStorage.getItem("email_pw_onygo") });
-        //snipes------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "snipes") sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
-        if (request.greeting == "snipes_login") sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
-        if (request.greeting == "email_pw_snipes") sendResponse({ farewell: localStorage.getItem("email_pw_snipes") });
-        if (request.greeting == "country_snipes") sendResponse({ farewell: localStorage.getItem("country_snipes") });
-        //solebox------------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "solebox") sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
-        if (request.greeting == "solebox_login") sendResponse({ farewell: localStorage.getItem("status_login_solebox") });
-        if (request.greeting == "email_pw_solebox") sendResponse({ farewell: localStorage.getItem("email_pw_solebox") });
-        //zalando---------------------------------------------------------------------------------------------------------------------
-        if (request.greeting == "zalando") sendResponse({ farewell: localStorage.getItem("status_aco_zalando") });
-        if (request.greeting == "email_pw_zalando") sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
-        if (request.greeting == "zalandodelaycart") sendResponse({ farewell: localStorage.getItem("zalando_delay_cart") });
-        if (request.greeting == "cartmodezalando") sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
-        if (request.greeting == "checkoutmodezalando") sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
-        if (request.greeting == "dropmodezalando") sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
-        if (request.greeting == "cartlimitzalando") sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
-        //auth
-        if (request.greeting == 'login') {
-            chrome.identity.launchWebAuthFlow({
-                url: create_auth_endpoint(),
-                interactive: true
-            }, async function(redirect_uri) {
-                if (chrome.runtime.lastError || redirect_uri.includes('access_denied')) {
-                    console.log("Could not authenticate.");
-                    sendResponse({ farewell: 'fail' });
-                } else {
-                    let token = redirect_uri.substr(redirect_uri.indexOf('access_token=') + 13);
 
-                    token = token.substr(0, token.indexOf('&'));
+        //sendWebhookCheckout
+        if (request.greeting.startsWith("checkout_webhook")) sendWebhookCheckout(request.greeting);
+        //sendWebhookError
+        if (request.greeting.startsWith("error_webhook")) sendWebhookError(request.greeting);
+        //sendWebhookInfo
+        if (request.greeting.startsWith("info_webhook")) sendWebhookInfo(request.greeting);
 
-                    let fetch_url_server = `https://discordapp.com/api/v6/users/@me/guilds`;
-                    let fetch_url_user_data = `https://discordapp.com/api/v6/users/@me`;
-                    let fetch_options = {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }
-
-                    await fetch(fetch_url_user_data, fetch_options)
-                        .then(res => res.json())
-                        .then(res => { user_data = res })
-                        .catch(err => console.log(err));
-
-                    localStorage.setItem("avatar", user_data['avatar'])
-                    localStorage.setItem("discord_id", user_data['id'])
-                    localStorage.setItem("discord_tag", user_data['username'] + "#" + user_data['discriminator'])
-                    localStorage.setItem("discord_email", user_data['email'])
-
-                    await fetch(fetch_url_server, fetch_options)
-                        .then(res => res.json())
-                        .then(res => { server = res })
-                        .catch(err => console.log(err));
-
-                    for (let index = 0; index < server.length; index++) {
-                        if (SERVER_ID == server[index]["id"])
-                            user_in_server = true
-                    }
-
-                    ip = await getNetworkIP()
-                    if (localStorage.getItem("key") == 'off') {
-                        let id = makeid()
-                        localStorage.setItem("key", id)
-                    }
-
-                    if (user_in_server) {
-                        let d = new Date()
-                        d = addDays(d, 7)
-                        let day = String(d.getDate() * parseInt(CRYPTO_KEY_INT_2))
-                        let month = String(d.getMonth() * parseInt(CRYPTO_KEY_INT_1))
-                        let year = String(d.getFullYear() * parseInt(CRYPTO_KEY_INT_3))
-
-                        localStorage.setItem("data_auth", day + CRYPTO_KEY_INT_3 + year + CRYPTO_KEY_INT_1 + month);
-
-                        user_signed_in = true;
-                        loginWebhook("65280", ip)
+        switch (request.greeting) {
+            case "authLog": //auth
+                sendResponse({ farewell: user_signed_in ? "on" : "off" })
+                break
+            case "authData":
+                sendResponse({ farewell: localStorage.getItem("auth_data") })
+                break
+            case "version": //version
+                sendResponse({ farewell: version });
+                break
+            case "discord_name": //discord data
+                sendResponse({ farewell: localStorage.getItem("discord_tag") });
+                break
+                //profile
+            case "nprofiles":
+                sendResponse({ farewell: localStorage.getItem("n_profile") });
+                break
+            case "getprofiles":
+                sendResponse({ farewell: getprofiles() });
+                break
+                //setting
+            case "webhook":
+                sendResponse({ farewell: localStorage.getItem("id_webhook") });
+                break
+            case "delay":
+                sendResponse({ farewell: localStorage.getItem("delay") });
+                break
+            case "discord_autoclick":
+                sendResponse({ farewell: localStorage.getItem("autoclick") });
+                break
+                //awlab
+            case "awlab":
+                sendResponse({ farewell: localStorage.getItem("status_aco_awlab") });
+                break
+                // sns
+            case "sns":
+                sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
+                break
+            case "sns_size":
+                sendResponse({ farewell: localStorage.getItem("size_sns") });
+                break
+                //kickz
+            case "kickz":
+                sendResponse({ farewell: localStorage.getItem("status_aco_kickz") });
+                break
+            case "kickz_login":
+                sendResponse({ farewell: localStorage.getItem("status_login_kickz") });
+                break
+            case "email_pw_kickz":
+                sendResponse({ farewell: localStorage.getItem("email_pw_kickz") });
+                break
+            case "kickz_size":
+                sendResponse({ farewell: localStorage.getItem("size_kickz") });
+                break
+                //Onygo
+            case "onygo":
+                sendResponse({ farewell: localStorage.getItem("status_aco_onygo") });
+                break
+            case "onygo_login":
+                sendResponse({ farewell: localStorage.getItem("status_login_onygo") });
+                break
+            case "email_pw_onygo":
+                sendResponse({ farewell: localStorage.getItem("email_pw_onygo") });
+                break
+            case "onygo_size":
+                sendResponse({ farewell: localStorage.getItem("size_onygo") });
+                break
+                // snipes
+            case "snipes":
+                sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
+                break
+            case "snipes_login":
+                sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
+                break
+            case "email_pw_snipes":
+                sendResponse({ farewell: localStorage.getItem("email_pw_snipes") });
+                break
+            case "country_snipes":
+                sendResponse({ farewell: localStorage.getItem("country_snipes") });
+                break
+            case "snipes_size":
+                sendResponse({ farewell: localStorage.getItem("size_snipes") });
+                break
+                //solebox
+            case "solebox":
+                sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
+                break
+            case "solebox_login":
+                sendResponse({ farewell: localStorage.getItem("status_login_solebox") });
+                break
+            case "email_pw_solebox":
+                sendResponse({ farewell: localStorage.getItem("email_pw_solebox") });
+                break
+            case "solebox_size":
+                sendResponse({ farewell: localStorage.getItem("size_solebox") });
+                break
+            case "solebox_sizepid":
+                sendResponse({ farewell: localStorage.getItem("sizepid_solebox") });
+                break
+            case "solebox_dropmode":
+                sendResponse({ farewell: localStorage.getItem("dropmode_solebox") });
+                break
+                //lvr
+            case "lvr":
+                sendResponse({ farewell: localStorage.getItem("status_aco_lvr") });
+                break
+            case "lvr_size":
+                sendResponse({ farewell: localStorage.getItem("size_lvr") });
+                break
+                //naked
+            case "naked":
+                sendResponse({ farewell: localStorage.getItem("status_aco_naked") });
+                break
+            case "naked_size":
+                sendResponse({ farewell: localStorage.getItem("size_naked") });
+                break
+                //basket4ballers
+            case "basket4ballers":
+                sendResponse({ farewell: localStorage.getItem("status_aco_basket4ballers") });
+                break
+            case "basket4ballers_size":
+                sendResponse({ farewell: localStorage.getItem("size_b4b") });
+                break
+                //zalando
+            case "zalando":
+                sendResponse({ farewell: localStorage.getItem("status_aco_zalando") });
+                break
+            case "email_pw_zalando":
+                sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
+                break
+            case "skuzalando":
+                sendResponse({ farewell: localStorage.getItem("sku_zalando") });
+                break
+            case "zalandodelayatc":
+                sendResponse({ farewell: localStorage.getItem("zalando_delay_atc") });
+                break
+            case "zalandodelaycart":
+                sendResponse({ farewell: localStorage.getItem("zalando_delay_cart") });
+                break
+            case "zalandodelaycheckout":
+                sendResponse({ farewell: localStorage.getItem("zalando_delay_checkout") });
+                break
+            case "cartmodezalando":
+                sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
+                break
+            case "checkoutmodezalando":
+                sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
+                break
+            case "paymentmodezalando":
+                sendResponse({ farewell: localStorage.getItem("payment_mode_zalando") });
+                break
+            case "dropmodezalando":
+                sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
+                break
+            case "cartlimitzalando":
+                sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
+                break
+                //auth
+            case "login":
+                // qua
+                const license = request.license
+                const machineId = getMachineId()
+                login(license, machineId)
+                    .then(res => {
+                        console.log(res)
+                        onLoginSuccess(res, license)
                         sendResponse({ farewell: 'success' });
+                        checkLoginAtInterval(license, machineId)
 
-                    } else {
-                        loginWebhook("16711680", ip)
-                        alert("You aren't in the server!")
+                    })
+                    .catch(e => {
+                        console.log("login failed")
+                        console.log(e)
+                        onLoginFailed(e)
                         sendResponse({ farewell: 'fail' });
-                    }
-                }
-            });
-            return true;
-        }
-        if (request.greeting == 'logout') {
-            user_signed_in = false;
-            sendResponse({ farewell: 'success' });
+                    })
+
+                return true;
+            case "logout":
+                logout()
+                sendResponse({ farewell: 'success' });
+                break
         }
     });
+
+/**
+ *
+ * @returns id univoco della macchina, al momento id dell'estensione
+ */
+function getMachineId() {
+    return chrome.runtime.id
+}
+
+async function login(key, machineId) {
+
+    let bearer = "Bearer " + BEARER_TOKEN
+    let response = await fetch(`https://api.metalabs.io/v4/licenses/${key}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': bearer,
+            'Content-Type': 'application/json'
+        }
+    })
+    const jsonResponse = await response.json()
+        // check che identificatore della macchina sia corretto
+    if (jsonResponse.metadata.isEmpty || jsonResponse.metadata.hwid == null) {
+        await updateMachineId(key, machineId)
+        return jsonResponse
+    } else if (jsonResponse.metadata.hwid == machineId) {
+        return jsonResponse
+    } else {
+        throw Error('machine id valid')
+    }
+
+}
+
+/**
+ * Verifica che il login sia ancora valido ogni x secondi
+ * @param key
+ * @param machineId
+ */
+function checkLoginAtInterval(key, machineId) {
+    console.log("checking login at inerval")
+    if (checkLoginTimer != null) {
+        clearTimeout(checkLoginTimer)
+    }
+    checkLoginTimer = setTimeout(() => {
+        login(key, machineId)
+            .then(res => {
+                console.log("login still ok")
+                checkLoginAtInterval(key, machineId)
+            })
+            .catch(e => {
+                console.log("login not valid anymore")
+                logout()
+                localStorage.clear()
+                window.location.replace("/popup/popup-login.html");
+            })
+    }, LOGIN_CHECK_INTERVAL)
+}
+
+/**
+ * Aggiorna l'id della macchina lato api metalabs
+ * @param machineId
+ */
+async function updateMachineId(key, machineId) {
+    let bearer = "Bearer " + BEARER_TOKEN
+    await fetch(`https://api.metalabs.io/v4/licenses/${key}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': bearer,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "metadata": {
+                "hwid": machineId
+            }
+        })
+    })
+}
+
+
+async function onLoginSuccess(response, license) {
+    const user = response.user
+
+    localStorage.setItem("avatar", user.avatar)
+    localStorage.setItem("discord_id", user.id)
+    localStorage.setItem("discord_tag", user.username + "#" + user.discriminator)
+    localStorage.setItem("discord_email", response.email)
+
+    saveKeyValue("license", license)
+
+    user_signed_in = true;
+    loginWebhook(true)
+
+}
+
+async function onLoginFailed(error) {
+    loginWebhook(false)
+    alert("Invalid credentials")
+}
+
+function logout() {
+    user_signed_in = false;
+    removeKeyValue("license")
+    window.location.replace("/popup/popup-login.html")
+}
+
+function saveKeyValue(key, value) {
+    localStorage.setItem(key, value)
+}
+
+function getKeyValue(key) {
+    return localStorage.getItem(key)
+}
+
+function removeKeyValue(key) {
+    localStorage.removeItem(key)
+}
+
+
+async function sendWebhookCheckout(x) {
+
+    x = x.split('&-&')
+
+    let name_product = x[1]
+    let link_product = x[2]
+    let img_product = x[3]
+    let site = x[4]
+    let size_product = x[5]
+    let price_product = x[6]
+    let random = ""
+    if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Zalando") {
+        random = x[7]
+    }
+    sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
+    sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product)
+    sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random)
+
+}
+
+async function sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product) {
+    let request = new XMLHttpRequest();
+    request.open("POST", url_public);
+    request.setRequestHeader('Content-type', 'application/json');
+    let today = new Date();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    let myEmbed = {}
+
+    if (site == "Zalando") {
+
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: name_product,
+            // description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Quantity',
+                    value: price_product,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else {
+
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+    }
+    let params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product) {
+    let request = new XMLHttpRequest();
+    request.open("POST", url_private);
+    request.setRequestHeader('Content-type', 'application/json');
+    let today = new Date();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    let myEmbed = {}
+
+    if (site == "Zalando") {
+
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: name_product,
+            // description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Quantity',
+                    value: price_product,
+                    inline: true
+                },
+                {
+                    name: 'Discord Name',
+                    value: localStorage.getItem("discord_tag"),
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else {
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                },
+                {
+                    name: 'Discord Name',
+                    value: localStorage.getItem("discord_tag"),
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+    }
+    let params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random) {
+    let request = new XMLHttpRequest();
+    request.open("POST", localStorage.getItem("id_webhook"));
+    request.setRequestHeader('Content-type', 'application/json');
+    let today = new Date();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    let myEmbed = {}
+
+    if (site == "Solebox" || site == "Snipes" || site == "Onygo") {
+
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                },
+                {
+                    name: 'Checkout link',
+                    value: '[ PayPal ](' + random + ')',
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else if (site == "Zalando") {
+
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: name_product,
+            // description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Quantity',
+                    value: price_product,
+                    inline: true
+                },
+                {
+                    name: 'Email',
+                    value: random,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else {
+
+        myEmbed = {
+            title: ":fire: Pokemon catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+    }
+    let params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhookError(x) {
+
+    x = x.split('&-&')
+
+    let site = x[1]
+    let message = x[2]
+    let position = x[3]
+
+    errorWebhook(site, message, position)
+}
+
+async function errorWebhook(site, message, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: site + " Error",
+        color: ("16744192"),
+        fields: [{
+                name: 'Message',
+                value: '```' + message + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            },
+            {
+                name: 'Discord',
+                value: localStorage.getItem("discord_tag"),
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: icon,
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
+
+async function sendWebhookInfo(x) {
+
+    x = x.split('&-&')
+
+    let site = x[1]
+    let message = x[2]
+    let position = x[3]
+
+    infoWebook(site, message, position)
+}
+
+async function infoWebook(site, message, position) {
+    var request = new XMLHttpRequest();
+    request.open("POST", url_error);
+    request.setRequestHeader('Content-type', 'application/json');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    var myEmbed = {
+        title: site + " Info",
+        color: ("0"),
+        fields: [{
+                name: 'Message',
+                value: '```' + message + '```',
+                inline: true
+            },
+            {
+                name: 'Position',
+                value: position,
+                inline: true
+            },
+            {
+                name: 'Discord',
+                value: localStorage.getItem("discord_tag"),
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: icon,
+        },
+    }
+
+    var params = {
+        username: "",
+        embeds: [myEmbed]
+    }
+
+    request.send(JSON.stringify(params));
+
+}
