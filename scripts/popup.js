@@ -167,6 +167,7 @@ function onUserLogged() {
     //contollo se sono già presenti nello storage e in caso li inserisco nell' input
     if (localStorage.getItem("cart_mode_zalando") != "off") { $("#zalandoCartMode").val(localStorage.getItem("cart_mode_zalando")); }
     if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#zalandoCheckoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
+    if (localStorage.getItem("size_zalando") != "off") { $("#size_zalando").val(localStorage.getItem("size_zalando")); }
     $("#zalandoCartLimit").val(localStorage.getItem("zalando_cart_limit"));
     //gestisco il click del bottone salva
     $("#btnZ").click(function() {
@@ -175,7 +176,9 @@ function onUserLogged() {
         var cart = $("#zalandoCartMode").val();
         var ck = $("#zalandoCheckoutMode").val();
         var cl = $("#zalandoCartLimit").val();
+        var size_zalando = $("#size_zalando").val();
 
+        if (size_zalando != '') { localStorage.setItem("size_zalando", size_zalando); } else { localStorage.setItem("size_zalando", "off"); }
         if (e != '' && p != '') { localStorage.setItem("email_pw_zalando", e + ":" + p); } else { localStorage.setItem("email_pw_zalando", "off"); }
         if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "off"); }
         if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "off"); }

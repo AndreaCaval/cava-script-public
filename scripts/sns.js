@@ -87,7 +87,7 @@ async function atc() {
         if (sizes.length != 0) {
             if (size_range == "random") {
                 n = getRandomIntInclusive(0, sizes.length - 1)
-                variant_id = sizes[n].value
+                variant_id = sizes[n].getAttribute("for").split('-')[1]
             } else {
                 if (size_range.includes('-')) {
                     size_1 = parseInt(size_range.split('-')[0])
@@ -150,49 +150,51 @@ async function atcR() {
 
 async function checkRes(response) {
 
-    let status = response.status
-    let res = await response.text()
+    try {
+        let status = response.status
+        let res = await response.text()
 
-    if (status == 200 || status == 201) {
-        html.innerHTML = res
-        let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-        let j = JSON.parse(cart_size)
-        let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
-        let j_1 = JSON.parse(cart_1)
-        name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
-        price_product = j_1["price"]
-        size_product = j["converted-size-size-eu"]
-        sendWebhooks()
-        document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
-    } else {
+        if (status == 200 || status == 201) {
+            html.innerHTML = res
+            let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+            let j = JSON.parse(cart_size)
+            let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
+            let j_1 = JSON.parse(cart_1)
+            name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
+            price_product = j_1["price"]
+            size_product = j["converted-size-size-eu"]
+            sendWebhooks()
+            document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
+        } else {
 
-        sendText("Error, Trying atc normal...", "blue")
-        sizes[n].click()
-        document.getElementsByClassName("product-form__btn btn")[0].click()
+            sendText("Error, Trying atc normal...", "blue")
+            sizes[n].click()
+            document.getElementsByClassName("product-form__btn btn")[0].click()
 
-        //if captcha on while()
+            //if captcha on while()
 
-        await sleep(5000)
+            await sleep(5000)
 
-        if (document.getElementsByClassName("cart-items")[0] != undefined) {
-            try {
-                let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
-                let jj = JSON.parse(x)
-                let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-                let jjj = JSON.parse(y)
-                name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
-                size_product = jjj["converted-size-size-eu"]
-                price_product = jj["price"]
-                sendWebhooks()
-                    //document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
-            } catch (error) {
-                errorWebhooks(error)
+            if (document.getElementsByClassName("cart-items")[0] != undefined) {
+                try {
+                    let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
+                    let jj = JSON.parse(x)
+                    let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+                    let jjj = JSON.parse(y)
+                    name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
+                    size_product = jjj["converted-size-size-eu"]
+                    price_product = jj["price"]
+                    sendWebhooks()
+                    document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
+                } catch (error) {
+                    errorWebhooks(error)
+                    errorRefresh()
+                }
+            } else {
                 errorRefresh()
             }
-        } else {
-            errorRefresh()
         }
-    }
+    } catch (error) { errorWebhooks(error, "checkRes") }
 }
 
 async function sendWebhooks() {

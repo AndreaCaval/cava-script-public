@@ -53,7 +53,7 @@ function SetStatus_off() {
 
     //ACO
     //Zalando-----------------------------------------------------------------------------------------------------
-    setAllOff(["status_aco_zalando", "email_pw_zalando"])
+    setAllOff(["status_aco_zalando", "email_pw_zalando", "size_zalando"])
     setIfNotPresent("cart_mode_zalando", "Fast");
     setIfNotPresent("checkout_mode_zalando", "Fast");
     setIfNotPresent("payment_zalando", "Cad");
@@ -109,18 +109,6 @@ function SetStatus_off() {
     setIfNotPresent("delay", 0)
 }
 
-function getprofiles() {
-    ar = {}
-    np = parseInt(localStorage.getItem("n_profile"))
-    if (np != 0) {
-        for (var i = 1; i <= np; i++) {
-            x = localStorage.getItem("profiles" + String(i))
-            ar["profiles" + String(i)] = x
-        }
-    }
-    return ar
-}
-
 SetStatus_off();
 
 checkData()
@@ -151,10 +139,6 @@ chrome.runtime.onMessage.addListener(
                 break
             case "delay":
                 sendResponse({ farewell: localStorage.getItem("delay") });
-                break
-                //awlab
-            case "awlab":
-                sendResponse({ farewell: localStorage.getItem("status_aco_awlab") });
                 break
                 // sns
             case "sns":
@@ -218,12 +202,6 @@ chrome.runtime.onMessage.addListener(
             case "solebox_size":
                 sendResponse({ farewell: localStorage.getItem("size_solebox") });
                 break
-            case "solebox_sizepid":
-                sendResponse({ farewell: localStorage.getItem("sizepid_solebox") });
-                break
-            case "solebox_dropmode":
-                sendResponse({ farewell: localStorage.getItem("dropmode_solebox") });
-                break
                 //lvr
             case "lvr":
                 sendResponse({ farewell: localStorage.getItem("status_aco_lvr") });
@@ -263,6 +241,9 @@ chrome.runtime.onMessage.addListener(
                 break
             case "cartlimitzalando":
                 sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
+                break
+            case "zalando_size":
+                sendResponse({ farewell: localStorage.getItem("size_zalando") });
                 break
                 //auth
             case "login":

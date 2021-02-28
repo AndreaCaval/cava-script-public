@@ -9,6 +9,7 @@ let country = link.split('/')[2]
 
 let email = ""
 let pw = ""
+let size_range = "random"
 
 let payment_mode = "Default"
 let ckmode = ""
@@ -150,7 +151,7 @@ async function main() {
     } else {
         searchSize()
         textBoxMain()
-        if (link != "https://" + country + "/wardrobe/?")
+        if (link != "https://" + country + "/wardrobe/?" && document.getElementsByClassName("uqkIZw ka2E9k uMhVZi FxZV-M z-oVg8 pVrzNP")[0] != undefined)
             if (drop_mode == "on")
                 dropMode()
     }
@@ -317,14 +318,34 @@ async function dropMode() {
                     let sizes = obj[0].model.articleInfo.units
                     for (let i = 0; i < sizes.length; i++) {
                         if (sizes[i]["available"] == true) {
+                            if (size_range == "random")
+                                size_in_stock.push(sizes[i].id)
+                            else {
+                                s = parseInt(sizes[i])
+                                if (size_range.includes('-')) {
+                                    size_1 = parseInt(size_range.split('-')[0])
+                                    size_2 = parseInt(size_range.split('-')[1])
+                                    if (s >= size_1 && s <= size_2) {
+                                        size_in_stock.push(sizes[i].id)
+                                    }
+                                } else {
+                                    if (parseInt(size_range) == s) {
+                                        size_in_stock.push(sizes[i].id)
+                                    }
+                                }
+                            }
                             size_in_stock.push(sizes[i].id)
                         }
                     }
                 } catch (error) {}
                 if (size_in_stock.length != 0) {
-                    for (let i = 0; i < cart_limit; i++) {
-                        n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                        await atcRDrop(size_in_stock[n])
+                    if (size_in_stock.length == 1) {
+                        await atcRDrop(size_in_stock[0])
+                    } else {
+                        for (let i = 0; i < cart_limit; i++) {
+                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                            await atcRDrop(size_in_stock[n])
+                        }
                     }
                 }
 
@@ -346,6 +367,22 @@ async function dropMode() {
                             let sizes = obj[0].model.articleInfo.units
                             for (let i = 0; i < sizes.length; i++) {
                                 if (sizes[i]["available"] == true) {
+                                    if (size_range == "random")
+                                        size_in_stock.push(sizes[i].id)
+                                    else {
+                                        s = parseInt(sizes[i])
+                                        if (size_range.includes('-')) {
+                                            size_1 = parseInt(size_range.split('-')[0])
+                                            size_2 = parseInt(size_range.split('-')[1])
+                                            if (s >= size_1 && s <= size_2) {
+                                                size_in_stock.push(sizes[i].id)
+                                            }
+                                        } else {
+                                            if (parseInt(size_range) == s) {
+                                                size_in_stock.push(sizes[i].id)
+                                            }
+                                        }
+                                    }
                                     size_in_stock.push(sizes[i].id)
                                 }
                             }
@@ -353,9 +390,13 @@ async function dropMode() {
                     })
 
                     if (size_in_stock.length != 0) {
-                        for (index = 0; index < cart_limit; index++) {
-                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                            await atcRDrop(size_in_stock[n])
+                        if (size_in_stock.length == 1) {
+                            await atcRDrop(size_in_stock[0])
+                        } else {
+                            for (let i = 0; i < cart_limit; i++) {
+                                n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                                await atcRDrop(size_in_stock[n])
+                            }
                         }
                         if (count_cart != 0) {
                             // empty_cart = false
@@ -886,6 +927,11 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
+chrome.runtime.sendMessage({ greeting: "zalando_size" }, function(response) {
+    if (response.farewell != "off")
+        size_range = response.farewell
+});
+
 
 chrome.runtime.sendMessage({ greeting: "cartlimitzalando" }, function(response) {
     cart_limit = response.farewell;
@@ -921,8 +967,10 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
             } else {
                 if (link.startsWith("https://" + country + "/zalando-newsletter"))
                     textBoxCouponGen()
-                searchSize()
-                textBoxMain()
+                else {
+                    searchSize()
+                    textBoxMain()
+                }
             }
         });
     }
