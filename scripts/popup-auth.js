@@ -22,7 +22,6 @@ function sing_in() { /* popup-sign-in-script.js */
             const license = document.getElementById("license").value
             chrome.runtime.sendMessage({ greeting: 'login', license: license }, function(response) {
                 if (response.farewell == 'success') {
-                    localStorage.setItem("auth", "on");
                     window.location.replace("/popup/popup-site-aco.html");
                 }
             });
@@ -48,10 +47,6 @@ function sing_out() { /* popup-sign-out-script.js */
         button_out.addEventListener('click', () => {
             chrome.runtime.sendMessage({ greeting: 'logout' }, function(response) {
                 if (response.farewell == 'success') {
-                    localStorage.setItem("avatar", "off")
-                    localStorage.setItem("discord_id", "off")
-                    localStorage.setItem("discord_tag", "off")
-                    localStorage.setItem("discord_email", "off")
                     window.location.replace("/popup/popup-login.html");
                 }
             });

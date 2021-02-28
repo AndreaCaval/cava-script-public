@@ -404,6 +404,10 @@ async function atc() {
         } else {
             if (!size_range.includes('-')) {
                 getSizePid(size_range)
+            } else {
+                let size_box = size_range.split('-')
+                let n = getRandomIntInclusive(0, size_box.length - 1)
+                getSizePid(size_box[n])
             }
         }
 

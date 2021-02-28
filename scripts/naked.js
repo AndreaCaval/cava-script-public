@@ -1,6 +1,6 @@
 debugger
 
-const site = "Sns"
+const site = "Naked"
 
 let link = document.location.href
 let country = link.split('/')[3]

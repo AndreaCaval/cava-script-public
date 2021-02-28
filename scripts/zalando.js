@@ -9,7 +9,6 @@ let country = link.split('/')[2]
 
 let email = ""
 let pw = ""
-let size_range = "random"
 
 let payment_mode = "Default"
 let ckmode = ""
@@ -318,33 +317,14 @@ async function dropMode() {
                     let sizes = obj[0].model.articleInfo.units
                     for (let i = 0; i < sizes.length; i++) {
                         if (sizes[i]["available"] == true) {
-                            if (size_range == "random")
-                                size_in_stock.push(sizes[i].id)
-                            else {
-                                s = parseInt(sizes[i])
-                                size_1 = parseInt(size_range.split('-')[0])
-                                size_2 = parseInt(size_range.split('-')[1])
-                                if (size_range.includes('-')) {
-                                    if (s >= size_1 && s <= size_2) {
-                                        size_in_stock.push(sizes[i].id)
-                                    }
-                                } else {
-                                    if (size_1 == s) {
-                                        size_in_stock.push(sizes[i].id)
-                                    }
-                                }
-                            }
+                            size_in_stock.push(sizes[i].id)
                         }
                     }
                 } catch (error) {}
                 if (size_in_stock.length != 0) {
-                    if (size_in_stock.length == 1) {
-                        await atcRDrop(size_in_stock[0])
-                    } else {
-                        for (let i = 0; i < cart_limit; i++) {
-                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                            await atcRDrop(size_in_stock[n])
-                        }
+                    for (let i = 0; i < cart_limit; i++) {
+                        n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                        await atcRDrop(size_in_stock[n])
                     }
                 }
 
@@ -425,11 +405,10 @@ async function atcFast() {
     sendText("Trying atc...", "blue")
     try { await atc() } catch (error) { errorWebhook(error, "atcFast") }
 
-    if (carted != 0) {
+    if (carted != 0)
         window.open("https://" + country + "/checkout/confirm")
-    } else {
+    else
         sendText("Error carting item", "red")
-    }
 }
 
 async function atc() {
@@ -934,17 +913,14 @@ chrome.runtime.sendMessage({ greeting: "email_pw_zalando" }, function(response) 
     pw = x.split(':')[1]
 });
 
-chrome.runtime.sendMessage({ greeting: "zalando_size" }, function(response) {
-    if (response.farewell != "off")
-        size_range = response.farewell
-});
-
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         chrome.runtime.sendMessage({ greeting: "zalando" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             } else {
+                if (link.startsWith("https://" + country + "/zalando-newsletter"))
+                    textBoxCouponGen()
                 searchSize()
                 textBoxMain()
             }

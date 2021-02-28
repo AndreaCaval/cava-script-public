@@ -1,19 +1,19 @@
 debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
-
-const version = "1.0.6";
-const icon = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Pok%C3%A9ball.png";
+const version = "1.1.0";
+const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
 const url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA";
-
-const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" //login
+const url_login = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" //login
 let user_signed_in = false;
 
 let checkLoginTimer // timer per check validità
 const LOGIN_CHECK_INTERVAL = 3600 * 24 * 1000
 
+
+let userData = {}
 
 function setIfNotPresent(key, value) {
     if (localStorage.getItem(key) == null) {
@@ -27,65 +27,16 @@ function checkData() {
         const machineId = getMachineId()
         login(license, machineId)
             .then(res => {
-                console.log(res)
+                onLoginSuccess(res, license)
                 checkLoginAtInterval(license, machineId)
 
             })
             .catch(e => {
-                console.log("login failed")
                 console.log(e)
                 window.location.replace("/popup/popup-login.html")
                 removeKeyValue("license")
             })
     }
-}
-
-function loginWebhook(isLoginSuccessful) {
-    var request = new XMLHttpRequest();
-    request.open("POST", webhook_url);
-    request.setRequestHeader('Content-type', 'application/json');
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-    let color = isLoginSuccessful ? "65280" : "16711680"
-
-    var myEmbed = {
-        title: "Login",
-        color: color,
-        fields: [{
-                name: 'Email',
-                value: localStorage.getItem("discord_email"),
-                inline: true
-            },
-            {
-                name: 'Discord id',
-                value: localStorage.getItem("discord_id"),
-                inline: true
-            },
-            {
-                name: 'Discord tag',
-                value: localStorage.getItem("discord_tag"),
-                inline: true
-            },
-            {
-                name: 'Key',
-                value: localStorage.getItem("license"),
-                inline: true
-            }
-        ],
-        footer: {
-            text: 'Cava-Scripts ' + version + ' | ' + String(time),
-            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pok%C3%A9ball.png/480px-Pok%C3%A9ball.png',
-        },
-    }
-
-    var params = {
-        username: "",
-        embeds: [myEmbed]
-    }
-
-    request.send(JSON.stringify(params));
-
 }
 
 function SetStatus_off() {
@@ -100,17 +51,9 @@ function SetStatus_off() {
         })
     }
 
-    //UserData
-    setAllOff(["avatar", "discord_id", "discord_tag", "discord_email"])
-
-    //Auth
-    setAllOff(["key"])
-
     //ACO
     //Zalando-----------------------------------------------------------------------------------------------------
     setAllOff(["status_aco_zalando", "email_pw_zalando"])
-
-
     setIfNotPresent("cart_mode_zalando", "Fast");
     setIfNotPresent("checkout_mode_zalando", "Fast");
     setIfNotPresent("payment_zalando", "Cad");
@@ -158,12 +101,24 @@ function SetStatus_off() {
         "email_pw_onygo",
         "size_onygo",
 
+
     ])
 
     //Setting-----------------------------------------------------------------------------------------------------
     setToOff("id_webhook")
     setIfNotPresent("delay", 0)
-    setToOff("autoclick")
+}
+
+function getprofiles() {
+    ar = {}
+    np = parseInt(localStorage.getItem("n_profile"))
+    if (np != 0) {
+        for (var i = 1; i <= np; i++) {
+            x = localStorage.getItem("profiles" + String(i))
+            ar["profiles" + String(i)] = x
+        }
+    }
+    return ar
 }
 
 SetStatus_off();
@@ -181,24 +136,14 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting.startsWith("info_webhook")) sendWebhookInfo(request.greeting);
 
         switch (request.greeting) {
+            case "userData":
+                sendResponse({ farewell: userData })
+                break
             case "authLog": //auth
                 sendResponse({ farewell: user_signed_in ? "on" : "off" })
                 break
-            case "authData":
-                sendResponse({ farewell: localStorage.getItem("auth_data") })
-                break
             case "version": //version
                 sendResponse({ farewell: version });
-                break
-            case "discord_name": //discord data
-                sendResponse({ farewell: localStorage.getItem("discord_tag") });
-                break
-                //profile
-            case "nprofiles":
-                sendResponse({ farewell: localStorage.getItem("n_profile") });
-                break
-            case "getprofiles":
-                sendResponse({ farewell: getprofiles() });
                 break
                 //setting
             case "webhook":
@@ -206,9 +151,6 @@ chrome.runtime.onMessage.addListener(
                 break
             case "delay":
                 sendResponse({ farewell: localStorage.getItem("delay") });
-                break
-            case "discord_autoclick":
-                sendResponse({ farewell: localStorage.getItem("autoclick") });
                 break
                 //awlab
             case "awlab":
@@ -310,26 +252,11 @@ chrome.runtime.onMessage.addListener(
             case "email_pw_zalando":
                 sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
                 break
-            case "skuzalando":
-                sendResponse({ farewell: localStorage.getItem("sku_zalando") });
-                break
-            case "zalandodelayatc":
-                sendResponse({ farewell: localStorage.getItem("zalando_delay_atc") });
-                break
-            case "zalandodelaycart":
-                sendResponse({ farewell: localStorage.getItem("zalando_delay_cart") });
-                break
-            case "zalandodelaycheckout":
-                sendResponse({ farewell: localStorage.getItem("zalando_delay_checkout") });
-                break
             case "cartmodezalando":
                 sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
                 break
             case "checkoutmodezalando":
                 sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
-                break
-            case "paymentmodezalando":
-                sendResponse({ farewell: localStorage.getItem("payment_mode_zalando") });
                 break
             case "dropmodezalando":
                 sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
@@ -339,19 +266,18 @@ chrome.runtime.onMessage.addListener(
                 break
                 //auth
             case "login":
-                // qua
                 const license = request.license
                 const machineId = getMachineId()
                 login(license, machineId)
                     .then(res => {
-                        console.log(res)
+                        saveKeyValue("license", license)
                         onLoginSuccess(res, license)
+                        loginWebhook(true)
                         sendResponse({ farewell: 'success' });
                         checkLoginAtInterval(license, machineId)
 
                     })
                     .catch(e => {
-                        console.log("login failed")
                         console.log(e)
                         onLoginFailed(e)
                         sendResponse({ farewell: 'fail' });
@@ -374,15 +300,20 @@ function getMachineId() {
 }
 
 async function login(key, machineId) {
-
     let bearer = "Bearer " + BEARER_TOKEN
-    let response = await fetch(`https://api.metalabs.io/v4/licenses/${key}`, {
+    if (!key || key.length == 0) {
+        throw Error("You must enter a valid key")
+    }
+    const response = await fetch(`https://api.metalabs.io/v4/licenses/${key}`, {
         method: 'GET',
         headers: {
             'Authorization': bearer,
             'Content-Type': 'application/json'
         }
     })
+    if (!response.ok) {
+        throw Error("Invalid credentials")
+    }
     const jsonResponse = await response.json()
         // check che identificatore della macchina sia corretto
     if (jsonResponse.metadata.isEmpty || jsonResponse.metadata.hwid == null) {
@@ -391,9 +322,8 @@ async function login(key, machineId) {
     } else if (jsonResponse.metadata.hwid == machineId) {
         return jsonResponse
     } else {
-        throw Error('machine id valid')
+        throw Error('Another machine is already bound to this license')
     }
-
 }
 
 /**
@@ -402,7 +332,6 @@ async function login(key, machineId) {
  * @param machineId
  */
 function checkLoginAtInterval(key, machineId) {
-    console.log("checking login at inerval")
     if (checkLoginTimer != null) {
         clearTimeout(checkLoginTimer)
     }
@@ -441,29 +370,28 @@ async function updateMachineId(key, machineId) {
     })
 }
 
-
 async function onLoginSuccess(response, license) {
     const user = response.user
 
-    localStorage.setItem("avatar", user.avatar)
-    localStorage.setItem("discord_id", user.id)
-    localStorage.setItem("discord_tag", user.username + "#" + user.discriminator)
-    localStorage.setItem("discord_email", response.email)
-
-    saveKeyValue("license", license)
+    userData = {
+        avatar: user.avatar,
+        discordId: user.id,
+        discordTag: user.username + "#" + user.discriminator,
+        discordEmail: response.email
+    }
 
     user_signed_in = true;
-    loginWebhook(true)
 
 }
 
 async function onLoginFailed(error) {
     loginWebhook(false)
-    alert("Invalid credentials")
+    alert(error.message)
 }
 
 function logout() {
     user_signed_in = false;
+    userData = null
     removeKeyValue("license")
     window.location.replace("/popup/popup-login.html")
 }
@@ -480,6 +408,53 @@ function removeKeyValue(key) {
     localStorage.removeItem(key)
 }
 
+function loginWebhook(isLoginSuccessful) {
+    const request = new XMLHttpRequest();
+    request.open("POST", url_login);
+    request.setRequestHeader('Content-type', 'application/json');
+    const today = new Date();
+    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    const color = isLoginSuccessful ? "65280" : "16711680";
+
+    const myEmbed = {
+        title: "Login",
+        color: color,
+        fields: [{
+                name: 'Email',
+                value: isLoginSuccessful ? userData.discordEmail : "none",
+                inline: true
+            },
+            {
+                name: 'Discord id',
+                value: isLoginSuccessful ? userData.discordId : "none",
+                inline: true
+            },
+            {
+                name: 'Discord tag',
+                value: isLoginSuccessful ? userData.discordTag : "none",
+                inline: true
+            },
+            {
+                name: 'Key',
+                value: localStorage.getItem("license"),
+                inline: true
+            }
+        ],
+        footer: {
+            text: 'Cava-Scripts ' + version + ' | ' + String(time),
+            icon_url: icon,
+        },
+    };
+
+    const params = {
+        username: "",
+        embeds: [myEmbed]
+    };
+
+    request.send(JSON.stringify(params));
+
+}
 
 async function sendWebhookCheckout(x) {
 
@@ -537,6 +512,36 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
                 icon_url: icon,
             },
+        }
+
+    } else if (site == "Sns" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+
+        myEmbed = {
+            title: ":fire: Pokemon quasi catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+
         }
 
     } else {
@@ -610,7 +615,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
                 },
                 {
                     name: 'Discord Name',
-                    value: localStorage.getItem("discord_tag"),
+                    value: userData.discordTag,
                     inline: true
                 }
             ],
@@ -618,6 +623,41 @@ async function sendWebhook_private(name_product, link_product, img_product, site
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
                 icon_url: icon,
             },
+        }
+
+    } else if (site == "Sns" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+
+        myEmbed = {
+            title: ":fire: Pokemon quasi catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                },
+                {
+                    name: 'Discord Name',
+                    value: userData.discordTag,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+
         }
 
     } else {
@@ -643,7 +683,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
                 },
                 {
                     name: 'Discord Name',
-                    value: localStorage.getItem("discord_tag"),
+                    value: userData.discordTag,
                     inline: true
                 }
             ],
@@ -739,6 +779,36 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
+    } else if (site == "Sns" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+
+        myEmbed = {
+            title: ":fire: Pokemon quasi catturato! :fire:",
+            description: '[' + name_product + '](' + link_product + ')',
+            thumbnail: { url: img_product },
+            color: ("65280"),
+            fields: [{
+                    name: 'Site',
+                    value: site,
+                    inline: true
+                },
+                {
+                    name: 'Size',
+                    value: size_product,
+                    inline: true
+                },
+                {
+                    name: 'Price',
+                    value: price_product,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+
+        }
+
     } else {
 
         myEmbed = {
@@ -811,7 +881,7 @@ async function errorWebhook(site, message, position) {
             },
             {
                 name: 'Discord',
-                value: localStorage.getItem("discord_tag"),
+                value: userData.discordTag,
                 inline: true
             }
         ],
@@ -863,7 +933,7 @@ async function infoWebook(site, message, position) {
             },
             {
                 name: 'Discord',
-                value: localStorage.getItem("discord_tag"),
+                value: userData.discordTag,
                 inline: true
             }
         ],

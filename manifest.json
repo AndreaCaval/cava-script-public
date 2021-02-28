@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Cava-Scripts",
     "description": "botterboycava",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "icons": {
         "128": "icons/iconpk.png"
     },
@@ -26,16 +26,9 @@
         "scripts": [
             "background.js"
         ],
-        "persistent": false
+        "persistent": true
     },
     "content_scripts": [{
-            "matches": ["https://discord.com/channels/*"],
-            "exclude_globs": ["https://discord.com/channels/@me/*"],
-            "js": ["scripts/autoclick.js"],
-            "all_frames": false
-        },
-
-        {
             "matches": ["http://*/*", "https://*/*"],
             "include_globs": ["*.zalando.*"],
             "js": ["scripts/zalando.js"],

@@ -1,7 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.0.6'
-const webhook_url = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" //login
+const version = 'Cava-Scripts 1.1.0'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -16,7 +15,7 @@ function testWebhook(url_private) {
         color: ("65280"),
         footer: {
             text: version + ' | ' + String(time),
-            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pok%C3%A9ball.png/480px-Pok%C3%A9ball.png',
+            icon_url: "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2"
         },
     }
 
@@ -41,7 +40,6 @@ $(function() {
 });
 
 function onUserLogged() {
-    checkData()
 
     //INSERISCO LA VERSIONE NELLE PAGINE----------------------------------
     document.getElementById("version").innerHTML = version;
@@ -122,7 +120,6 @@ function onUserLogged() {
     if (localStorage.getItem("status_login_onygo") == "on") { $('#Status_login_onygo').prop('checked', true); }
 
     //gestisco i click delle checkbox
-
     //Solebox
     $('#Status_login_solebox').click(function() {
         if ($("#Status_login_solebox").is(':checked')) { localStorage.setItem("status_login_solebox", "on"); } else { localStorage.setItem("status_login_solebox", "off"); }
@@ -140,27 +137,19 @@ function onUserLogged() {
         if ($("#Status_login_onygo").is(':checked')) { localStorage.setItem("status_login_onygo", "on"); } else { localStorage.setItem("status_login_onygo", "off"); }
     });
 
+    //---------------------------------------------------------------------
+
 
     //GESTIONE PAGINA SETTING----------------------------------------------
-
     if (localStorage.getItem("id_webhook") != "off") { $("#idWebhook").val(localStorage.getItem("id_webhook")); }
     $("#nDelay").val(localStorage.getItem("delay"));
-
     //gestisco il click del bottone salva
     $("#btnSetting").click(function() {
         var id = $("#idWebhook").val();
         var d = $("#nDelay").val();
-
         if (id != '') { localStorage.setItem("id_webhook", id); } else { localStorage.setItem("id_webhook", "off"); }
         if (d != '') { localStorage.setItem("delay", d); } else { localStorage.setItem("delay", "0"); }
     });
-
-    //Autoclick
-    if (localStorage.getItem("autoclick") == "on") { $('#Autoclick').prop('checked', true); }
-    $('#Autoclick').click(function() {
-        if ($("#Autoclick").is(':checked')) { localStorage.setItem("autoclick", "on"); } else { localStorage.setItem("autoclick", "off"); }
-    });
-
     //gestisco il bottone test webhook
     $("#btnWebhook").click(function() {
         testWebhook($("#idWebhook").val())
@@ -169,8 +158,6 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA ZALANDO----------------------------------------------
-
-    //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
     if (localStorage.getItem("email_pw_zalando") != "off") {
         var email = localStorage.getItem("email_pw_zalando").split(':')[0]
         var pw = localStorage.getItem("email_pw_zalando").split(':')[1]
@@ -219,6 +206,7 @@ function onUserLogged() {
         if (size_solebox != '') { localStorage.setItem("size_solebox", size_solebox); } else { localStorage.setItem("size_solebox", "off"); }
         if (e != '' && p != '') { localStorage.setItem("email_pw_solebox", e + ":" + p); } else { localStorage.setItem("email_pw_solebox", "off"); }
     });
+    //--------------------------------------------------------------------
 
     //GESTIONE PAGINA SNIPES----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
@@ -261,6 +249,7 @@ function onUserLogged() {
         if (size_onygo != '') { localStorage.setItem("size_onygo", size_onygo); } else { localStorage.setItem("size_onygo", "off"); }
         if (e != '' && p != '') { localStorage.setItem("email_pw_onygo", e + ":" + p); } else { localStorage.setItem("email_pw_onygo", "off"); }
     });
+    //---------------------------------------------------------------------
 
     //GESTIONE PAGINA KICKZ----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input

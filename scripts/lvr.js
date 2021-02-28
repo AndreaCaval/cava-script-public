@@ -157,6 +157,10 @@ async function mainBrowserAtc() {
                 document.location = "https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=#checkout"
                 break
             }
+            if (document.getElementsByClassName("_3qt8bw7rMV _2zTjwbIF_A _3gt0ct6Ftg")[0] != undefined) {
+                sendText("Item out of stock...", "red")
+                break
+            }
             await sleep(500)
         }
 
