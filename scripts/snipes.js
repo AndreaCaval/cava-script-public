@@ -91,7 +91,7 @@ let img_product = "";
 let name_product = "";
 let price_product = "";
 let size_product = ""
-let link_product = "";
+let link_product = link;
 
 var pidsize = "";
 var pid = "";
@@ -125,6 +125,10 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function isNumeric(value) {
+    return /^-?\d+$/.test(value);
+}
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -141,7 +145,33 @@ function textBox() {
         let btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0]
         btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSnipes">Status snipes</p> ' +
+            '<label>Sizepid  or  Load Link: </label> <br><br> <input style="color:black; width:250px" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"> <br><br>' +
+            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+
+        let btn_start = document.getElementById('btn_start')
+        btn_start.addEventListener("click", function() {
+            try {
+
+                let input = document.getElementById("input_sizepid").value
+                if (!isNumeric(input)) {
+                    input = input.replace(/\D/g, '-');
+                    input = input.split('-')
+                    input.forEach(element => {
+                        if (element.length == 22)
+                            input = element
+                    });
+                }
+                if (isNumeric(input)) {
+                    pidsize = document.getElementById("input_sizepid").value
+                    link_product = "https://" + country + "/p/cava-" + pidsize + ".html?"
+                    atcRfast()
+                } else
+                    sendText("Input error", "red")
+
+            } catch (error) {}
+        });
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
             errorWebhooks(error, "textBox")
@@ -371,13 +401,24 @@ async function mainAtc() {
 
         try {
             csrf_token = document.getElementsByName('csrf_token')[0].value
-            let pidd = link.split('-')
-            pidd = pidd[pidd.length - 1].substring(0, 22)
-            if (pidd.includes("html")) {
-                pid = pidd.substring(0, 14)
+            let input = link
+            if (!isNumeric(input)) {
+                input = input.replace(/\D/g, '-');
+                input = input.split('-')
+                input.forEach(element => {
+                    if (element.length == 22)
+                        input = element
+
+                    if (element.length == 14)
+                        input = element
+                });
+            }
+
+            if (input.length == 14) {
+                pid = input
                 atc()
-            } else {
-                pidsize = pidd.substring(0, 22)
+            } else if (input.length == 22) {
+                pidsize = input
                 atcRfast()
             }
         } catch (error) {
@@ -421,7 +462,7 @@ async function atc() {
 }
 
 async function getSizePid(size_r) {
-    await fetch("https://www.snipes.it/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_212=" + size_r + "&format=ajax", {
+    await fetch("https://" + country + "/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_212=" + size_r + "&format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -713,8 +754,6 @@ async function gettingShipping() {
             size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
             if (link.startsWith("https://" + country + "/cart"))
                 try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
-            else
-                link_product = link
         } catch (error) {
             sendText("Error getting product info", "red")
             errorWebhooks(error, "getting product")

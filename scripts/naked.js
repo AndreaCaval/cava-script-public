@@ -92,7 +92,7 @@ async function atc() {
             } else {
                 if (size_range.includes('-')) {
                     for (let index = 0; index < sizes.length; index++) {
-                        if (sizes[index].getAttribute("class") != "dropdown-item disabled" && sizes[index].textContent.replaceAll('\n', '') >= size_range.split('-')[0] && sizes[index].textContent.replaceAll('\n', '') <= size_range.split('-')[1]) {
+                        if (sizes[index].getAttribute("class") != "dropdown-item disabled" && parseFloat(sizes[index].textContent.replaceAll('\n', '')) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes[index].textContent.replaceAll('\n', '')) <= parseFloat(size_range.split('-')[1])) {
                             variant_id = sizes[index].getAttribute('data-value')
                             break
                         }
@@ -100,7 +100,7 @@ async function atc() {
                 } else {
                     for (let index = 0; index < sizes.length; index++) {
                         console.log(sizes[index].textContent.replaceAll('\n', ''))
-                        if (sizes[index].getAttribute("class") != "dropdown-item disabled" && sizes[index].textContent.replaceAll('\n', '') == size_range) {
+                        if (sizes[index].getAttribute("class") != "dropdown-item disabled" && parseFloat(sizes[index].textContent.replaceAll('\n', '')) == parseFloat(size_range)) {
                             variant_id = sizes[index].getAttribute('data-value')
                             break
                         }

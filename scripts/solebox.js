@@ -24,7 +24,7 @@ let img_product = "";
 let price_product = "";
 let name_product = "";
 let size_product = "";
-let link_product = "";
+let link_product = link
 
 let pid = "";
 let pidsize = "";
@@ -59,6 +59,10 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function isNumeric(value) {
+    return /^-?\d+$/.test(value);
+}
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -75,7 +79,33 @@ function textBox() {
         let btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0]
         btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSolebox">Status solebox</p>' +
+            '<label>Sizepid  or  Load Link: </label> <br><br> <input style="color:black; type="text" id="input_sizepid" placeholder="es: 0190061200000002"> <br><br>' +
+            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+
+        let btn_start = document.getElementById('btn_start')
+        btn_start.addEventListener("click", function() {
+            try {
+
+                let input = document.getElementById("input_sizepid").value
+                if (!isNumeric(input)) {
+                    input = input.replace(/\D/g, '-');
+                    input = input.split('-')
+                    input.forEach(element => {
+                        if (element.length == 16)
+                            input = element
+                    });
+                }
+                if (isNumeric(input)) {
+                    pidsize = input
+                    link_product = "https://www.solebox.com/" + country + "/p/cava-" + pidsize + ".html?"
+                    atcRfast()
+                } else
+                    sendText("Input error", "red")
+
+            } catch (error) {}
+        });
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
             errorWebhooks(error, "textBox")
@@ -305,18 +335,28 @@ async function checkResgetLogin(response) {
 async function mainAtc() {
 
     try {
-        ck_start = performance.now()
         csrf_token = document.getElementsByName('csrf_token')[0].value
-        let pidd = link.split('-')
-        pidd = pidd[pidd.length - 1].substring(0, 16)
+        let input = link
+        if (!isNumeric(input)) {
+            input = input.replace(/\D/g, '-');
+            input = input.split('-')
+            input.forEach(element => {
+                if (element.length == 16)
+                    input = element
 
-        if (pidd.includes("html")) {
-            pid = pidd.substring(0, 8)
+                if (element.length == 8)
+                    input = element
+            });
+        }
+
+        if (input.length == 8) {
+            pid = input
             atc()
-        } else {
-            pidsize = pidd.substring(0, 16)
+        } else if (input.length == 16) {
+            pidsize = input
             atcRfast()
         }
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'value' of undefined")
             errorWebhooks(error, "main")
@@ -356,7 +396,7 @@ async function atc() {
 }
 
 async function getSizePid(size_r) {
-    await fetch("https://www.solebox.com/de_DE/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_212=" + size_r + "&format=ajax", {
+    await fetch("https://www.solebox.com/" + country + "/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_212=" + size_r + "&format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -650,8 +690,7 @@ async function gettingShipping() {
             size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
             if (link.startsWith("https://www.solebox.com/" + country + "/cart"))
                 try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
-            else
-                link_product = link
+
         } catch (error) {
             errorWebhooks(error, "getting product")
             sendText("Error getting product info", "red")
@@ -811,7 +850,7 @@ async function SubmitPayment() {
                 "sec-fetch-site": "same-origin",
                 "x-requested-with": "XMLHttpRequest"
             },
-            "referrer": "https://www.solebox.com/de_DE/checkout?stage=payment",
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=payment",
             "referrerPolicy": "strict-origin-when-cross-origin",
             "body": "dwfrm_billing_paymentMethod=Paypal&csrf_token=" + csrf_token,
             "method": "POST",
@@ -940,6 +979,9 @@ async function checkResPlaceOrder(response) {
                 }
             } else {
                 resInfoWebook(x, "checkResPlaceOrder_2")
+                if (res["redirectUrl"] == "/" + country + "/cart") {
+                    sendText("Item out of stock", "red")
+                } else
                 if (errorMessage == "undefined" || errorMessage == undefined) {
                     await sleep(1000)
                     mainCart()

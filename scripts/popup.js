@@ -139,7 +139,6 @@ function onUserLogged() {
 
     //---------------------------------------------------------------------
 
-
     //GESTIONE PAGINA SETTING----------------------------------------------
     if (localStorage.getItem("id_webhook") != "off") { $("#idWebhook").val(localStorage.getItem("id_webhook")); }
     $("#nDelay").val(localStorage.getItem("delay"));

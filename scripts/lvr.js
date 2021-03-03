@@ -1,3 +1,5 @@
+const { debug } = require("console")
+
 debugger
 
 const site = "Lvr"
@@ -119,12 +121,12 @@ async function mainBrowserAtc() {
                 sizes[n].click()
             } else {
                 if (size_range.includes('-')) {
-                    size_1 = parseInt(size_range.split('-')[0])
-                    size_2 = parseInt(size_range.split('-')[1])
+                    size_1 = parseFloat(size_range.split('-')[0])
+                    size_2 = parseFloat(size_range.split('-')[1])
                     for (let index = 0; index < sizes.length; index++) {
                         size = sizes[index].getAttribute('data-value')
                         size = JSON.parse(size)
-                        size = parseInt(size["SizeValue"])
+                        size = parseFloat(size["SizeValue"])
                         if (size >= size_1 && size <= size_2) {
                             sizes[index].click()
                             break
@@ -135,7 +137,7 @@ async function mainBrowserAtc() {
                         size = sizes[index].getAttribute('data-value')
                         size = JSON.parse(size)
                         size = size["SizeValue"]
-                        if (size == size_range) {
+                        if (parseFloat(size) == parseFloat(size_range)) {
                             sizes[index].click()
                             break
                         }

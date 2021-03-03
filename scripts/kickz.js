@@ -165,7 +165,7 @@ async function mainAtc() {
         } else {
             if (size_range.includes('-')) {
                 for (let index = 0; index < sizes.length; index++) {
-                    if (sizes[index].querySelectorAll('a')[0].getAttribute('data-size') >= size_range.split('-')[0] && sizes[index].querySelectorAll('a')[0].getAttribute('data-size') <= size_range.split('-')[1]) {
+                    if (parseFloat(sizes[index].querySelectorAll('a')[0].getAttribute('data-size')) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes[index].querySelectorAll('a')[0].getAttribute('data-size')) <= parseFloat(size_range.split('-')[1])) {
                         let size = sizes[index].querySelectorAll('a')[0].getAttribute('onclick')
                         let y = size.indexOf('(')
                         f += size.substring(y)
@@ -174,7 +174,7 @@ async function mainAtc() {
                 }
             } else {
                 for (let index = 0; index < sizes.length; index++) {
-                    if (sizes[index].querySelectorAll('a')[0].getAttribute('data-size') == size_range) {
+                    if (parseFloat(sizes[index].querySelectorAll('a')[0].getAttribute('data-size')) == parseFloat(size_range)) {
                         let size = sizes[index].querySelectorAll('a')[0].getAttribute('onclick')
                         let y = size.indexOf('(')
                         f += size.substring(y)

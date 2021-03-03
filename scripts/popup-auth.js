@@ -45,7 +45,8 @@ function sing_out() { /* popup-sign-out-script.js */
             button_out.style.transform = 'scale(1)';
         });
         button_out.addEventListener('click', () => {
-            chrome.runtime.sendMessage({ greeting: 'logout' }, function(response) {
+            const license = localStorage.getItem("license")
+            chrome.runtime.sendMessage({ greeting: 'logout', license: license }, function(response) {
                 if (response.farewell == 'success') {
                     window.location.replace("/popup/popup-login.html");
                 }
@@ -55,3 +56,10 @@ function sing_out() { /* popup-sign-out-script.js */
         console.log(error)
     }
 }
+
+$(function() {
+    const license = localStorage.getItem("license")
+    if (license != "" || license != undefined || license != null) {
+        document.getElementById("license").value = license
+    }
+});

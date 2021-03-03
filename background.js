@@ -1,6 +1,7 @@
 debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
+
 const version = "1.1.0";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
@@ -33,6 +34,7 @@ function checkData() {
             })
             .catch(e => {
                 console.log(e)
+                    // await logout(license)
                 window.location.replace("/popup/popup-login.html")
                 removeKeyValue("license")
             })
@@ -51,17 +53,19 @@ function SetStatus_off() {
         })
     }
 
-    //ACO
     //Zalando-----------------------------------------------------------------------------------------------------
-    setAllOff(["status_aco_zalando", "email_pw_zalando", "size_zalando"])
     setIfNotPresent("cart_mode_zalando", "Fast");
     setIfNotPresent("checkout_mode_zalando", "Fast");
     setIfNotPresent("payment_zalando", "Cad");
-    setToOff("drop_mode_zalando")
     setIfNotPresent("zalando_cart_limit", "1");
 
-
     setAllOff([
+        //Zalando
+        "status_aco_zalando",
+        "email_pw_zalando",
+        "sku_zalando",
+        "drop_mode_zalando",
+        "size_zalando",
         //Sns,
         "status_aco_sns",
         "size_sns",
@@ -77,7 +81,6 @@ function SetStatus_off() {
         "status_login_kickz",
         "email_pw_kickz",
         "size_kickz",
-
         //Lvr
         "status_aco_lvr",
         "size_lvr",
@@ -100,8 +103,6 @@ function SetStatus_off() {
         "status_login_onygo",
         "email_pw_onygo",
         "size_onygo",
-
-
     ])
 
     //Setting-----------------------------------------------------------------------------------------------------
@@ -230,20 +231,23 @@ chrome.runtime.onMessage.addListener(
             case "email_pw_zalando":
                 sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
                 break
+            case "zalando_size":
+                sendResponse({ farewell: localStorage.getItem("size_zalando") });
+                break
             case "cartmodezalando":
                 sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
                 break
             case "checkoutmodezalando":
                 sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
                 break
+            case "paymentmodezalando":
+                sendResponse({ farewell: localStorage.getItem("payment_mode_zalando") });
+                break
             case "dropmodezalando":
                 sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
                 break
             case "cartlimitzalando":
                 sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
-                break
-            case "zalando_size":
-                sendResponse({ farewell: localStorage.getItem("size_zalando") });
                 break
                 //auth
             case "login":
@@ -266,7 +270,8 @@ chrome.runtime.onMessage.addListener(
 
                 return true;
             case "logout":
-                logout()
+                const licens = request.license
+                logout(licens)
                 sendResponse({ farewell: 'success' });
                 break
         }
@@ -281,6 +286,7 @@ function getMachineId() {
 }
 
 async function login(key, machineId) {
+    if (detectDevTool()) throw Error('Debug tools enabled')
     let bearer = "Bearer " + BEARER_TOKEN
     if (!key || key.length == 0) {
         throw Error("You must enter a valid key")
@@ -324,7 +330,7 @@ function checkLoginAtInterval(key, machineId) {
             })
             .catch(e => {
                 console.log("login not valid anymore")
-                logout()
+                logout(key)
                 localStorage.clear()
                 window.location.replace("/popup/popup-login.html");
             })
@@ -351,18 +357,30 @@ async function updateMachineId(key, machineId) {
     })
 }
 
-async function onLoginSuccess(response, license) {
-    const user = response.user
 
+async function resetMachineId(key) {
+    let bearer = "Bearer " + BEARER_TOKEN
+    await fetch(`https://api.metalabs.io/v4/licenses/${key}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': bearer,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "metadata": {}
+        })
+    })
+}
+
+async function onLoginSuccess(response) {
+    const user = response.user
     userData = {
         avatar: user.avatar,
         discordId: user.id,
         discordTag: user.username + "#" + user.discriminator,
         discordEmail: response.email
     }
-
     user_signed_in = true;
-
 }
 
 async function onLoginFailed(error) {
@@ -370,7 +388,8 @@ async function onLoginFailed(error) {
     alert(error.message)
 }
 
-function logout() {
+async function logout(key) {
+    await resetMachineId(key)
     user_signed_in = false;
     userData = null
     removeKeyValue("license")
@@ -388,6 +407,7 @@ function getKeyValue(key) {
 function removeKeyValue(key) {
     localStorage.removeItem(key)
 }
+
 
 function loginWebhook(isLoginSuccessful) {
     const request = new XMLHttpRequest();
@@ -458,6 +478,7 @@ async function sendWebhookCheckout(x) {
 }
 
 async function sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product) {
+    if (detectDevTool()) return
     let request = new XMLHttpRequest();
     request.open("POST", url_public);
     request.setRequestHeader('Content-type', 'application/json');
@@ -564,6 +585,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
 }
 
 async function sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product) {
+    if (detectDevTool()) return
     let request = new XMLHttpRequest();
     request.open("POST", url_private);
     request.setRequestHeader('Content-type', 'application/json');
@@ -684,6 +706,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
 }
 
 async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random) {
+    if (detectDevTool()) return
     let request = new XMLHttpRequest();
     request.open("POST", localStorage.getItem("id_webhook"));
     request.setRequestHeader('Content-type', 'application/json');
@@ -841,6 +864,7 @@ async function sendWebhookError(x) {
 }
 
 async function errorWebhook(site, message, position) {
+    if (detectDevTool()) return
     var request = new XMLHttpRequest();
     request.open("POST", url_error);
     request.setRequestHeader('Content-type', 'application/json');
@@ -893,6 +917,7 @@ async function sendWebhookInfo(x) {
 }
 
 async function infoWebook(site, message, position) {
+    if (detectDevTool()) return
     var request = new XMLHttpRequest();
     request.open("POST", url_error);
     request.setRequestHeader('Content-type', 'application/json');
@@ -931,4 +956,17 @@ async function infoWebook(site, message, position) {
 
     request.send(JSON.stringify(params));
 
+}
+
+function detectDevTool(allow) {
+    if (isNaN(+allow)) allow = 200;
+    const start = +new Date(); // Validation of built-in Object tamper prevention.
+    debugger;
+    const end = +new Date(); // Validates too.
+    if (isNaN(start) || isNaN(end) || end - start > allow) {
+        // input your code here when devtools detected.
+        return true
+    } else {
+        return false
+    }
 }

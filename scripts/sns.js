@@ -75,8 +75,8 @@ async function errorRefresh() {
 
 async function atc() {
 
-    if (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
-        await sleep(10000)
+    while (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
+        await sleep(1000)
     }
 
     sizes = document.getElementsByClassName("product-sizes__label");
@@ -90,12 +90,12 @@ async function atc() {
                 variant_id = sizes[n].getAttribute("for").split('-')[1]
             } else {
                 if (size_range.includes('-')) {
-                    size_1 = parseInt(size_range.split('-')[0])
-                    size_2 = parseInt(size_range.split('-')[1])
+                    size_1 = parseFloat(size_range.split('-')[0])
+                    size_2 = parseFloat(size_range.split('-')[1])
                     for (let index = 0; index < sizes.length; index++) {
                         size = sizes[index].getAttribute("data-size-types")
                         size = JSON.parse(size)
-                        size = parseInt(size["converted-size-size-eu"])
+                        size = parseFloat(size["converted-size-size-eu"])
                         if (size >= size_1 && size <= size_2) {
                             variant_id = sizes[index].getAttribute("for").split('-')[1]
                             break
@@ -105,7 +105,7 @@ async function atc() {
                     for (let index = 0; index < sizes.length; index++) {
                         size = sizes[index].getAttribute("data-size-types")
                         size = JSON.parse(size)
-                        if (size["converted-size-size-eu"] == size_range) {
+                        if (parseFloat(size["converted-size-size-eu"]) == parseFloat(size_range)) {
                             variant_id = sizes[index].getAttribute("for").split('-')[1]
                             break
                         }

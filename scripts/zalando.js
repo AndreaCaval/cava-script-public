@@ -24,15 +24,9 @@ let size_in_stock = []
 let count_cart = 0
 let carted = 0
 let cart_limit = "";
-let display = "";
 let id = "";
-let list_sku = "";
-let list_sku_input = "";
 
 let frsx = ""
-
-let time_login = 0;
-let time_login_2 = 0
 
 let img_product = '';
 let name_product = '';
@@ -302,6 +296,7 @@ function searchSize() {
 
 async function dropMode() {
     let c = 0
+    let xyz = 0
     try {
 
         if (country.split('.')[1] == 'zalando') {
@@ -310,7 +305,16 @@ async function dropMode() {
 
 
                 await sleep(parseInt(delay))
-                sendText("Monitoring...", "yellow")
+                if (xyz == 0) {
+                    sendText("Monitoring.", "yellow")
+                    xyz = 1
+                } else if (xyz == 1) {
+                    sendText("Monitoring..", "yellow")
+                    xyz = 2
+                } else if (xyz == 2) {
+                    sendText("Monitoring...", "yellow")
+                    xyz = 0
+                }
                 try {
                     let s = document.getElementById('z-vegas-pdp-props').textContent
                     s = s.slice(8, -2)
@@ -321,15 +325,15 @@ async function dropMode() {
                             if (size_range == "random")
                                 size_in_stock.push(sizes[i].id)
                             else {
-                                s = parseInt(sizes[i])
+                                s = parseFloat(sizes[i])
                                 if (size_range.includes('-')) {
-                                    size_1 = parseInt(size_range.split('-')[0])
-                                    size_2 = parseInt(size_range.split('-')[1])
+                                    size_1 = parseFloat(size_range.split('-')[0])
+                                    size_2 = parseFloat(size_range.split('-')[1])
                                     if (s >= size_1 && s <= size_2) {
                                         size_in_stock.push(sizes[i].id)
                                     }
                                 } else {
-                                    if (parseInt(size_range) == s) {
+                                    if (parseFloat(size_range) == s) {
                                         size_in_stock.push(sizes[i].id)
                                     }
                                 }
@@ -356,7 +360,16 @@ async function dropMode() {
                     size_in_stock = []
                     let html = document.createElement('html')
                     await sleep(parseInt(delay))
-                    sendText("Monitoring...", "yellow")
+                    if (xyz == 0) {
+                        sendText("Monitoring.", "yellow")
+                        xyz = 1
+                    } else if (xyz == 1) {
+                        sendText("Monitoring..", "yellow")
+                        xyz = 2
+                    } else if (xyz == 2) {
+                        sendText("Monitoring...", "yellow")
+                        xyz = 0
+                    }
                     await getProduct()
                     await res.then(function(result) {
                         html.innerHTML = result
@@ -370,15 +383,15 @@ async function dropMode() {
                                     if (size_range == "random")
                                         size_in_stock.push(sizes[i].id)
                                     else {
-                                        s = parseInt(sizes[i])
+                                        s = parseFloat(sizes[i])
                                         if (size_range.includes('-')) {
-                                            size_1 = parseInt(size_range.split('-')[0])
-                                            size_2 = parseInt(size_range.split('-')[1])
+                                            size_1 = parseFloat(size_range.split('-')[0])
+                                            size_2 = parseFloat(size_range.split('-')[1])
                                             if (s >= size_1 && s <= size_2) {
                                                 size_in_stock.push(sizes[i].id)
                                             }
                                         } else {
-                                            if (parseInt(size_range) == s) {
+                                            if (parseFloat(size_range) == s) {
                                                 size_in_stock.push(sizes[i].id)
                                             }
                                         }
@@ -505,13 +518,18 @@ async function checkAtcRes(response) {
         let x = res
         res = JSON.parse(res)
         let message = res[0]["data"]["addToCart"]
-        let errors = res[0]["errors"][0]
+        let errors = ""
 
         if (status == 200 || status == 201) {
             if (message != null) {
                 carted++
+                sendText("Carted...", "yellow")
                 setCount(carted)
             } else {
+
+                sendText("Error carting...", "red")
+
+                errors = res[0]["errors"][0]
                 if (errors["message"].includes("Received Status: 429 from Cart:") && errors["message"].includes("TOO_MANY_REQUESTS")) {
                     console.log("Error 429 Cart Too Many Requests")
                 } else if (errors["message"] == "Received Status: 429 from Cart: " || errors["message"] == "Received Status: 429 from Cart:") {
@@ -521,7 +539,7 @@ async function checkAtcRes(response) {
                 }
             }
         } else {
-            console.log("atc error")
+            sendText("Error carting...", "red")
         }
 
     } catch (error) {
@@ -630,11 +648,22 @@ async function checkStockGetCheckout() {
 
     try {
 
-        let x = 0
-        for (var i = 0; x < 2; i++) {
+        let xyz = 0
+        for (var i = 0; xyz < 10; i++) {
 
             setCount(i)
-            sendText("Out of stock, monitoring...", "blue")
+
+            if (xyz == 0) {
+                sendText("Out of stock, monitoring.", "blue")
+                xyz = 1
+            } else if (xyz == 1) {
+                sendText("Out of stock, monitoring..", "blue")
+                xyz = 2
+            } else if (xyz == 2) {
+                sendText("Out of stock, monitoring...", "blue")
+                xyz = 0
+            }
+
             await sleep(parseInt(delay))
             await getCheckout()
         }
@@ -647,7 +676,6 @@ async function checkStockGetCheckout() {
 
 async function getCheckout() {
 
-    sendText("Getting checkout...", "blue")
     await fetch("https://" + country + "/checkout/confirm", {
             "headers": {
                 "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -861,13 +889,9 @@ async function checkRescheckoutBuyNow(response) {
             if (url == "/checkout/success") {
                 main()
                 open('https://' + country + '/checkout/success')
-            } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error") {
+            } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error" || url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
                 location.reload()
-            } else if (url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
-                location.reload()
-            } else if (url.startsWith("https://checkout.payment.zalando.com/3ds")) {
-                document.location = url
-            } else if (url.startsWith("https://www.paypal.com/checkoutnow?")) {
+            } else if (url.startsWith("https://checkout.payment.zalando.com/") || url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/checkoutnow?")) {
                 document.location = url
             } else {
                 errorWebhook(x, "checkRescheckoutBuyNow_1")
@@ -932,7 +956,6 @@ chrome.runtime.sendMessage({ greeting: "zalando_size" }, function(response) {
         size_range = response.farewell
 });
 
-
 chrome.runtime.sendMessage({ greeting: "cartlimitzalando" }, function(response) {
     cart_limit = response.farewell;
 });
@@ -971,6 +994,7 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
                     searchSize()
                     textBoxMain()
                 }
+
             }
         });
     }

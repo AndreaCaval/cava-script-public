@@ -113,14 +113,14 @@ async function main() {
                     } else {
                         if (size_range.includes('-')) {
                             for (let index = 0; index < size_in_stock.length; index++) {
-                                if (size_in_stock[index].split('-')[1] >= size_range.split('-')[0] && size_in_stock[index].split('-')[1] <= size_range.split('-')[1]) {
+                                if (parseFloat(size_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(size_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
                                     ipa = size_in_stock[index].split('-')[0]
                                     break
                                 }
                             }
                         } else {
                             for (let index = 0; index < size_in_stock.length; index++) {
-                                if (size_in_stock[index].split('-')[1] == size_range) {
+                                if (parseFloat(size_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
                                     ipa = size_in_stock[index].split('-')[0]
                                     break
                                 }
