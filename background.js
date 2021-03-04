@@ -66,12 +66,15 @@ function SetStatus_off() {
         "sku_zalando",
         "drop_mode_zalando",
         "size_zalando",
+
         //Sns,
         "status_aco_sns",
         "size_sns",
+
         //Naked
         "status_aco_naked",
         "size_naked",
+
         //Basket4ballers
         "status_aco_basket4ballers",
         "size_b4b",
@@ -81,6 +84,7 @@ function SetStatus_off() {
         "status_login_kickz",
         "email_pw_kickz",
         "size_kickz",
+
         //Lvr
         "status_aco_lvr",
         "size_lvr",
@@ -239,9 +243,6 @@ chrome.runtime.onMessage.addListener(
                 break
             case "checkoutmodezalando":
                 sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
-                break
-            case "paymentmodezalando":
-                sendResponse({ farewell: localStorage.getItem("payment_mode_zalando") });
                 break
             case "dropmodezalando":
                 sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });

@@ -1,5 +1,3 @@
-const { debug } = require("console")
-
 debugger
 
 const site = "Lvr"
@@ -93,7 +91,7 @@ async function sendText(text, color) {
 async function main() {
     if (link.startsWith("https://www.luisaviaroma.com/" + country + "/p/")) {
         mainAtc()
-    } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx?") && link.endsWith("#checkout")) {
+    } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx") && link.endsWith("#checkout")) {
         mainCheckout()
     } else if (link == "https://www.luisaviaroma.com/myarea/thanksBuy.aspx?") {
         // mainSuccess()

@@ -65,7 +65,7 @@ async function sendText(text, color) {
 function textBoxMain() {
     try {
         var btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 400px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
             '<p>Cava Scripts Info</p> <p id="rCount">Request count: 0</p>' +
             '<p id="statusZalando">Status Zalando</p>' +
             '<input style="text-align: center; background-color:black; width:120px; float:right; margin:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> ' +

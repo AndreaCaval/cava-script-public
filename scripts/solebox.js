@@ -77,7 +77,7 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSolebox">Status solebox</p>' +
             '<label>Sizepid  or  Load Link: </label> <br><br> <input style="color:black; type="text" id="input_sizepid" placeholder="es: 0190061200000002"> <br><br>' +
             '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br>' +
@@ -1049,15 +1049,6 @@ chrome.runtime.sendMessage({ greeting: "solebox_login" }, function(response) {
 chrome.runtime.sendMessage({ greeting: "solebox_size" }, function(response) {
     if (response.farewell != "off")
         size_range = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "solebox_sizepid" }, function(response) {
-    if (response.farewell != "off")
-        pidsize = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "solebox_dropmode" }, function(response) {
-    dropmode = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {

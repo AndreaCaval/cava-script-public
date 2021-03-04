@@ -1,5 +1,4 @@
 debugger
-
 const button = document.querySelector("button")
 if (button.getAttribute("id") == "button_in") sing_in()
 else if (button.getAttribute("id") == "button_out") sing_out()
@@ -56,10 +55,3 @@ function sing_out() { /* popup-sign-out-script.js */
         console.log(error)
     }
 }
-
-$(function() {
-    const license = localStorage.getItem("license")
-    if (license != "" || license != undefined || license != null) {
-        document.getElementById("license").value = license
-    }
-});

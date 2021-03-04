@@ -143,7 +143,7 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSnipes">Status snipes</p> ' +
             '<label>Sizepid  or  Load Link: </label> <br><br> <input style="color:black; width:250px" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"> <br><br>' +
             '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br>' +
