@@ -774,7 +774,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                 },
                 {
                     name: 'Email',
-                    value: random,
+                    value: '||' + random + '||',
                     inline: true
                 }
             ],

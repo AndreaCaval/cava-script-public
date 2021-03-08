@@ -429,7 +429,7 @@ async function atc() {
             for (var i = 0; i < size.length; i++) {
 
                 if (size_range == "random") {
-                    if (cart_limit - 1 > count_cart) {
+                    if (cart_limit > count_cart) {
                         setCount(i)
                         await atcR(size[i], i)
                     }
@@ -437,7 +437,7 @@ async function atc() {
                     let size_1 = parseFloat(size_range.split('-')[0])
                     let size_2 = parseFloat(size_range.split('-')[1])
                     s = parseFloat(size_eu[i])
-                    if (s >= size_1 && s <= size_2 && cart_limit - 1 > count_cart) {
+                    if (s >= size_1 && s <= size_2 && cart_limit > count_cart) {
                         setCount(i)
                         await atcR(size[i], i)
                     }
@@ -445,7 +445,7 @@ async function atc() {
                 } else {
                     let size_1 = parseFloat(size_range)
                     s = parseFloat(size_eu[i])
-                    if (s == size_1 && cart_limit - 1 > count_cart) {
+                    if (s == size_1 && cart_limit > count_cart) {
                         setCount(i)
                         await atcR(size[i], i)
                     }
