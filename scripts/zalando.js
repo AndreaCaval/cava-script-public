@@ -18,8 +18,9 @@ let drop_mode = ""
 
 let delay = "0"
 
-let empty_cart = false
+let open_account = false
 let size = []
+let size_eu = []
 let size_in_stock = []
 let count_cart = 0
 let carted = 0
@@ -37,6 +38,21 @@ let link_product = "https://www.zalando.it/"
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function arreyMixer(array) {
+
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
 }
 
 function getRandomIntInclusive(min, max) {
@@ -65,7 +81,7 @@ async function sendText(text, color) {
 function textBoxMain() {
     try {
         var btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 400px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
             '<p>Cava Scripts Info</p> <p id="rCount">Request count: 0</p>' +
             '<p id="statusZalando">Status Zalando</p>' +
             '<input style="text-align: center; background-color:black; width:120px; float:right; margin:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> ' +
@@ -198,8 +214,11 @@ async function checkResLogin(response) {
 
 async function mainAccount() {
     try {
-        await sleep(5000)
-        window.close()
+        if (open_account == true) {
+            await sleep(5000)
+            window.close()
+            open_account = false
+        }
     } catch (error) { console.log(error) }
 }
 
@@ -267,43 +286,37 @@ async function newsletterR(mail, i) {
 
 
 function searchSize() {
-
     try {
-
         if (country.split('.')[1] == 'zalando') {
-
             try {
-
-                var s = document.getElementById('z-vegas-pdp-props').textContent
+                let s = document.getElementById('z-vegas-pdp-props').textContent
                 s = s.slice(8, -2)
-                var obj = JSON.parse(s)
-                var sizes = obj[0].model.articleInfo.units
-                for (var i = 0; i < sizes.length; i++) {
+                let obj = JSON.parse(s)
+                let sizes = obj[0].model.articleInfo.units
+                for (let i = 0; i < sizes.length; i++) {
                     size.push(sizes[i].id)
+                    size_eu.push(sizes[i]["size"]["local"])
                 }
-
             } catch (error) {
                 if (error != "TypeError: Cannot read property 'textContent' of null")
                     errorWebhook(error, "searchSize_1")
             }
         }
-
     } catch (error) { errorWebhook(error, "searchSize_2") }
-
-
 }
 
 
 async function dropMode() {
     let c = 0
     let xyz = 0
-    try {
+    if (country.split('.')[1] == 'zalando') {
+        try {
 
-        if (country.split('.')[1] == 'zalando') {
-
-            try {
-
-
+            while (true) {
+                c++
+                setCount(c)
+                size_in_stock = []
+                let html = document.createElement('html')
                 await sleep(parseInt(delay))
                 if (xyz == 0) {
                     sendText("Monitoring.", "yellow")
@@ -315,33 +328,40 @@ async function dropMode() {
                     sendText("Monitoring...", "yellow")
                     xyz = 0
                 }
-                try {
-                    let s = document.getElementById('z-vegas-pdp-props').textContent
-                    s = s.slice(8, -2)
-                    let obj = JSON.parse(s)
-                    let sizes = obj[0].model.articleInfo.units
-                    for (let i = 0; i < sizes.length; i++) {
-                        if (sizes[i]["available"] == true) {
-                            if (size_range == "random")
-                                size_in_stock.push(sizes[i].id)
-                            else {
-                                s = parseFloat(sizes[i])
-                                if (size_range.includes('-')) {
-                                    size_1 = parseFloat(size_range.split('-')[0])
-                                    size_2 = parseFloat(size_range.split('-')[1])
-                                    if (s >= size_1 && s <= size_2) {
-                                        size_in_stock.push(sizes[i].id)
-                                    }
-                                } else {
-                                    if (parseFloat(size_range) == s) {
-                                        size_in_stock.push(sizes[i].id)
+                await getProduct()
+                await res.then(function(result) {
+                    html.innerHTML = result
+                    try {
+                        let s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
+                        s = s.slice(8, -2)
+                        let obj = JSON.parse(s)
+                        let sizes = obj[0].model.articleInfo.units
+                        for (let i = 0; i < sizes.length; i++) {
+                            if (sizes[i]["available"] == true) {
+                                if (size_range == "random")
+                                    size_in_stock.push(sizes[i].id)
+                                else {
+                                    s = parseFloat(sizes[i]["size"]["local"])
+                                    if (size_range.includes('-')) {
+                                        size_1 = parseFloat(size_range.split('-')[0])
+                                        size_2 = parseFloat(size_range.split('-')[1])
+                                        if (s >= size_1 && s <= size_2) {
+                                            size_in_stock.push(sizes[i].id)
+                                        }
+                                    } else {
+                                        if (parseFloat(size_range) == s) {
+                                            size_in_stock.push(sizes[i].id)
+                                        }
                                     }
                                 }
                             }
-                            size_in_stock.push(sizes[i].id)
                         }
+                    } catch (error) {
+                        if (error != "TypeError: Cannot read property 'textContent' of null")
+                            errorWebhook(error, "dropMode")
                     }
-                } catch (error) {}
+                })
+
                 if (size_in_stock.length != 0) {
                     if (size_in_stock.length == 1) {
                         await atcRDrop(size_in_stock[0])
@@ -351,83 +371,15 @@ async function dropMode() {
                             await atcRDrop(size_in_stock[n])
                         }
                     }
+                    break
                 }
-
-
-                while (true) {
-                    c++
-                    setCount(c)
-                    size_in_stock = []
-                    let html = document.createElement('html')
-                    await sleep(parseInt(delay))
-                    if (xyz == 0) {
-                        sendText("Monitoring.", "yellow")
-                        xyz = 1
-                    } else if (xyz == 1) {
-                        sendText("Monitoring..", "yellow")
-                        xyz = 2
-                    } else if (xyz == 2) {
-                        sendText("Monitoring...", "yellow")
-                        xyz = 0
-                    }
-                    await getProduct()
-                    await res.then(function(result) {
-                        html.innerHTML = result
-                        try {
-                            let s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
-                            s = s.slice(8, -2)
-                            let obj = JSON.parse(s)
-                            let sizes = obj[0].model.articleInfo.units
-                            for (let i = 0; i < sizes.length; i++) {
-                                if (sizes[i]["available"] == true) {
-                                    if (size_range == "random")
-                                        size_in_stock.push(sizes[i].id)
-                                    else {
-                                        s = parseFloat(sizes[i])
-                                        if (size_range.includes('-')) {
-                                            size_1 = parseFloat(size_range.split('-')[0])
-                                            size_2 = parseFloat(size_range.split('-')[1])
-                                            if (s >= size_1 && s <= size_2) {
-                                                size_in_stock.push(sizes[i].id)
-                                            }
-                                        } else {
-                                            if (parseFloat(size_range) == s) {
-                                                size_in_stock.push(sizes[i].id)
-                                            }
-                                        }
-                                    }
-                                    size_in_stock.push(sizes[i].id)
-                                }
-                            }
-                        } catch (error) {}
-                    })
-
-                    if (size_in_stock.length != 0) {
-                        if (size_in_stock.length == 1) {
-                            await atcRDrop(size_in_stock[0])
-                        } else {
-                            for (let i = 0; i < cart_limit; i++) {
-                                n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                                await atcRDrop(size_in_stock[n])
-                            }
-                        }
-                        if (count_cart != 0) {
-                            // empty_cart = false
-                            break
-                        }
-                    }
-
-                }
-
-
-            } catch (error) {
-                if (error != "TypeError: Cannot read property 'textContent' of null")
-                    errorWebhook(error, "searchSize_1")
             }
+
+        } catch (error) {
+            if (error != "TypeError: Cannot read property 'textContent' of null")
+                errorWebhook(error, "searchSize_1")
         }
-
-    } catch (error) { errorWebhook(error, "diocan") }
-
+    }
 }
 
 async function getProduct() {
@@ -459,25 +411,47 @@ async function atcFast() {
     sendText("Trying atc...", "blue")
     try { await atc() } catch (error) { errorWebhook(error, "atcFast") }
 
-    if (carted != 0)
-        window.open("https://" + country + "/checkout/confirm")
+    if (count_cart != 0)
+        window.open("https://" + country + "/cart")
     else
         sendText("Error carting item", "red")
 }
 
 async function atc() {
 
-    try {
 
+    try {
         if (size != "") {
+
             frsx = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
 
+
             for (var i = 0; i < size.length; i++) {
-                setCount(i)
-                await atcR(size[i], i)
+
+                if (size_range == "random") {
+                    if (cart_limit - 1 > count_cart) {
+                        setCount(i)
+                        await atcR(size[i], i)
+                    }
+                } else if (size_range.includes('-')) {
+                    let size_1 = parseFloat(size_range.split('-')[0])
+                    let size_2 = parseFloat(size_range.split('-')[1])
+                    s = parseFloat(size_eu[i])
+                    if (s >= size_1 && s <= size_2 && cart_limit - 1 > count_cart) {
+                        setCount(i)
+                        await atcR(size[i], i)
+                    }
+
+                } else {
+                    let size_1 = parseFloat(size_range)
+                    s = parseFloat(size_eu[i])
+                    if (s == size_1 && cart_limit - 1 > count_cart) {
+                        setCount(i)
+                        await atcR(size[i], i)
+                    }
+                }
             }
         }
-
     } catch (error) { errorWebhook(error, "atcSavedSku") }
 }
 
@@ -522,9 +496,9 @@ async function checkAtcRes(response) {
 
         if (status == 200 || status == 201) {
             if (message != null) {
-                carted++
-                sendText("Carted...", "yellow")
-                setCount(carted)
+                count_cart++
+                sendText("Carted", "yellow")
+                setCount(count_cart)
             } else {
 
                 sendText("Error carting...", "red")
@@ -594,7 +568,7 @@ async function checkResAtcDrop(response) {
                 sendText("Carted", "green")
                 count_cart++
                 if (count_cart == cart_limit) {
-                    // while (empty_cart == false)
+                    sendText("ok", "green")
                     await getCheckout()
                 }
             } else {
@@ -634,6 +608,7 @@ async function mainCart() {
 async function checklogin() {
     while (true) {
         await sleep(300000)
+        open_account = true
         window.open("https://" + country + "/myaccount/")
         await sleep(5000)
     }
@@ -729,9 +704,7 @@ async function checkResGetCheckout(response) {
             if (url.startsWith("/welcomenoaccount/true?target") || url.startsWith("https://" + country + "/welcomenoaccount/true?target")) {
                 document.location = "https://" + country + "/login?target=/myaccount/"
             }
-            if (url != "/cart" && url != '' && url != "https://" + country + "/cart") {
-                empty_cart = true
-            }
+            if (url != "/cart" && url != '' && url != "https://" + country + "/cart") {}
         }
 
     } catch (error) { errorWebhook(error, "checkResGetCheckout") }

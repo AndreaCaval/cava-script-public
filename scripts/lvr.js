@@ -89,7 +89,7 @@ async function sendText(text, color) {
 }
 
 async function main() {
-    if (link.startsWith("https://www.luisaviaroma.com/" + country + "/p/")) {
+    if (link.startsWith("https://www.luisaviaroma.com/") && document.getElementsByClassName("aatyzvJ8ab").length == 1) {
         mainAtc()
     } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx") && link.endsWith("#checkout")) {
         mainCheckout()
@@ -167,6 +167,8 @@ async function mainBrowserAtc() {
     } catch (error) {
         if (error != "TypeError: Cannot read property 'getElementsByClassName' of null" && error != "TypeError: Cannot read property 'click' of undefined")
             errorWebhooks(error, "mainBrowser")
+        sendText("Item out of stock", "red")
+
     }
 }
 

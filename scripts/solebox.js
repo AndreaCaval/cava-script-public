@@ -6,7 +6,6 @@ let link = document.location.href
 let country = link.split('/')[3]
 
 let size_range = "random"
-let dropmode = ""
 
 let email_login = "";
 let pw_login = "";
@@ -59,8 +58,27 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function arreyMixer(array) {
+
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
+}
+
+function hasNumber(myString) {
+    return /\d/.test(myString);
 }
 
 function getRandomIntInclusive(min, max) {
@@ -141,10 +159,7 @@ async function sendText(text, color) {
 
 
 async function main() {
-    if (pidsize != "" && dropmode == "on") {
-        link = "https://www.solebox.com/" + country + "/p/" + pidsize + ".html"
-        atcRfast()
-    } else if (link.startsWith("https://www.solebox.com/" + country + "/p")) {
+    if (link.startsWith("https://www.solebox.com/" + country + "/p")) {
         mainAtc()
     } else if (link.startsWith("https://www.solebox.com/" + country + "/cart")) {
         mainCart()
@@ -186,8 +201,35 @@ async function checkLogin() {
         }
 
     } catch (error) {
-        if (error != "ReferenceError: dataLayer is not defined")
+        if (error != "ReferenceError: dataLayer is not defined") {
             errorWebhooks(error, "checkLogin")
+            sendText("Error checking login", "red")
+        }
+    }
+}
+
+async function checkLoginOff() {
+
+    try {
+
+        let script = ""
+        let scripts = document.getElementsByTagName('script')
+        for (let i = 0; i < scripts.length; i++) {
+            if (scripts[i].textContent.includes('userLoginStatus')) {
+                script = scripts[i].textContent
+            }
+        }
+        eval(script)
+        if (dataLayer[0]["userLoginStatus"] == true)
+            is_login = true
+        else
+            sendText("You aren't logged in...", "red")
+
+    } catch (error) {
+        if (error != "ReferenceError: dataLayer is not defined") {
+            errorWebhooks(error, "checkLogin")
+            sendText("Error checking login", "red")
+        }
     }
 }
 
@@ -255,7 +297,11 @@ async function loginR(data_id, data_value, csrf_token) {
                 "credentials": "include"
             })
             .then(response => { checkResLogin(response) })
-            .catch((error) => { errorWebhooks(error, "authentication") });;
+            .catch((error) => {
+                sendText("Error logging in", "orange")
+                if (error != "TypeError: Failed to fetch")
+                    errorWebhooks(error, "authentication")
+            });;
 
     } catch (error) { errorWebhooks(error, "loginR") }
 }
@@ -306,6 +352,7 @@ async function getLogin() {
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
                 errorWebhooks(error, "getLogin")
+            sendText("Error getting login", "orange")
         });;
 }
 
@@ -360,6 +407,7 @@ async function mainAtc() {
     } catch (error) {
         if (error != "TypeError: Cannot read property 'value' of undefined")
             errorWebhooks(error, "main")
+        sendText("Error loading page", "red")
     }
 }
 
@@ -381,9 +429,20 @@ async function atc() {
             if (!size_range.includes('-')) {
                 getSizePid(size_range)
             } else {
-                let size_box = size_range.split('-')
-                let n = getRandomIntInclusive(0, size_box.length - 1)
-                getSizePid(size_box[n])
+                let size_1 = parseFloat(size_range.split('-')[0])
+                let size_2 = parseFloat(size_range.split('-')[1])
+                let size_random = ""
+                let sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
+                sizes = Array.prototype.slice.call(sizes)
+                sizes = arreyMixer(sizes)
+                for (let index = 0; index < sizes.length; index++) {
+                    if (parseFloat(sizes[index].getAttribute("data-attr-value")) >= size_1 && parseFloat(sizes[index].getAttribute("data-attr-value")) <= size_2) {
+                        size_random = sizes[index].getAttribute("data-attr-value")
+                        break
+                    }
+                }
+                if (size_random != "")
+                    getSizePid(size_random)
             }
         }
     } catch (error) {
@@ -391,12 +450,18 @@ async function atc() {
             sendText("Item out of stock", "red")
         } else {
             errorWebhooks(error, "atc")
+            sendText("Error selecting size", "red")
         }
     }
 }
 
 async function getSizePid(size_r) {
-    await fetch("https://www.solebox.com/" + country + "/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_212=" + size_r + "&format=ajax", {
+
+    let type = "212"
+    if (!hasNumber(size_r))
+        type = "5903"
+
+    await fetch("https://www.solebox.com/" + country + "/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_" + type + "=" + size_r + "&format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -416,7 +481,8 @@ async function getSizePid(size_r) {
         .then(response => { checkResgetSizePid(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
-                errorWebhooks(error, "getLogin")
+                errorWebhooks(error, "getSizePid")
+            sendText("Error getting size", "orange")
         });;
 }
 
@@ -441,7 +507,7 @@ async function checkResgetSizePid(response) {
                 atc()
             } else {
                 errorWebhooks(x, "checkResgetSizePid")
-                sendText("Error logging in", "red")
+                sendText("Error getting product", "red")
             }
         }
     } catch (error) {}
@@ -468,7 +534,11 @@ async function atcR() {
             "credentials": "include"
         })
         .then(response => { checkResAtc(response, 'atcR') })
-        .catch((error) => { errorWebhooks(error, "atcR fetch") });;
+        .catch((error) => {
+            sendText("Error adding to cart", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "atcR fetch")
+        });;
 }
 
 async function atcRfast() {
@@ -492,7 +562,11 @@ async function atcRfast() {
             "credentials": "include"
         })
         .then(response => { checkResAtc(response, 'atcRfast') })
-        .catch((error) => { errorWebhooks(error, "atcRfast fetch") });;
+        .catch((error) => {
+            sendText("Error adding to cart", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "atcRfast fetch")
+        });;
 }
 
 async function checkResAtc(response, atc) {
@@ -545,7 +619,7 @@ async function checkResAtc(response, atc) {
         }
 
     } catch (error) {
-        if (error == "SyntaxError: Unexpected token < in JSON at position 1") {
+        if (error == "SyntaxError: Unexpected token < in JSON at position 1" || error == "SyntaxError: Unexpected token < in JSON at position 0") {
             sendText("Error carting, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -574,12 +648,7 @@ async function mainCart() {
     if (link.startsWith("https://www.solebox.com/" + country + "/cart")) {
         try {
             if (document.getElementsByClassName('t-error')[0] == undefined && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€") {
-                ck_start = performance.now()
                 await getCheckout()
-                await ress.then(function(result) {
-                    html.innerHTML = result
-                })
-                gettingShipping()
             } else if (document.getElementsByClassName('t-error')[0] != undefined) {
                 sendText("Item not available", "red")
             } else if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "0,00€" || document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "") {
@@ -592,13 +661,7 @@ async function mainCart() {
         }
     } else {
         try {
-            await getCheckout()
-            await ress.then(function(result) {
-                html.innerHTML = result
-            })
-            if (is_cart == false) {
-                gettingShipping()
-            } else { sendText("Item out of stock/ Item not available", "red") }
+            getCheckout()
         } catch (error) { errorWebhooks(error, "mainCart_2") }
     }
 }
@@ -622,21 +685,28 @@ async function getCheckout() {
             "mode": "cors",
             "credentials": "include"
         })
-        .then(response => { ress = checkResgetCheckout(response) })
-        .catch((error) => { console.log(error) });;
+        .then(response => { checkResgetCheckout(response) })
+        .catch((error) => {
+            sendText("Error getting checkout", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "getCheckout fetch")
+
+        });;
 }
 
 async function checkResgetCheckout(response) {
 
     let status = response.status
     let res = await response.text()
-    if (response.url == "https://" + country + "/cart")
+    if (response.url == "https://" + country + "/cart") {
         is_cart = true
-    if (status == 200 || status == 201) {
-        return res
+        sendText("Item out of stock/ Item not available", "red")
+    } else if (status == 200 || status == 201) {
+        html.innerHTML = res
+        gettingShipping()
     } else {
         if (res.includes("\"appId\"")) {
-            sendText("Error logging in, resolve captcha", "red")
+            sendText("Error getting checkout, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
                 await sleep(250)
@@ -645,7 +715,7 @@ async function checkResgetCheckout(response) {
             mainCart()
         } else {
             errorWebhooks(res, "checkResgetCheckout")
-            sendText("Error logging in", "red")
+            sendText("Error getting checkout", "red")
         }
     }
 }
@@ -728,7 +798,11 @@ async function ShippingRates() {
             "credentials": "include"
         })
         .then(response => { checkResShippingRates(response) })
-        .catch((error) => { errorWebhooks(error, "ShippingRates fetch") });;
+        .catch((error) => {
+            sendText("Error getting shipping rates", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "ShippingRates fetch")
+        });;
 }
 
 async function checkResShippingRates(response) {
@@ -793,7 +867,11 @@ async function SubmitShipping() {
             "credentials": "include"
         })
         .then(response => { checkResSubmitShipping(response) })
-        .catch((error) => { errorWebhooks(error, "SubmitShipping fetch") });;
+        .catch((error) => {
+            sendText("Error submitting shipping", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "SubmitShipping fetch")
+        });;
 }
 
 async function checkResSubmitShipping(response) {
@@ -858,7 +936,11 @@ async function SubmitPayment() {
             "credentials": "include"
         })
         .then(response => { checkResSubmitPayment(response) })
-        .catch((error) => { errorWebhooks(error, "SubmitPayment fetch") });;
+        .catch((error) => {
+            sendText("Error submitting payment", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "SubmitPayment fetch")
+        });;
 }
 
 async function checkResSubmitPayment(response) {
@@ -886,6 +968,8 @@ async function checkResSubmitPayment(response) {
                     SubmitPayment()
                 } else if (x == '{"errorMessage":"Too many requests"}') {
                     sendText("Too many requests", "red")
+                } else if (res["redirectUrl"] == "/" + country + "/cart") {
+                    sendText("Item out of stock", "red")
                 } else {
                     resInfoWebook(x, "checkResSubmitPayment_1")
                     sendText("Error submitting payment", "red")
@@ -944,7 +1028,11 @@ async function PlaceOrder() {
             "credentials": "include"
         })
         .then(response => { checkResPlaceOrder(response) })
-        .catch((error) => { errorWebhooks(error, "PlaceOrder fetch") });;
+        .catch((error) => {
+            sendText("Error placing order", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "PlaceOrder fetch")
+        });;
 }
 
 async function checkResPlaceOrder(response) {
@@ -1062,7 +1150,8 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
         chrome.runtime.sendMessage({ greeting: "solebox_login" }, function(response) {
             if (response.farewell == 'on') {
                 checkLogin();
-            }
+            } else
+                checkLoginOff()
         });
     }
 });

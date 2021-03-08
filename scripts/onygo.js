@@ -55,8 +55,27 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function arreyMixer(array) {
+
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
+}
+
+function hasNumber(myString) {
+    return /\d/.test(myString);
 }
 
 function getRandomIntInclusive(min, max) {
@@ -179,6 +198,32 @@ async function checkLogin() {
     } catch (error) {
         if (error != "ReferenceError: dataLayer is not defined")
             errorWebhooks(error, "checkLogin")
+        sendText("Error checking login", "red")
+    }
+}
+
+async function checkLoginOff() {
+
+    try {
+
+        let script = ""
+        let scripts = document.getElementsByTagName('script')
+        for (let i = 0; i < scripts.length; i++) {
+            if (scripts[i].textContent.includes('userLoginStatus')) {
+                script = scripts[i].textContent
+            }
+        }
+        eval(script)
+        if (dataLayer[0]["userLoginStatus"] == true)
+            is_login = true
+        else
+            sendText("You aren't logged in...", "red")
+
+    } catch (error) {
+        if (error != "ReferenceError: dataLayer is not defined")
+            errorWebhooks(error, "checkLogin")
+
+        sendText("Error checking login", "red")
     }
 }
 
@@ -222,6 +267,7 @@ async function login() {
     } catch (error) {
         if (error != "TypeError: span.getAttribute is not a function" && error != "ReferenceError: res is not defined")
             errorWebhooks(error, "login")
+        sendText("Error logging in", "red")
     }
 
 }
@@ -248,7 +294,11 @@ async function loginR(data_id, data_value, csrf_token) {
                 "credentials": "include"
             })
             .then(response => { checkResLogin(response) })
-            .catch((error) => { errorWebhooks(error, "authentication") });;
+            .catch((error) => {
+                sendText("Error checking login", "orange")
+                if (error != "TypeError: Failed to fetch")
+                    errorWebhooks(error, "authentication")
+            });;
 
     } catch (error) { errorWebhooks(error, "loginR") }
 }
@@ -297,6 +347,7 @@ async function getLogin() {
         })
         .then(response => { res = checkResgetLogin(response) })
         .catch((error) => {
+            sendText("Error getting login", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhooks(error, "getLogin")
         });;
@@ -352,6 +403,7 @@ async function mainAtc() {
     } catch (error) {
         if (error != "TypeError: Cannot read property 'value' of undefined")
             errorWebhooks(error, "main")
+        sendText("Error selecting size", "red")
     }
 }
 
@@ -372,9 +424,20 @@ async function atc() {
             if (!size_range.includes('-')) {
                 getSizePid(size_range)
             } else {
-                let size_box = size_range.split('-')
-                let n = getRandomIntInclusive(0, size_box.length - 1)
-                getSizePid(size_box[n])
+                let size_1 = parseFloat(size_range.split('-')[0])
+                let size_2 = parseFloat(size_range.split('-')[1])
+                let size_random = ""
+                let sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
+                sizes = Array.prototype.slice.call(sizes)
+                sizes = arreyMixer(sizes)
+                for (let index = 0; index < sizes.length; index++) {
+                    if (parseFloat(sizes[index].textContent.replaceAll('\n', '')) >= size_1 && parseFloat(sizes[index].textContent.replaceAll('\n', '')) <= size_2) {
+                        size_random = sizes[index].getAttribute("data-attr-value")
+                        break
+                    }
+                }
+                if (size_random != "")
+                    getSizePid(size_random)
             }
         }
     } catch (error) {
@@ -389,7 +452,7 @@ async function atc() {
 
 async function getSizePid(size_r) {
 
-    await fetch("https://www.onygo.com/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_212=" + size_r + "&format=ajax", {
+    await fetch("https://www.onygo.com/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_size=" + size_r + "&format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -408,8 +471,9 @@ async function getSizePid(size_r) {
         })
         .then(response => { checkResgetSizePid(response) })
         .catch((error) => {
+            sendText("Error getting size", "orange")
             if (error != "TypeError: Failed to fetch")
-                errorWebhooks(error, "getLogin")
+                errorWebhooks(error, "getSizePid")
         });;
 }
 
@@ -434,7 +498,7 @@ async function checkResgetSizePid(response) {
                 atc()
             } else {
                 errorWebhooks(x, "checkResgetSizePid")
-                sendText("Error logging in", "red")
+                sendText("Error getting product", "red")
             }
         }
     } catch (error) {}
@@ -461,7 +525,11 @@ async function atcR() {
             "credentials": "include"
         })
         .then(response => { checkResAtc(response, 'atcR') })
-        .catch((error) => { errorWebhooks(error, "atcR fetch") });;
+        .catch((error) => {
+            sendText("Error adding to cart", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "atcR fetch")
+        });;
 }
 
 async function atcRfast() {
@@ -485,7 +553,11 @@ async function atcRfast() {
             "credentials": "include"
         })
         .then(response => { checkResAtc(response, 'atcRfast') })
-        .catch((error) => { errorWebhooks(error, "atcRfast fetch") });;
+        .catch((error) => {
+            sendText("Error adding to cart", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "atcRfast fetch")
+        });;
 }
 
 async function checkResAtc(response, atc) {
@@ -555,12 +627,7 @@ async function mainCart() {
     if (link.startsWith("https://www.onygo.com/cart")) {
         try {
             if (document.getElementsByClassName('t-error')[0] == undefined && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "" && document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') != "0,00€") {
-                ck_start = performance.now()
-                await getCheckout()
-                await ress.then(function(result) {
-                    html.innerHTML = result
-                })
-                gettingShipping()
+                getCheckout()
             } else if (document.getElementsByClassName('t-error')[0] != undefined) {
                 sendText("Item not available", "red")
             } else if (document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "0,00€" || document.getElementsByClassName("t-cart-price-value")[0].textContent.replaceAll("\n", '').replaceAll(" ", '') == "") {
@@ -573,13 +640,7 @@ async function mainCart() {
         }
     } else {
         try {
-            await getCheckout()
-            await ress.then(function(result) {
-                html.innerHTML = result
-            })
-            if (is_cart == false) {
-                gettingShipping()
-            } else { sendText("Item out of stock/ Item not available", "red") }
+            getCheckout()
         } catch (error) { errorWebhooks(error, "mainCart_2") }
     }
 }
@@ -602,21 +663,28 @@ async function getCheckout() {
             "mode": "cors",
             "credentials": "include"
         })
-        .then(response => { ress = checkResgetCheckout(response) })
-        .catch((error) => { console.log(error) });;
+        .then(response => { checkResgetCheckout(response) })
+        .catch((error) => {
+            sendText("Error getting checkout", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "getCheckout fetch")
+        });;
 }
 
 async function checkResgetCheckout(response) {
 
     let status = response.status
     let res = await response.text()
-    if (response.url == "https://" + country + "/cart")
+    if (response.url == "https://" + country + "/cart") {
         is_cart = true
+        sendText("Item out of stock/ Item not available", "red")
+    }
     if (status == 200 || status == 201) {
-        return res
+        html.innerHTML = res
+        gettingShipping()
     } else {
         if (res.includes("\"appId\"")) {
-            sendText("Error logging in, resolve captcha", "red")
+            sendText("Error getting checkout, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
                 await sleep(250)
@@ -625,7 +693,7 @@ async function checkResgetCheckout(response) {
             mainCart()
         } else {
             errorWebhooks(res, "checkResgetCheckout")
-            sendText("Error logging in", "red")
+            sendText("Error getting checkout", "red")
         }
     }
 }
@@ -706,7 +774,11 @@ async function ValidateShipping() {
             "credentials": "include"
         })
         .then(response => { checkResValidateShipping(response) })
-        .catch((error) => { errorWebhooks(error, "ValidateShipping fetch") });;
+        .catch((error) => {
+            sendText("Error validating ship", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "ValidateShipping fetch")
+        });;
 }
 
 async function checkResValidateShipping(response) {
@@ -763,13 +835,17 @@ async function SubmitShipping() {
             },
             "referrer": "https://www.onygo.com/checkout?stage=shipping",
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + emaill + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
+            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
             "method": "POST",
             "mode": "cors",
             "credentials": "include"
         })
         .then(response => { checkResSubmitShipping(response) })
-        .catch((error) => { errorWebhooks(error, "SubmitShipping fetch") });;
+        .catch((error) => {
+            sendText("Error submitting shipping", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "SubmitShipping fetch")
+        });;
 }
 
 async function checkResSubmitShipping(response) {
@@ -833,7 +909,11 @@ async function SubmitPayment() {
             "credentials": "include"
         })
         .then(response => { checkResSubmitPayment(response) })
-        .catch((error) => { errorWebhooks(error, "SubmitPayment fetch") });;
+        .catch((error) => {
+            sendText("Error submitting payment", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "SubmitPayment fetch")
+        });;
 }
 
 async function checkResSubmitPayment(response) {
@@ -917,7 +997,11 @@ async function PlaceOrder() {
             "credentials": "include"
         })
         .then(response => { checkResPlaceOrder(response) })
-        .catch((error) => { errorWebhooks(error, "PlaceOrder fetch") });;
+        .catch((error) => {
+            sendText("Error placing order", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "PlaceOrder fetch")
+        });;
 }
 
 async function checkResPlaceOrder(response) {
@@ -1034,7 +1118,8 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
         chrome.runtime.sendMessage({ greeting: "onygo_login" }, function(response) {
             if (response.farewell == 'on') {
                 checkLogin()
-            }
+            } else
+                checkLoginOff()
         });
     }
 });
