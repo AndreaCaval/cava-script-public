@@ -81,7 +81,7 @@ async function sendText(text, color) {
 function textBoxMain() {
     try {
         var btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
             '<p>Cava Scripts Info</p> <p id="rCount">Request count: 0</p>' +
             '<p id="statusZalando">Status Zalando</p>' +
             '<input style="text-align: center; background-color:black; width:120px; float:right; margin:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> ' +
@@ -113,7 +113,7 @@ function textBoxCart() {
     try {
 
         let cava_script_info = document.getElementsByClassName("z-navicat-header_navContent")[0]
-        cava_script_info.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 400px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
+        cava_script_info.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding: 5px 10px; color: white; border-radius: 10px;">' +
             '<p>Cava Scripts Info</p> <p id="rCount">Request count: 0</p> <p id="rDelay">Delay: 0ms</p>' +
             '<p id="statusZalando">Status Zalando</p> </div>');
 
@@ -126,7 +126,7 @@ function textBoxCart() {
 function textBoxCouponGen() {
     try {
         let btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family:Verdana,Geneva,sans-serif; position:fixed; right:0; top: 300px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding:10px; color: white; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family:Verdana,Geneva,sans-serif; position:fixed; right:0; top: 350px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding:10px; color: white; border-radius: 10px;">' +
             '<p style="text-align:center">Cava Scripts </p><p id="nCount">Coupon count: 0</p>' +
             '<label>Catchall: </label><input style="color:black; float:right" type="text" id="catchall" placeholder="es: cavascripts.com"><br style="clear:both">' +
             '<label>N Coupon: </label><input style="color:black; float:right" id="nCoupon" type="number" value="0"> <br style="clear:both"><br>' +
@@ -309,77 +309,75 @@ function searchSize() {
 async function dropMode() {
     let c = 0
     let xyz = 0
-    if (country.split('.')[1] == 'zalando') {
-        try {
-
-            while (true) {
-                c++
-                setCount(c)
-                size_in_stock = []
-                let html = document.createElement('html')
-                await sleep(parseInt(delay))
-                if (xyz == 0) {
-                    sendText("Monitoring.", "yellow")
-                    xyz = 1
-                } else if (xyz == 1) {
-                    sendText("Monitoring..", "yellow")
-                    xyz = 2
-                } else if (xyz == 2) {
-                    sendText("Monitoring...", "yellow")
-                    xyz = 0
-                }
-                await getProduct()
-                await res.then(function(result) {
-                    html.innerHTML = result
-                    try {
-                        let s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
-                        s = s.slice(8, -2)
-                        let obj = JSON.parse(s)
-                        let sizes = obj[0].model.articleInfo.units
-                        for (let i = 0; i < sizes.length; i++) {
-                            if (sizes[i]["available"] == true) {
-                                if (size_range == "random")
-                                    size_in_stock.push(sizes[i].id)
-                                else {
-                                    s = parseFloat(sizes[i]["size"]["local"])
-                                    if (size_range.includes('-')) {
-                                        size_1 = parseFloat(size_range.split('-')[0])
-                                        size_2 = parseFloat(size_range.split('-')[1])
-                                        if (s >= size_1 && s <= size_2) {
-                                            size_in_stock.push(sizes[i].id)
-                                        }
-                                    } else {
-                                        if (parseFloat(size_range) == s) {
-                                            size_in_stock.push(sizes[i].id)
-                                        }
+    try {
+        while (true) {
+            c++
+            setCount(c)
+            size_in_stock = []
+            let html = document.createElement('html')
+            await sleep(parseInt(delay))
+            if (xyz == 0) {
+                sendText("Monitoring.", "yellow")
+                xyz = 1
+            } else if (xyz == 1) {
+                sendText("Monitoring..", "yellow")
+                xyz = 2
+            } else if (xyz == 2) {
+                sendText("Monitoring...", "yellow")
+                xyz = 0
+            }
+            await getProduct()
+            await res.then(function(result) {
+                html.innerHTML = result
+                try {
+                    let s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
+                    s = s.slice(8, -2)
+                    let obj = JSON.parse(s)
+                    let sizes = obj[0].model.articleInfo.units
+                    for (let i = 0; i < sizes.length; i++) {
+                        if (sizes[i]["available"] == true) {
+                            if (size_range == "random")
+                                size_in_stock.push(sizes[i].id)
+                            else {
+                                s = parseFloat(sizes[i]["size"]["local"])
+                                if (size_range.includes('-')) {
+                                    size_1 = parseFloat(size_range.split('-')[0])
+                                    size_2 = parseFloat(size_range.split('-')[1])
+                                    if (s >= size_1 && s <= size_2) {
+                                        size_in_stock.push(sizes[i].id)
+                                    }
+                                } else {
+                                    if (parseFloat(size_range) == s) {
+                                        size_in_stock.push(sizes[i].id)
                                     }
                                 }
                             }
                         }
-                    } catch (error) {
-                        if (error != "TypeError: Cannot read property 'textContent' of null")
-                            errorWebhook(error, "dropMode")
                     }
-                })
-
-                if (size_in_stock.length != 0) {
-                    if (size_in_stock.length == 1) {
-                        await atcRDrop(size_in_stock[0])
-                    } else {
-                        for (let i = 0; i < cart_limit; i++) {
-                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                            await atcRDrop(size_in_stock[n])
-                        }
-                    }
-                    break
+                } catch (error) {
+                    if (error != "TypeError: Cannot read property 'textContent' of null")
+                        errorWebhook(error, "dropMode")
                 }
-            }
+            })
 
-        } catch (error) {
-            if (error != "TypeError: Cannot read property 'textContent' of null")
-                errorWebhook(error, "searchSize_1")
+            if (size_in_stock.length != 0) {
+                if (size_in_stock.length == 1) {
+                    await atcRDrop(size_in_stock[0])
+                } else {
+                    for (let i = 0; i < cart_limit; i++) {
+                        n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                        await atcRDrop(size_in_stock[n])
+                    }
+                }
+                break
+            }
         }
+
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'textContent' of null")
+            errorWebhook(error, "searchSize_1")
     }
+
 }
 
 async function getProduct() {
@@ -568,7 +566,7 @@ async function checkResAtcDrop(response) {
                 sendText("Carted", "green")
                 count_cart++
                 if (count_cart == cart_limit) {
-                    sendText("ok", "green")
+                    sendText("Getting checkout", "blue")
                     await getCheckout()
                 }
             } else {
@@ -645,7 +643,6 @@ async function checkStockGetCheckout() {
 
     } catch (error) {
         errorWebhook(error, "checkStockGetCheckout")
-            //location.reload()
     }
 }
 
