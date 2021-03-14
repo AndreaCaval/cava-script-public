@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.1.1";
+const version = "1.1.2";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -59,6 +59,12 @@ function SetStatus_off() {
     setIfNotPresent("payment_zalando", "Cad");
     setIfNotPresent("zalando_cart_limit", "1");
 
+    //Solebox
+    setIfNotPresent("checkout_mode_solebox", "Normal");
+    setIfNotPresent("payment_mode_solebox", "Paypal");
+
+    //Snipes
+    setIfNotPresent("checkout_mode_snipes", "Normal");
     setAllOff([
         //Zalando
         "status_aco_zalando",
@@ -194,6 +200,9 @@ chrome.runtime.onMessage.addListener(
             case "snipes_size":
                 sendResponse({ farewell: localStorage.getItem("size_snipes") });
                 break
+            case "snipes_checkout_mode":
+                sendResponse({ farewell: localStorage.getItem("checkout_mode_snipes") });
+                break
                 //solebox
             case "solebox":
                 sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
@@ -206,6 +215,12 @@ chrome.runtime.onMessage.addListener(
                 break
             case "solebox_size":
                 sendResponse({ farewell: localStorage.getItem("size_solebox") });
+                break
+            case "solebox_payment_mode":
+                sendResponse({ farewell: localStorage.getItem("payment_mode_solebox") });
+                break
+            case "solebox_checkout_mode":
+                sendResponse({ farewell: localStorage.getItem("checkout_mode_solebox") });
                 break
                 //lvr
             case "lvr":
@@ -469,12 +484,14 @@ async function sendWebhookCheckout(x) {
     let size_product = x[5]
     let price_product = x[6]
     let random = ""
+    let random2 = ""
     if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Zalando") {
         random = x[7]
+        random2 = x[8]
     }
     sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product)
-    sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random)
+    sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random, random2)
 
 }
 
@@ -706,7 +723,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
 
 }
 
-async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random) {
+async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random, random2) {
     if (detectDevTool()) return
     let request = new XMLHttpRequest();
     request.open("POST", localStorage.getItem("id_webhook"));
@@ -738,9 +755,14 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                     inline: true
                 },
                 {
+                    name: 'Email',
+                    value: "||" + random2 + "||",
+                    inline: false
+                },
+                {
                     name: 'Checkout link',
-                    value: '[ PayPal ](' + random + ')',
-                    inline: true
+                    value: '[ Pay ](' + random + ')',
+                    inline: false
                 }
             ],
             footer: {

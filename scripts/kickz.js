@@ -62,7 +62,7 @@ function textBox() {
             ' <p id="statusKickz">Status kickz</p>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined")
+        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
             errorWebhooks(error, "textBox")
     }
 }

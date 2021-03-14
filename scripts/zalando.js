@@ -18,7 +18,6 @@ let drop_mode = ""
 
 let delay = "0"
 
-let open_account = false
 let size = []
 let size_eu = []
 let size_in_stock = []
@@ -214,11 +213,9 @@ async function checkResLogin(response) {
 
 async function mainAccount() {
     try {
-        if (open_account == true) {
-            await sleep(5000)
-            window.close()
-            open_account = false
-        }
+        await sleep(5000)
+        window.close()
+
     } catch (error) { console.log(error) }
 }
 
@@ -361,10 +358,21 @@ async function dropMode() {
             })
 
             if (size_in_stock.length != 0) {
+                sendText("Product in stock, trying atc...", "yellow")
                 if (size_in_stock.length == 1) {
                     await atcRDrop(size_in_stock[0])
                 } else {
-                    for (let i = 0; i < cart_limit; i++) {
+                    for (let i = 0; count_cart < cart_limit; i++) {
+                        if (xyz == 0) {
+                            sendText("Trying atc.", "yellow")
+                            xyz = 1
+                        } else if (xyz == 1) {
+                            sendText("Trying atc..", "yellow")
+                            xyz = 2
+                        } else if (xyz == 2) {
+                            sendText("Trying atc...", "yellow")
+                            xyz = 0
+                        }
                         n = getRandomIntInclusive(0, size_in_stock.length - 1)
                         await atcRDrop(size_in_stock[n])
                     }
@@ -606,7 +614,6 @@ async function mainCart() {
 async function checklogin() {
     while (true) {
         await sleep(300000)
-        open_account = true
         window.open("https://" + country + "/myaccount/")
         await sleep(5000)
     }

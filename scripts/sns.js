@@ -1,5 +1,3 @@
-debugger
-
 const site = "Sns"
 
 let link = document.location.href
@@ -68,7 +66,6 @@ async function sendText(text, color) {
 }
 
 async function errorRefresh() {
-    sendText("Sleep " + delay + "ms...", "blue")
     await sleep(parseInt(delay))
     location.reload()
 }
@@ -131,7 +128,7 @@ async function atcR() {
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.sneakersnstuff.com/" + country + "/cart/add", {
             "headers": {
-                "accept": "*/*",
+                "accept": "application/json, text/plain, */*",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
                 "content-type": "application/x-www-form-urlencoded",
                 "sec-fetch-dest": "empty",

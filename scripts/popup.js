@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.1.1'
+const version = 'Cava-Scripts 1.1.2'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -199,16 +199,22 @@ function onUserLogged() {
         $("#pw_solebox").val(pw);
     }
     if (localStorage.getItem("size_solebox") != "off") { $("#size_solebox").val(localStorage.getItem("size_solebox")); }
+    if (localStorage.getItem("payment_mode_solebox") != "off") { $("#payment_mode_solebox").val(localStorage.getItem("payment_mode_solebox")); }
+    if (localStorage.getItem("checkout_mode_solebox") != "off") { $("#checkout_mode_solebox").val(localStorage.getItem("checkout_mode_solebox")); }
     //gestisco il click del bottone salva
     $("#btn_save_solebox").click(function() {
         var e = $("#email_solebox").val();
         var p = $("#pw_solebox").val();
         var size_solebox = $("#size_solebox").val();
+        var payment_mode_solebox = $("#payment_mode_solebox").val();
+        var checkout_mode_solebox = $("#checkout_mode_solebox").val();
 
+        if (payment_mode_solebox != '') { localStorage.setItem("payment_mode_solebox", payment_mode_solebox); } else { localStorage.setItem("payment_mode_solebox", "off"); }
+        if (checkout_mode_solebox != '') { localStorage.setItem("checkout_mode_solebox", checkout_mode_solebox); } else { localStorage.setItem("checkout_mode_solebox", "off"); }
         if (size_solebox != '') { localStorage.setItem("size_solebox", size_solebox); } else { localStorage.setItem("size_solebox", "off"); }
         if (e != '' && p != '') { localStorage.setItem("email_pw_solebox", e + ":" + p); } else { localStorage.setItem("email_pw_solebox", "off"); }
     });
-    //--------------------------------------------------------------------
+    //---------------------------------------------------------------------
 
     //GESTIONE PAGINA SNIPES----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
@@ -219,6 +225,7 @@ function onUserLogged() {
         $("#pw_snipes").val(pw);
     }
     if (localStorage.getItem("size_snipes") != "off") { $("#size_snipes").val(localStorage.getItem("size_snipes")); }
+    if (localStorage.getItem("checkout_mode_snipes") != "off") { $("#checkout_mode_snipes").val(localStorage.getItem("checkout_mode_snipes")); }
     if (localStorage.getItem("country_snipes") != "off") { $("#country_snipes").val(localStorage.getItem("country_snipes")); }
     //gestisco il click del bottone salva
     $("#btn_save_snipes").click(function() {
@@ -226,7 +233,9 @@ function onUserLogged() {
         var p = $("#pw_snipes").val();
         var c = $("#country_snipes").val();
         var size_snipes = $("#size_snipes").val();
+        var checkout_mode_snipes = $("#checkout_mode_snipes").val();
 
+        if (checkout_mode_snipes != '') { localStorage.setItem("checkout_mode_snipes", checkout_mode_snipes); } else { localStorage.setItem("checkout_mode_snipes", "off"); }
         if (e != '' && p != '') { localStorage.setItem("email_pw_snipes", e + ":" + p); } else { localStorage.setItem("email_pw_snipes", "off"); }
         if (size_snipes != '') { localStorage.setItem("size_snipes", size_snipes); } else { localStorage.setItem("size_snipes", "off"); }
         if (c != '') { localStorage.setItem("country_snipes", c); } else { localStorage.setItem("country_snipes", "off"); }
