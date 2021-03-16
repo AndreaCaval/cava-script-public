@@ -244,7 +244,7 @@ function textBox() {
         });
 
     } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
+        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
     }
 }
@@ -957,9 +957,9 @@ async function gettingShipping() {
             price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
             name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
             size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
-            if (!link.startsWith("https://" + country + "/p"))
+            if (link.startsWith("https://" + country + "/cart"))
                 try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
-            else
+            else if (pidsize != "")
                 link_product = "https://" + country + "/p/cava-" + pidsize + ".html"
         } catch (error) {
             sendText("Error getting product info", "red")
