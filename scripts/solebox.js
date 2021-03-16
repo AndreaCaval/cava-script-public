@@ -755,8 +755,9 @@ async function gettingShipping() {
         shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
         address_selector = rdbtn.getAttribute("value")
 
-        email = html.querySelector('[name="dwfrm_contact_email"]').getAttribute('value')
-        phone = html.querySelector('[name="dwfrm_contact_phone"]').getAttribute('value')
+        try { email = html.querySelector('[name="dwfrm_contact_email"]').getAttribute('value') } catch (error) { email = html.querySelector('[name="dwfrm_contact-de_email"]').getAttribute('value') }
+
+        try { phone = html.querySelector('[name="dwfrm_contact_phone"]').getAttribute('value') } catch (error) { phone = html.querySelector('[name="dwfrm_contact-de_phone"]').getAttribute('value') }
 
         csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
         sendText("Getting shipping info", "green")
