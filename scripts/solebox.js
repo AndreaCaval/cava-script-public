@@ -1,3 +1,5 @@
+debugger
+
 const site = "Solebox"
 
 let link = document.location.href
@@ -96,13 +98,15 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff;background-color: #4CAF50;border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
+            '.btn_cava:hover {background-color: #3e8e41}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
+            '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSolebox">Status solebox</p>' +
-            // '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:250px" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
+            // '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
             // '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:250px" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
-            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
-            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
+            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         let btn_start = document.getElementById('btn_start')
@@ -640,8 +644,8 @@ async function checkResAtc(response) {
 
 async function mainCart() {
 
-    if (checkout_mode != "OnlyAtc") {
-
+    if (checkout_mode != "ATC Only") {
+        sendText("Starting checkout...", "blue")
         while (is_login == false) {
             await sleep(250)
         }
@@ -702,7 +706,7 @@ async function checkResgetCheckout(response) {
 
     let status = response.status
     let res = await response.text()
-    if (response.url == "https://" + country + "/cart") {
+    if (response.url == "https://www.solebox.com/" + country + "/cart") {
         is_cart = true
         sendText("Item out of stock/ Item not available", "red")
     } else if (status == 200 || status == 201) {
@@ -1187,7 +1191,7 @@ async function checkResRemoveDummy(response) {
 }
 
 async function sendWebhooks(linkpp) {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + linkpp + "&-&" + email })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
 
 async function errorWebhooks(error, position) {
@@ -1218,7 +1222,10 @@ chrome.runtime.sendMessage({ greeting: "solebox_size" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "solebox_payment_mode" }, function(response) {
-    payment_mode = response.farewell
+    if (response.farewell == "Credit Card")
+        payment_mode = "CREDIT_CARD"
+    else
+        payment_mode = "Paypal"
 });
 
 chrome.runtime.sendMessage({ greeting: "solebox_checkout_mode" }, function(response) {

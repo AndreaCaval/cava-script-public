@@ -1,7 +1,11 @@
+debugger
+
 const site = "Snipes"
 
 const LINK_REQUEST = {
     "www.snipes.it": {
+        "get_hmac_token": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Cart-AddProduct?format=ajax",
         "select_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CheckoutAddressServices-Validate?format=ajax",
@@ -12,6 +16,8 @@ const LINK_REQUEST = {
         "home_delivery": "_it"
     },
     "www.snipes.nl": {
+        "get_hmac_token": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Cart-AddProduct?format=ajax",
         "select_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CheckoutAddressServices-Validate?format=ajax",
@@ -22,6 +28,8 @@ const LINK_REQUEST = {
         "home_delivery": "_nl"
     },
     "www.snipes.fr": {
+        "get_hmac_token": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Cart-AddProduct?format=ajax",
         "select_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CheckoutAddressServices-Validate?format=ajax",
@@ -32,6 +40,8 @@ const LINK_REQUEST = {
         "home_delivery": "_fr"
     },
     "www.snipes.com": {
+        "get_hmac_token": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.com/add-product?format=ajax",
         "select_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CheckoutAddressServices-Validate?format=ajax",
@@ -42,6 +52,8 @@ const LINK_REQUEST = {
         "home_delivery": ""
     },
     "www.snipes.ch": {
+        "get_hmac_token": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Cart-AddProduct?format=ajax",
         "select_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CheckoutAddressServices-Validate?format=ajax",
@@ -52,6 +64,8 @@ const LINK_REQUEST = {
         "home_delivery": "_ch"
     },
     "www.snipes.es": {
+        "get_hmac_token": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Cart-AddProduct?format=ajax",
         "select_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CheckoutAddressServices-Validate?format=ajax",
@@ -62,6 +76,8 @@ const LINK_REQUEST = {
         "home_delivery": "_es"
     },
     "www.snipes.be": {
+        "get_hmac_token": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Cart-AddProduct?format=ajax",
         "select_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CheckoutAddressServices-Validate?format=ajax",
@@ -72,6 +88,8 @@ const LINK_REQUEST = {
         "home_delivery": "_be"
     },
     "www.snipes.at": {
+        "get_hmac_token": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/Page-GetHMACToken?format=ajax",
+        "generate_csrf": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.at/add-product?format=ajax",
         "select_ship": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutShippingServices-SelectShippingMethod?format=ajax",
         "validate_ship": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CheckoutAddressServices-Validate?format=ajax",
@@ -179,13 +197,15 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff;background-color: #4CAF50;border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
+            '.btn_cava:hover {background-color: #3e8e41}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
+            '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSnipes">Status snipes</p> ' +
-            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:250px" type="text" id="input_sizepid_dummy" placeholder="es: 0001380189826700000008"> <br>' +
-            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:250px" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"> <br>' +
-            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
-            '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
+            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380189826700000008"> <br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
+            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"> <br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         let btn_start = document.getElementById('btn_start')
@@ -272,6 +292,89 @@ async function main() {
             }
         } catch (error) {}
     }
+}
+
+
+async function CSRFGenerate() {
+    await fetch(LINK_REQUEST[country]["generate_csrf"], {
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://" + country + "/checkout",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResCSRFGenerate(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "CSRFGenerate")
+        });;
+}
+
+async function checkResCSRFGenerate(response) {
+    let status = response.status
+    let res = await response.text()
+    let x = res
+    res = JSON.parse(res)
+
+    if (status == 200 || status == 201) {
+        csrf_token = res["csrf"]["token"]
+    } else {
+        if (res.includes("\"appId\"")) {
+            sendText("Error generating token, resolve captcha", "red")
+            addButton()
+            while (is_captcha_solved == false) {
+                await sleep(250)
+            }
+            is_captcha_solved = false
+            CSRFGenerate()
+        } else {
+            errorWebhooks(res, "checkResCSRFGenerate")
+            sendText("Error generating token", "red")
+        }
+    }
+}
+
+
+async function GetHMACToken() {
+    await fetch(LINK_REQUEST[country]["get_hmac_token"], {
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://" + country + "/checkout",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "email=" + email + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResGetHMACToken(response) })
+        .catch((error) => { errorWebhooks(error, "GetHMACToken") });;
+}
+
+async function checkResGetHMACToken(response) {
+    let res = await response.text()
+    resInfoWebook(res, "checkResGetHMACToken")
+
 }
 
 
@@ -732,8 +835,8 @@ async function checkResAtc(response) {
 
 async function mainCart() {
 
-    if (checkout_mode != "OnlyAtc") {
-
+    if (checkout_mode != "ATC Only") {
+        await sendText("Starting checkout...", "blue")
         while (is_login == false) {
             await sleep(250)
         }
@@ -862,7 +965,6 @@ async function gettingShipping() {
             sendText("Error getting product info", "red")
             errorWebhooks(error, "getting product")
         }
-
 
         if (dummy == 1)
             checkout_mode = "Safe"
@@ -1352,7 +1454,7 @@ async function checkResRemoveDummy(response) {
 }
 
 async function sendWebhooks(linkpp) {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + linkpp + "&-&" + email })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
 
 async function errorWebhooks(error, position) {

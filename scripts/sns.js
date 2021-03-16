@@ -1,3 +1,5 @@
+debugger
+
 const site = "Sns"
 
 let link = document.location.href

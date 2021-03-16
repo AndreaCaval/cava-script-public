@@ -60,11 +60,12 @@ function SetStatus_off() {
     setIfNotPresent("zalando_cart_limit", "1");
 
     //Solebox
-    setIfNotPresent("checkout_mode_solebox", "Normal");
-    setIfNotPresent("payment_mode_solebox", "Paypal");
+    setIfNotPresent("checkout_mode_solebox", "Full Checkout");
+    setIfNotPresent("payment_mode_solebox", "PayPal");
 
     //Snipes
-    setIfNotPresent("checkout_mode_snipes", "Normal");
+    setIfNotPresent("checkout_mode_snipes", "Full Checkout");
+
     setAllOff([
         //Zalando
         "status_aco_zalando",
@@ -483,15 +484,15 @@ async function sendWebhookCheckout(x) {
     let site = x[4]
     let size_product = x[5]
     let price_product = x[6]
-    let random = ""
-    let random2 = ""
+    let email = ""
+    let payment_link = ""
     if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Zalando") {
-        random = x[7]
-        random2 = x[8]
+        email = x[7]
+        payment_link = x[8]
     }
     sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product)
-    sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random, random2)
+    sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
 
 }
 
@@ -540,7 +541,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             title: ":fire: Pokemon quasi catturato! :fire:",
             description: '[' + name_product + '](' + link_product + ')',
             thumbnail: { url: img_product },
-            color: ("65280"),
+            color: ("15715328"),
             fields: [{
                     name: 'Site',
                     value: site,
@@ -652,7 +653,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             title: ":fire: Pokemon quasi catturato! :fire:",
             description: '[' + name_product + '](' + link_product + ')',
             thumbnail: { url: img_product },
-            color: ("65280"),
+            color: ("15715328"),
             fields: [{
                     name: 'Site',
                     value: site,
@@ -723,7 +724,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
 
 }
 
-async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, random, random2) {
+async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link) {
     if (detectDevTool()) return
     let request = new XMLHttpRequest();
     request.open("POST", localStorage.getItem("id_webhook"));
@@ -756,12 +757,12 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                 },
                 {
                     name: 'Email',
-                    value: "||" + random2 + "||",
+                    value: "||" + email + "||",
                     inline: false
                 },
                 {
                     name: 'Checkout link',
-                    value: '[ Pay ](' + random + ')',
+                    value: '[ Click here to check out ](' + payment_link + ')',
                     inline: false
                 }
             ],
@@ -796,7 +797,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                 },
                 {
                     name: 'Email',
-                    value: '||' + random + '||',
+                    value: '||' + email + '||',
                     inline: true
                 }
             ],
@@ -812,7 +813,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             title: ":fire: Pokemon quasi catturato! :fire:",
             description: '[' + name_product + '](' + link_product + ')',
             thumbnail: { url: img_product },
-            color: ("65280"),
+            color: ("15715328"),
             fields: [{
                     name: 'Site',
                     value: site,
