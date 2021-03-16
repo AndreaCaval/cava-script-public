@@ -98,9 +98,9 @@ function textBox() {
             '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusOnygo">Status onygo</p>' +
             '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br><br> <input style="color:black; width:100%" type="text min-width:250px;" id="input_sizepid" placeholder="es: 0001570185357000000002"> <br><br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
+            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%" type="text min-width:250px;" id="input_sizepid" placeholder="es: 0001570185357000000002"> <br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
             '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 

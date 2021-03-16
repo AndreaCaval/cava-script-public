@@ -89,7 +89,9 @@ async function sendText(text, color) {
 }
 
 async function main() {
-    if (link.startsWith("https://www.luisaviaroma.com/") && document.getElementsByClassName("aatyzvJ8ab").length == 1) {
+    if (link.startsWith("https://www.luisaviaroma.com/" + country + "/p")) {
+        mainAtc()
+    } else if (link.startsWith("https://www.luisaviaroma.com/") && document.body.textContent.includes("__BODY_MODEL__ ")) {
         mainAtc()
     } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx") && link.endsWith("#checkout")) {
         mainCheckout()
