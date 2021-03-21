@@ -104,9 +104,6 @@ function textBox() {
 
 async function main() {
 
-    if (mode == "Guest")
-        setProfile()
-
     getCsrfToken()
     await getMainPid()
 
