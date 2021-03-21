@@ -204,12 +204,12 @@ function textBox() {
             '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380189826700000008"> <br>' +
             '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
             '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
             '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
-        let btn_start = document.getElementById('btn_start')
-        btn_start.addEventListener("click", function() {
+        let btn_start_task = document.getElementById('btn_start_task')
+        btn_start_task.addEventListener("click", function() {
             try {
 
                 let input = document.getElementById("input_sizepid").value
@@ -228,12 +228,12 @@ function textBox() {
                 } else
                     sendText("Input error", "red")
 
-            } catch (error) {}
+            } catch (error) { errorWebhooks(error, "btn_start_task") }
         });
 
         let btn_start_checkout = document.getElementById('btn_start_checkout')
         btn_start_checkout.addEventListener("click", function() {
-            mainCart()
+            getCheckout()
         });
 
         let btn_dummy = document.getElementById('btn_dummy')
@@ -767,12 +767,13 @@ async function checkResAtc(response) {
         let res = await response.text()
         let x = res
         res = JSON.parse(res)
-        let error = res["error"]
-        let message = res["message"]
-        let errorType = res["errorType"]
-        let errorMessage = res["errorMessage"]
+        let error = ""
+        let message = ""
+        let errorType = ""
+        let errorMessage = ""
 
         if (status == 200 || status == 201) {
+            error = res["error"]
             if (error == false) {
                 sendText("Carted", "green")
                 if (dummy == 2) {
@@ -787,6 +788,8 @@ async function checkResAtc(response) {
                     mainCart()
                 }
             } else {
+                message = res["message"]
+                errorType = res["errorType"]
                 if (message == "La talla seleccionada ya no está disponible" || message == "Siamo spiacenti, la taglia selezionata non è più disponibile" || message.includes('Die gewünschte Menge') || message == 'De geselecteerde maat is helaas niet meer beschikbaar' || message == "La taille sélectionnée nest malheureusement plus disponible.") {
                     sendText("Item out of stock", "red")
                 } else if (errorType == "productLimitation") {
@@ -796,11 +799,13 @@ async function checkResAtc(response) {
                 } else if (message == "undefined") {
                     sendText("Error carting, open solver", "red")
                 } else {
-                    resInfoWebook(x, "checkResAtc_1")
                     sendText("Error carting", "red")
                 }
             }
         } else {
+
+            errorMessage = res["errorMessage"]
+
             if (x.includes("\"appId\"")) {
                 sendText("Error carting, resolve captcha", "red")
                 addButton()
@@ -836,7 +841,6 @@ async function checkResAtc(response) {
 async function mainCart() {
 
     if (checkout_mode != "ATC Only") {
-        await sendText("Starting checkout...", "blue")
         while (is_login == false) {
             await sleep(250)
         }
@@ -868,6 +872,7 @@ async function mainCart() {
 
 async function getCheckout() {
 
+    sendText("Starting checkout...", "blue")
     await fetch("https://" + country + "/checkout", {
             "headers": {
                 "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",

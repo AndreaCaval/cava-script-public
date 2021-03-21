@@ -10,12 +10,12 @@ let size_range = "random"
 let status_aco = "";
 let delay = "0";
 
-let mode = "Browser"
+let mode = "Fast" //Browser or Normal && Fast 
 
 let name_product = "";
 let price_product = "";
 let size_product = "";
-let link_product = "";
+let link_product = link;
 let id_product = "";
 const img_product = "https://media.discordapp.net/attachments/680064413524426752/692785979316240464/unknown.png";
 
@@ -103,12 +103,13 @@ async function main() {
 async function mainAtc() {
     if (mode == "Browser") {
         mainBrowserAtc()
+    } else if (mode == "Fast") {
+        mainFast()
     }
 }
 
 async function mainBrowserAtc() {
     try {
-
         sendText("Trying atc manual...", "blue")
         let selectSize = document.querySelector("[data-id = 'ItemPage-SelectSize']")
         if (selectSize.getElementsByClassName("_1607_GmTdI zq1tU3hfyW")[0] == undefined) {
@@ -174,17 +175,214 @@ async function mainBrowserAtc() {
     }
 }
 
+
+async function mainFast() {
+    try {
+        if (document.querySelector("[data-id='ItemPage-SelectsContainer']") == undefined) {
+            sendText("Item out of stock", "red")
+        } else {
+            sendText("Trying atc fast...", "blue")
+            let size_instock = []
+            let x = ""
+            let y = ""
+            let scripts = document.querySelectorAll("script")
+            scripts.forEach(element => {
+                if (element.textContent.includes("__BODY_MODEL__ "))
+                    eval(element.textContent)
+            });
+            x = window.__BODY_MODEL__
+                //x = JSON.parse(x)
+
+            ItemId = x["ItemParameters"]["ItemId"]
+            SeasonId = x["ItemParameters"]["SeasonId"]
+            CollectionId = x["ItemParameters"]["CollectionId"]
+            VendorColorId = x["ItemParameters"]["VendorColorId"]
+
+            console.log(x)
+
+            sizes = x["Availability"]
+            let selectSize = document.querySelector("[data-id = 'ItemPage-SelectSize']")
+            if (selectSize.getElementsByClassName("_1607_GmTdI zq1tU3hfyW")[0] == undefined) {
+                document.getElementsByClassName("_1607_GmTdI")[1].click()
+                y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
+                y = Array.prototype.slice.call(y)
+                y.forEach(element => {
+                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent + " (NIKE USA)")
+                });
+                document.getElementsByClassName("_1607_GmTdI")[1].click()
+            } else {
+                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent + " (NIKE USA)")
+            }
+            console.log(size_instock)
+            if (size_range == "random") {
+                do {
+                    n = getRandomIntInclusive(0, sizes.length - 1)
+                    console.log(sizes[n]["SelectedDescription"])
+                } while (!size_instock.includes(sizes[n]["SelectedDescription"]))
+                size = sizes[n]["SelectedDescription"]
+                SizeId = sizes[n]["SizeOrd"]
+                SizeTypeId = sizes[n]["SizeTypeId"]
+            } else {
+                if (size_range.includes('-')) {
+                    size_1 = parseFloat(size_range.split('-')[0])
+                    size_2 = parseFloat(size_range.split('-')[1])
+                    sizes = Array.prototype.slice.call(sizes)
+                    sizes = arreyMixer(sizes)
+                    for (let index = 0; index < sizes.length; index++) {
+                        element = sizes[index]
+                        size = parseFloat(element["SelectedDescription"])
+                        if (size_instock.includes(size)) {
+                            if (size >= size_1 && size <= size_2) {
+                                SizeId = element["SizeOrd"]
+                                SizeTypeId = element["SizeTypeId"]
+                                break
+                            }
+                        }
+                    }
+                    if (SizeId == "") {
+                        sendText("Selected sizes not available", "purple")
+                    }
+                } else {
+                    for (let index = 0; index < sizes.length; index++) {
+                        element = sizes[index]
+                        size = parseFloat(element["SelectedDescription"])
+                        if (size_instock.includes(size)) {
+                            if (parseFloat(size) == parseFloat(size_range)) {
+                                SizeId = element["SizeOrd"]
+                                SizeTypeId = element["SizeTypeId"]
+                                break
+                            }
+                        }
+                    }
+                    if (SizeId == "") {
+                        sendText("Selected sizes not available", "purple")
+                    }
+                }
+            }
+
+            if (SizeId != "") {
+                name_product = x["DescriptionText"]
+                size_product = size
+                price_product = x["Detail"]["FinalPrice"]
+                atcRFast()
+            }
+        }
+
+    } catch (error) {
+        errorWebhooks(error, "mainFast")
+        sendText("Item out of stock", "red")
+    }
+}
+
+async function atcRFast() {
+    await fetch("https://www.luisaviaroma.com/myarea/bag/add", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "bag/add",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false,\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":\"" + SizeId + "\",\"Quantity\":1}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        }).then(response => { checkRes(response) })
+        .catch((error) => {
+            sendText("Error adding to cart", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "atcRFast")
+        });;
+}
+
+async function checkRes(response) {
+
+    try {
+        let status = response.status
+        let res = await response.text()
+        res = JSON.parse(res)
+        if (status == 200 || status == 201) {
+            if (res["Error"] == "None") {
+                sendText("Carted ", "green")
+                sendWebhooks()
+                    // getCheckout()
+                document.location = "https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=#checkout"
+            } else {
+                sendText(res["Error"], "red")
+            }
+        } else {
+            sendText("Error carting ", "red")
+            errorRefresh()
+        }
+    } catch (error) { errorWebhooks(error, "checkRes") }
+}
+
+async function getCheckout() {
+
+    await fetch("https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=#checkout", {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResgetCheckout(response) })
+        .catch((error) => {
+            sendText("Error getting checkout", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "getCheckout fetch")
+
+        });;
+}
+
+async function checkResgetCheckout(response) {
+
+    let status = response.status
+    let res = await response.text()
+    if (status == 200 || status == 201) {
+        sendText("Getting checkout ", "green")
+        html.innerHTML = res
+        getData()
+    } else {
+        sendText("Error getting checkout ", "red")
+        errorRefresh()
+    }
+}
+
+
 async function mainCheckout() {
+    html.innerHTML = document.body.innerHTML
     getData()
 }
 
 async function getData() {
 
     try {
-        sendText("Getting checkout...", "blue")
-        email = document.querySelector('[data-attribute="email-input"]').getElementsByClassName("input-disabled-span")[0].textContent
+        sendText("Getting shipping info...", "blue")
+        email = html.querySelector('[data-attribute="email-input"]').getElementsByClassName("input-disabled-span")[0].textContent
         let x = ""
-        let scripts = document.querySelectorAll("script")
+        let scripts = html.querySelectorAll("script")
         scripts.forEach(element => {
             if (element.textContent.includes("__BAG_MODEL__ "))
                 x = element.textContent.replace("window.__BAG_MODEL__ = ", "")

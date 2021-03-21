@@ -1,3 +1,5 @@
+debugger
+
 const site = "Onygo"
 
 let link = document.location.href
@@ -100,12 +102,12 @@ function textBox() {
             '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
             '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
             '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%" type="text min-width:250px;" id="input_sizepid" placeholder="es: 0001570185357000000002"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_start" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
             '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
-        let btn_start = document.getElementById('btn_start')
-        btn_start.addEventListener("click", function() {
+        let btn_start_task = document.getElementById('btn_start_task')
+        btn_start_task.addEventListener("click", function() {
             try {
                 let input = document.getElementById("input_sizepid").value
                 if (!isNumeric(input)) {
@@ -122,12 +124,12 @@ function textBox() {
                     atcRfast()
                 } else
                     sendText("Input error", "red")
-            } catch (error) { errorWebhooks(error, "btn_start") }
+            } catch (error) { errorWebhooks(error, "btn_start_task") }
         });
 
         let btn_start_checkout = document.getElementById('btn_start_checkout')
         btn_start_checkout.addEventListener("click", function() {
-            mainCart()
+            getCheckout()
         });
 
         let btn_dummy = document.getElementById('btn_dummy')
@@ -626,8 +628,6 @@ async function checkResAtc(response) {
 
 async function mainCart() {
 
-    sendText("Starting checkout...", "blue")
-
     while (is_login == false) {
         await sleep(250)
     }
@@ -655,6 +655,7 @@ async function mainCart() {
 
 async function getCheckout() {
 
+    sendText("Starting checkout...", "blue")
     await fetch("https://www.onygo.com/checkout", {
             "headers": {
                 "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",

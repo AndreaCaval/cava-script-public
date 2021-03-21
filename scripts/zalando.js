@@ -39,6 +39,10 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function arreyMixer(array) {
 
     var currentIndex = array.length,
@@ -892,28 +896,34 @@ async function mainSuccess() {
 }
 
 async function foundData() {
-    let x = 0
-    img_product = document.getElementsByClassName('z-2-product-image_image')[0].src;
-    quantity_product = document.getElementsByClassName('z-2-product-image_image').length;
-    nomep = document.getElementsByClassName('z-text z-coast-fjord-body-bold z-text-body z-text-black')[0].textContent;
-    nomep2 = document.getElementsByClassName('z-coast-fjord_text-ellipsis')[0].textContent;
-    name_product = nomep + " " + nomep2
-    if (parseInt(quantity_product) != 1) {
-        for (let i = 0; i < quantity; i++) {
-            size_product += document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6 + x].textContent + " - ";
-            x += 2
+    try {
+        let x = 0
+        link_product = "https://" + country + "/catalogo/?q=" + document.getElementsByClassName("z-coast-fjord_article")[0].getAttribute("data-id").replace("z-coast-fjord_article-", "").slice(0, 13)
+        img_product = document.getElementsByClassName('z-2-product-image_image')[0].src;
+        quantity_product = document.getElementsByClassName('z-2-product-image_image').length;
+        nomep = document.getElementsByClassName('z-text z-coast-fjord-body-bold z-text-body z-text-black')[0].textContent;
+        nomep2 = document.getElementsByClassName('z-coast-fjord_text-ellipsis')[0].textContent;
+        name_product = nomep + " " + nomep2
+        if (parseInt(quantity_product) != 1) {
+            for (let i = 0; i < quantity; i++) {
+                size_product += document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6 + x].textContent + " - ";
+                x += 2
+            }
+        } else {
+            size_product = document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6].textContent;
+            try { size_product = size_product.split(':')[1] } catch (error) {}
         }
-    } else {
-        size_product = document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6].textContent;
-    }
 
-    size_product = size_product.replace(/[^\d,.-]/g, '')
+        if (hasNumber(size_product))
+            size_product = size_product.replace(/[^\d,.-]/g, '')
 
-    email = document.querySelectorAll('[aria-live="polite"]')[0].textContent;
-    n = email.split(" ").splice(-1)
-    email = n[n.length - 1]
+        email = document.querySelectorAll('[aria-live="polite"]')[0].textContent;
+        n = email.split(" ").splice(-1)
+        email = n[n.length - 1]
 
-    sendWebhooks()
+        sendWebhooks()
+
+    } catch (error) { errorWebhook(error, "foundData") }
 }
 
 async function sendWebhooks() {
