@@ -187,7 +187,7 @@ async function mainAtc() {
         if (f != "getSizeInfo")
             eval(f)
 
-    } catch (error) {}
+    } catch (error) { errorWebhooks(error, "mainAtc") }
 
 }
 
@@ -240,9 +240,6 @@ async function checkRes(response) {
             if (statusCode != "500" && isError != true) {
                 sendText("Carted", "green")
                 sendWebhooks()
-                while (is_login == false) {
-                    await sleep(250)
-                }
                 open("https://www.kickz.com/" + country + "/cart", "_self")
             } else {
                 sendText("Error carting", "red")
@@ -252,7 +249,7 @@ async function checkRes(response) {
             sendText("Error carting", "red")
             errorRefresh()
         }
-    } catch (error) {}
+    } catch (error) { errorWebhooks(error, "checkRes") }
 }
 
 
@@ -262,7 +259,7 @@ async function mainCk() {
         document.getElementById("checkbox-terms_accepted").click()
         await sleep(500)
         document.getElementsByClassName("btn btn-block btn-green btn-lg mb-2 mb-tablet-1")[0].click()
-    } catch (error) {}
+    } catch (error) { errorWebhooks(error, "mainCk") }
 }
 
 

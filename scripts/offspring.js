@@ -88,13 +88,13 @@ function textBox() {
         var btn1 = document.getElementsByClassName("navbar navbar-default navbar-inverse navbar--main navbar--pdp js-mainNav")[0]
         btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-size:15px; font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <br><p id="statusOffspring">Status Offspring</p> ' +
-            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
+            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     } catch (error) {
         try {
             var btn1 = document.getElementsByClassName("navbar navbar-default navbar-inverse navbar--main  js-mainNav")[0]
             btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-size:15px; font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
                 ' <br><p id="statusOffspring">Status Offspring</p> ' +
-                " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
+                " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
         } catch (error) {
             if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of null")
                 console.log(error)
@@ -107,39 +107,10 @@ async function main() {
     getCsrfToken()
     await getMainPid()
 
-    // if (link.startsWith("https://www.offspring.co.uk/view/product/offspring_catalog/") || pid != "") {
     if (main_pid != "" && main_pid != undefined)
         mainAtc()
-
 }
 
-async function setProfile() {
-    if (n_profiles != 0 && profile != "None") {
-        p = profile
-        for (let i = 1; i <= n_profiles; i++) {
-            x = profiles["profiles" + String(i)]
-            if (profile == String(x).split('$&')[0]) {
-                profile = profiles["profiles" + String(i)]
-                break
-            }
-        }
-    }
-    let data = profile.split('$&')
-    firstname = data[1]
-    lastname = data[2]
-    email = data[3]
-    phone = data[4]
-    address1 = data[5]
-    address2 = data[6]
-    city = data[7]
-    postalcode = data[8]
-    try {
-        countryCode = data[10].split('|')[0]
-        countryIsoCode = data[10].split('|')[1]
-    } catch (error) {
-        countryCode = data[10]
-    }
-}
 
 async function getCsrfToken() {
     try { csrftoken = document.getElementsByName('CSRFToken')[0].value } catch (error) {}
@@ -157,12 +128,10 @@ async function getMainPid() {
 }
 
 async function mainAtc() {
-
     try {
-        sizes = document.getElementsByClassName("product__sizes-select js-size-select-list")[0].getElementsByClassName("product__sizes-option");
 
+        sizes = document.getElementsByClassName("product__sizes-select js-size-select-list")[0].getElementsByClassName("product__sizes-option");
         if (sizes.length != 0) {
-            console.log(size_range)
             if (size_range == "random") {
                 n = getRandomIntInclusive(0, sizes.length - 1)
                 size = parseFloat(sizes[n].getAttribute('data-name'))
@@ -203,13 +172,14 @@ async function mainAtc() {
                 await atcR()
         }
     } catch (error) {
+        sendText("Error adding to cart", "red")
         errorWebhook(error, "mainAtc")
     }
 }
 
 async function atcR() {
 
-    sendText("Trying atc fast...", "blue")
+    sendText("Trying atc...", "blue")
     await fetch("https://www.offspring.co.uk/view/basket/add", {
             "headers": {
                 "accept": "*/*",
@@ -231,54 +201,63 @@ async function atcR() {
             "credentials": "include"
         })
         .then(response => { checkRes(response) })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => {
+            sendText("Error adding to cart", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "atcR")
+        });;
 }
 
 async function checkRes(response) {
+    try {
 
-    let status = response.status
-    let res = await response.text()
-    let x = res
-    res = JSON.parse(res)
-    let statusCode = ""
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+        let statusCode = ""
 
-    if (status == 200 || status == 201) {
-        statusCode = res["statusCode"]
-        if (statusCode == "success") {
-            sendText("Carted", "green")
-            setDataProduct(res["cartStatus"][0])
-            mainCheckout()
-        } else if (statusCode == "failedcaptcha") {
-            sendText("Error captcha", "red")
+        if (status == 200 || status == 201) {
+            statusCode = res["statusCode"]
+            if (statusCode == "success") {
+                sendText("Carted", "green")
+                setDataProduct(res["cartStatus"][0])
+                mainCheckout()
+            } else if (statusCode == "failedcaptcha") {
+                sendText("Error captcha", "red")
+            } else if (statusCode == "outofstock") {
+                sendText("Size out of stock", "red")
+            } else if (statusCode == "toomanyrequests") {
+                sendText("Too many requests", "red")
+            } else {
+                sendText(statusCode, "red")
+                resInfoWebook(x, "checkRes_1")
+            }
         } else {
-            resInfoWebook(x, "checkRes_1")
+            resInfoWebook(x, "checkRes_2")
+            sendText("Error carting / Oos", "red")
+            errorWebhook(error, "checkRes_1")
         }
-    } else {
-        resInfoWebook(x, "checkRes_1")
-        sendText("Error carting / Oos", "red")
+
+    } catch (error) {
+        sendText("Error carting", "red")
         errorWebhook(error, "checkRes_2")
     }
 }
 
-async function setDataProduct(data) {
-    name_product = main_pid
-    size_product = size
-    price_product = data["itemPrice"] + '£'
-    img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
+function setDataProduct(data) {
+    try {
+        name_product = main_pid
+        size_product = size
+        price_product = data["itemPrice"] + '£'
+        img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
+    } catch (error) { errorWebhook(error, "setDataProduct") }
 }
 
 
 async function mainCheckout() {
-    if (checkout_mode == "ATC Only") {
-        sendWebhooks1()
-        document.location = "https://www.offspring.co.uk/checkout/singlePageCheckout"
-    } else {
-        if (mode == "Guest") {
-
-        } else {
-
-        }
-    }
+    await sendWebhooks1()
+    document.location = "https://www.offspring.co.uk/checkout/singlePageCheckout"
 }
 
 
@@ -287,7 +266,7 @@ async function sendWebhooks() {
 }
 
 async function sendWebhooks1() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site1 + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site1 + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhook(error, position) {

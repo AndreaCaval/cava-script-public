@@ -10,7 +10,7 @@ let size_range = "random"
 let status_aco = "";
 let delay = "0";
 
-let mode = "Fast" //Browser or Normal && Fast 
+let mode = "Browser" //Browser or Normal && Fast 
 
 let name_product = "";
 let price_product = "";

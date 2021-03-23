@@ -866,7 +866,8 @@ async function mainCart() {
         }
 
     } else {
-        document.location = "https://" + country + "/checkout"
+        if (link != "https://" + country + "/cart")
+            document.location = "https://" + country + "/checkout"
     }
 }
 

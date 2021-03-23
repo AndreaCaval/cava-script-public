@@ -120,7 +120,7 @@ async function atc() {
             errorRefresh()
         }
     } catch (error) {
-        errorWebhooks(error)
+        errorWebhooks(error, "atc")
         errorRefresh()
     }
 }
@@ -198,7 +198,7 @@ chrome.runtime.sendMessage({ greeting: "sns" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "sns_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && !response.farewell)
         size_range = response.farewell
 });
 

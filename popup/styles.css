@@ -1,3 +1,19 @@
+a.site {
+    font-size: 14px;
+}
+
+th.th1 {
+    float: left;
+}
+
+th.th2 {
+    float: right;
+}
+
+label {
+    font-size: 13px;
+}
+
 html {
     border: 2px;
     border-style: solid;

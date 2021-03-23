@@ -66,6 +66,9 @@ function SetStatus_off() {
     //Snipes
     setIfNotPresent("checkout_mode_snipes", "Full Checkout");
 
+    //Lvr
+    setIfNotPresent("mode_lvr", "Browser");
+
     //Awlab
     setIfNotPresent("checkout_mode_awlab", "Full Checkout");
     setIfNotPresent("payment_mode_awlab", "PayPal");
@@ -331,6 +334,9 @@ chrome.runtime.onMessage.addListener(
                 break
             case "lvr_size":
                 sendResponse({ farewell: localStorage.getItem("size_lvr") });
+                break
+            case "lvr_mode":
+                sendResponse({ farewell: localStorage.getItem("mode_lvr") });
                 break
                 //naked
             case "naked":
