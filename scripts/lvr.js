@@ -10,7 +10,7 @@ let size_range = "random"
 let status_aco = "";
 let delay = "0";
 
-let mode = "Browser" //Browser or Normal && Fast 
+let mode = "Browser"
 
 let name_product = "";
 let price_product = "";
@@ -68,6 +68,10 @@ function arreyMixer(array) {
         array[randomIndex] = temporaryValue;
     }
     return array;
+}
+
+function hasNumber(myString) {
+    return /\d/.test(myString);
 }
 
 function textBox() {
@@ -325,6 +329,7 @@ async function checkRes(response) {
     } catch (error) { errorWebhooks(error, "checkRes") }
 }
 
+
 async function getCheckout() {
 
     await fetch("https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=#checkout", {
@@ -472,9 +477,10 @@ chrome.runtime.sendMessage({ greeting: "lvr" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "lvr_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
+
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {

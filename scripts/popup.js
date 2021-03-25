@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.1.3'
+const version = 'Cava-Scripts 1.1.4'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -503,11 +503,14 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA LVR----------------------------------------------
+    if (localStorage.getItem("mode_lvr") != "off") { $("#mode_lvr").val(localStorage.getItem("mode_lvr")); }
     if (localStorage.getItem("size_lvr") != "off") { $("#size_lvr").val(localStorage.getItem("size_lvr")); }
     //gestisco il click del bottone salva
     $("#btn_save_lvr").click(function() {
-        var size_lvr = $("#size_lvr").val();
+        let size_lvr = $("#size_lvr").val();
+        let mode_lvr = $("#mode_lvr").val();
 
+        if (mode_lvr != '') { localStorage.setItem("mode_lvr", mode_lvr); } else { localStorage.setItem("mode_lvr", "off"); }
         if (!(isBlank(size_lvr))) { localStorage.setItem("size_lvr", size_lvr); } else { localStorage.setItem("size_lvr", "off"); }
     });
     //---------------------------------------------------------------------

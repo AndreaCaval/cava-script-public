@@ -49,6 +49,10 @@ function arreyMixer(array) {
     return array;
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function textBox() {
     let color_aco = "";
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
@@ -120,7 +124,7 @@ async function atc() {
             errorRefresh()
         }
     } catch (error) {
-        errorWebhooks(error, "atc")
+        errorWebhooks(error)
         errorRefresh()
     }
 }
@@ -149,7 +153,7 @@ async function atcR() {
         .catch((error) => {
             sendText("Error adding to cart", "orange")
             if (error != "TypeError: Failed to fetch")
-                errorWebhooks(error, "checkRes")
+                errorWebhooks(error, "atcR")
         });;
 }
 
@@ -174,7 +178,10 @@ async function checkRes(response) {
             sendText("Error carting / Item reserved", "red")
             errorRefresh()
         }
-    } catch (error) { errorWebhooks(error, "checkRes") }
+    } catch (error) {
+        sendText("Error carting", "red")
+        errorWebhooks(error, "checkRes")
+    }
 }
 
 async function sendWebhooks() {
@@ -198,7 +205,7 @@ chrome.runtime.sendMessage({ greeting: "sns" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "sns_size" }, function(response) {
-    if (response.farewell != "off" && !response.farewell)
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 

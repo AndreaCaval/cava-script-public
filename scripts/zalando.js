@@ -939,7 +939,7 @@ async function resInfoWebook(message, position) {
 }
 
 chrome.runtime.sendMessage({ greeting: "zalando_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 

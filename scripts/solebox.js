@@ -335,6 +335,7 @@ async function checkResLogin(response) {
 
     let status = response.status
     let res = await response.text()
+
     if (status == 200 || status == 201) {
         sendText("Logged in", "green")
         is_login = true

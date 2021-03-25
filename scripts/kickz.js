@@ -51,6 +51,10 @@ function arreyMixer(array) {
     return array;
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function textBox() {
     let color_aco = "";
     let color_login = ""
@@ -58,7 +62,7 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("section-main d-flex align-items-center")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusKickz">Status kickz</p>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
     } catch (error) {
@@ -105,7 +109,10 @@ async function checkLogin() {
             is_login = true
         }
 
-    } catch (error) { errorWebhooks(error, "checkLogin") }
+    } catch (error) {
+        errorWebhooks(error, "checkLogin")
+        sendText("Error logging in...", "red")
+    }
 }
 
 async function loginR() {
@@ -133,7 +140,10 @@ async function loginR() {
             .then(response => { checkResLogin(response) })
             .catch((error) => { errorWebhooks(error, "authentication") });;
 
-    } catch (error) { errorWebhooks(error, "loginR") }
+    } catch (error) {
+        errorWebhooks(error, "loginR")
+        sendText("Error logging in...", "red")
+    }
 }
 
 async function checkResLogin(response) {
@@ -187,7 +197,7 @@ async function mainAtc() {
         if (f != "getSizeInfo")
             eval(f)
 
-    } catch (error) { errorWebhooks(error, "mainAtc") }
+    } catch (error) {}
 
 }
 
@@ -249,7 +259,7 @@ async function checkRes(response) {
             sendText("Error carting", "red")
             errorRefresh()
         }
-    } catch (error) { errorWebhooks(error, "checkRes") }
+    } catch (error) {}
 }
 
 
@@ -259,7 +269,7 @@ async function mainCk() {
         document.getElementById("checkbox-terms_accepted").click()
         await sleep(500)
         document.getElementsByClassName("btn btn-block btn-green btn-lg mb-2 mb-tablet-1")[0].click()
-    } catch (error) { errorWebhooks(error, "mainCk") }
+    } catch (error) {}
 }
 
 
@@ -294,7 +304,7 @@ chrome.runtime.sendMessage({ greeting: "kickz_login" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "kickz_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 

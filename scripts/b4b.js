@@ -46,12 +46,16 @@ function arreyMixer(array) {
     return array;
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function textBox() {
     let color_aco = "";
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
         var btn1 = document.getElementsByClassName("main-menu cf")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusB4b">Status basket4ballers</p> ' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
     } catch (error) {
@@ -105,30 +109,34 @@ async function main() {
 
                     cmb = true
 
-                    size_in_stock = arreyMixer(size_in_stock)
-
-                    if (size_range == "random") {
-                        n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                        ipa = size_in_stock[n].split('-')[0]
+                    if (size_in_stock.length == 0) {
+                        sendText("Item out of stock...", "red")
                     } else {
-                        if (size_range.includes('-')) {
-                            for (let index = 0; index < size_in_stock.length; index++) {
-                                if (parseFloat(size_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(size_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
-                                    ipa = size_in_stock[index].split('-')[0]
-                                    break
-                                }
-                            }
+                        size_in_stock = arreyMixer(size_in_stock)
+
+                        if (size_range == "random") {
+                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                            ipa = size_in_stock[n].split('-')[0]
                         } else {
-                            for (let index = 0; index < size_in_stock.length; index++) {
-                                if (parseFloat(size_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
-                                    ipa = size_in_stock[index].split('-')[0]
-                                    break
+                            if (size_range.includes('-')) {
+                                for (let index = 0; index < size_in_stock.length; index++) {
+                                    if (parseFloat(size_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(size_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
+                                        ipa = size_in_stock[index].split('-')[0]
+                                        break
+                                    }
+                                }
+                            } else {
+                                for (let index = 0; index < size_in_stock.length; index++) {
+                                    if (parseFloat(size_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
+                                        ipa = size_in_stock[index].split('-')[0]
+                                        break
+                                    }
                                 }
                             }
                         }
+                        if (ipa != "")
+                            atcR()
                     }
-                    if (ipa != "")
-                        atcR()
                 }
 
             } catch (error) { errorWebhook(error, "main_1") }
@@ -175,7 +183,7 @@ async function checkResAtc(response) {
         res = JSON.parse(res)
 
         if (status == 200 || status == 201) {
-
+            sendText("Carted", "green")
             let products = res["products"]
             products.forEach(element => {
                 if (element["id"] == id_product) {
@@ -190,13 +198,14 @@ async function checkResAtc(response) {
             await sleep(100)
             document.location = "https://www.basket4ballers.com/" + country + "/commande"
         } else {
-            sendText("Error Carting...", "blue")
+            sendText("Error Carting...", "red")
             errorRefresh()
         }
 
     } catch (error) {
         if (error != "TypeError: Cannot read property 'forEach' of undefined")
             errorWebhook(error, "checkResAtc")
+        sendText("Error Carting...", "res")
     }
 
 }
@@ -218,7 +227,7 @@ chrome.runtime.sendMessage({ greeting: "basket4ballers" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "basket4ballers_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 

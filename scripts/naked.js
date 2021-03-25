@@ -34,6 +34,10 @@ function getRandomIntInclusive(min, max) {
     return n
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function arreyMixer(array) {
 
     var currentIndex = array.length,
@@ -54,7 +58,7 @@ function textBox() {
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
         var btn1 = document.getElementsByClassName("navbar")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusNaked">Status Naked</p> ' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
     } catch (error) {
@@ -147,39 +151,41 @@ async function atcR() {
 }
 
 async function checkRes(response) {
+    try {
 
-    let status = response.status
-    let res = await response.text()
+        let status = response.status
+        let res = await response.text()
 
-    if (status == 200 || status == 201) {
-        html.innerHTML = res
-        name_product = html.getElementsByClassName('cart-item__brand')[0].textContent.replaceAll("\n", '') + ' | ' + html.getElementsByClassName('cart-item__name')[0].textContent.replaceAll("\n", '')
-        size_product = html.getElementsByClassName('cart-item__size')[0].textContent.replaceAll("\n", "")
-        price_product = html.getElementsByClassName('cart-item__price')[0].textContent.replaceAll("\n", "")
-        sendWebhooks()
-        document.location = "https://www.nakedcph.com/" + country + "/cart/view"
-    } else {
+        if (status == 200 || status == 201) {
+            html.innerHTML = res
+            name_product = html.getElementsByClassName('cart-item__brand')[0].textContent.replaceAll("\n", '') + ' | ' + html.getElementsByClassName('cart-item__name')[0].textContent.replaceAll("\n", '')
+            size_product = html.getElementsByClassName('cart-item__size')[0].textContent.replaceAll("\n", "")
+            price_product = html.getElementsByClassName('cart-item__price')[0].textContent.replaceAll("\n", "")
+            sendWebhooks()
+            document.location = "https://www.nakedcph.com/" + country + "/cart/view"
+        } else {
 
-        sizes[n].click()
-        document.getElementsByClassName("btn btn-primary product-form-submit")[0].click()
+            sizes[n].click()
+            document.getElementsByClassName("btn btn-primary product-form-submit")[0].click()
 
-        await sleep(5000)
-        if (document.getElementsByClassName("mc-item-brand")[0] != undefined) {
-            try {
-                name_product = document.getElementsByClassName("mc-item-brand")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("mc-item-name")[0].textContent.replaceAll("\n", "")
-                size_product = document.getElementsByClassName("mc-item-size")[0].textContent.replaceAll("\n", "")
-                price_product = document.getElementsByClassName("price-container")[0].textContent.replaceAll("\n", "")
-                sendWebhooks()
-                document.location = "https://www.nakedcph.com/" + country + "/cart/view"
-            } catch (error) {
-                if (error != "TypeError: Cannot read property 'value' of undefined")
-                    errorWebhooks(error)
+            await sleep(5000)
+            if (document.getElementsByClassName("mc-item-brand")[0] != undefined) {
+                try {
+                    name_product = document.getElementsByClassName("mc-item-brand")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("mc-item-name")[0].textContent.replaceAll("\n", "")
+                    size_product = document.getElementsByClassName("mc-item-size")[0].textContent.replaceAll("\n", "")
+                    price_product = document.getElementsByClassName("price-container")[0].textContent.replaceAll("\n", "")
+                    sendWebhooks()
+                    document.location = "https://www.nakedcph.com/" + country + "/cart/view"
+                } catch (error) {
+                    if (error != "TypeError: Cannot read property 'value' of undefined")
+                        errorWebhooks(error, "checkRes1")
+                    errorRefresh()
+                }
+            } else {
                 errorRefresh()
             }
-        } else {
-            errorRefresh()
         }
-    }
+    } catch (error) { errorWebhooks(error, "checkRes2") }
 }
 
 async function sendWebhooks() {
@@ -203,7 +209,7 @@ chrome.runtime.sendMessage({ greeting: "naked" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "naked_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 

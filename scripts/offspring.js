@@ -14,7 +14,7 @@ let coupon = ""
 let continue_coupon = ""
 
 let payment_mode = ""
-let checkout_mode = "ATC Only"
+let checkout_mode = "ATC Only Browser"
 let mode = ""
 
 let n_profiles = 0
@@ -48,6 +48,7 @@ let id_product = "";
 let sizes = ""
 let size = ""
 
+let carted = false
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -79,22 +80,24 @@ function arreyMixer(array) {
     return array;
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function textBox() {
     let color_aco = "";
-    let color_login = ""
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
-    if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         var btn1 = document.getElementsByClassName("navbar navbar-default navbar-inverse navbar--main navbar--pdp js-mainNav")[0]
         btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-size:15px; font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <br><p id="statusOffspring">Status Offspring</p> ' +
-            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
     } catch (error) {
         try {
             var btn1 = document.getElementsByClassName("navbar navbar-default navbar-inverse navbar--main  js-mainNav")[0]
             btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-size:15px; font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
                 ' <br><p id="statusOffspring">Status Offspring</p> ' +
-                " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+                " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> </p></div>");
         } catch (error) {
             if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of null")
                 console.log(error)
@@ -107,10 +110,10 @@ async function main() {
     getCsrfToken()
     await getMainPid()
 
-    if (main_pid != "" && main_pid != undefined)
-        mainAtc()
+    if (main_pid != "" && main_pid != undefined) {
+        mainAtcBrowser()
+    }
 }
-
 
 async function getCsrfToken() {
     try { csrftoken = document.getElementsByName('CSRFToken')[0].value } catch (error) {}
@@ -127,16 +130,16 @@ async function getMainPid() {
     } catch (error) {}
 }
 
-async function mainAtc() {
+async function mainAtcBrowser() {
     try {
 
+        sendText("Trying atc manual...", "blue")
         sizes = document.getElementsByClassName("product__sizes-select js-size-select-list")[0].getElementsByClassName("product__sizes-option");
         if (sizes.length != 0) {
             if (size_range == "random") {
                 n = getRandomIntInclusive(0, sizes.length - 1)
                 size = parseFloat(sizes[n].getAttribute('data-name'))
-                size_product = sizes[n].getAttribute('data-value')
-                id_product = main_pid + "" + size_product
+                sizes[n].click()
             } else {
                 if (size_range.includes('-')) {
                     size_1 = parseFloat(size_range.split('-')[0])
@@ -146,7 +149,7 @@ async function mainAtc() {
                     for (let index = 0; index < sizes.length; index++) {
                         size = parseFloat(sizes[index].getAttribute('data-name'))
                         if (size >= size_1 && size <= size_2) {
-                            id_product = main_pid + "" + sizes[index].getAttribute('data-value')
+                            sizes[index].click()
                             break
                         }
                     }
@@ -157,103 +160,39 @@ async function mainAtc() {
                     for (let index = 0; index < sizes.length; index++) {
                         size = parseFloat(sizes[index].getAttribute('data-name'))
                         if (parseFloat(size) == parseFloat(size_range)) {
-                            id_product = main_pid + "" + sizes[index].getAttribute('data-value')
+                            sizes[index].click()
                             break
                         }
 
                     }
-                    if (id_product == "") {
-                        sendText("Selected size not available", "purple")
-                    }
+                }
+            }
+            name_product = document.getElementsByClassName("product__name")[0].textContent + " " + document.getElementsByClassName("product__variant")[0].textContent
+            price_product = document.getElementsByClassName("price__price js-price")[0].textContent.replace(/\s/g, '').replaceAll('\n', '')
+            img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
+            document.getElementsByClassName("btn btn--sm btn--left product__actions-cart product__actions-cart--pdp js-add-to-bag-btn")[0].click()
+            size_product = size
+
+            for (let index = 0; index < 5; index++) {
+                await sleep(500)
+                if (document.getElementsByClassName("overlay-backdrop js-overlayBackdrop overlay-backdrop--is-visible")[0] != undefined) {
+                    carted = true
+                    mainCheckout()
+                    break
                 }
             }
 
-            if (id_product != "")
-                await atcR()
+            if (carted != true) {
+                errore = document.getElementsByClassName("product-validation__error js-validation-error-restricted product-validation__error--visible")[0].textContent
+                sendText(errore, "red")
+            }
+
         }
     } catch (error) {
         sendText("Error adding to cart", "red")
         errorWebhook(error, "mainAtc")
     }
 }
-
-async function atcR() {
-
-    sendText("Trying atc...", "blue")
-    await fetch("https://www.offspring.co.uk/view/basket/add", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
-                "csrftoken": csrftoken,
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "productCode=" + id_product + "&wishlist=false",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
-        .then(response => { checkRes(response) })
-        .catch((error) => {
-            sendText("Error adding to cart", "orange")
-            if (error != "TypeError: Failed to fetch")
-                errorWebhook(error, "atcR")
-        });;
-}
-
-async function checkRes(response) {
-    try {
-
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        let statusCode = ""
-
-        if (status == 200 || status == 201) {
-            statusCode = res["statusCode"]
-            if (statusCode == "success") {
-                sendText("Carted", "green")
-                setDataProduct(res["cartStatus"][0])
-                mainCheckout()
-            } else if (statusCode == "failedcaptcha") {
-                sendText("Error captcha", "red")
-            } else if (statusCode == "outofstock") {
-                sendText("Size out of stock", "red")
-            } else if (statusCode == "toomanyrequests") {
-                sendText("Too many requests", "red")
-            } else {
-                sendText(statusCode, "red")
-                resInfoWebook(x, "checkRes_1")
-            }
-        } else {
-            resInfoWebook(x, "checkRes_2")
-            sendText("Error carting / Oos", "red")
-            errorWebhook(error, "checkRes_1")
-        }
-
-    } catch (error) {
-        sendText("Error carting", "red")
-        errorWebhook(error, "checkRes_2")
-    }
-}
-
-function setDataProduct(data) {
-    try {
-        name_product = main_pid
-        size_product = size
-        price_product = data["itemPrice"] + '£'
-        img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
-    } catch (error) { errorWebhook(error, "setDataProduct") }
-}
-
 
 async function mainCheckout() {
     await sendWebhooks1()
@@ -282,7 +221,7 @@ chrome.runtime.sendMessage({ greeting: "offspring" }, function(response) {
 });
 
 chrome.runtime.sendMessage({ greeting: "offspring_size" }, function(response) {
-    if (response.farewell != "off")
+    if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
