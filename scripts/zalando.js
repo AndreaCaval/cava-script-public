@@ -23,7 +23,6 @@ let size_eu = []
 let size_in_stock = []
 let count_cart = 0
 let carted = 0
-let cart_limit = "";
 let id = "";
 
 let frsx = ""
@@ -33,6 +32,8 @@ let name_product = '';
 let size_product = '';
 let quantity_product = '';
 let link_product = "https://www.zalando.it/"
+
+let id_address
 
 
 function sleep(ms) {
@@ -74,7 +75,7 @@ async function setDelay() {
 }
 
 async function setCoupon(i) {
-    try { document.getElementById("nCount").innerHTML = "Coupon count: " + i } catch (error) {}
+    try { document.getElementById("nCount").innerHTML = "COUPON COUNT : " + i } catch (error) {}
 }
 
 async function sendText(text, color) {
@@ -128,20 +129,39 @@ function textBoxCart() {
 
 function textBoxCouponGen() {
     try {
-        let btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family:Verdana,Geneva,sans-serif; position:fixed; right:0; top: 350px; z-index: 1000; min-width: 300px; background-color: rgb(105, 105, 105); padding:10px; color: white; border-radius: 10px;">' +
-            '<p style="text-align:center">Cava Scripts </p><p id="nCount">Coupon count: 0</p>' +
-            '<label>Catchall: </label><input style="color:black; float:right" type="text" id="catchall" placeholder="es: cavascripts.com"><br style="clear:both">' +
-            '<label>N Coupon: </label><input style="color:black; float:right" id="nCoupon" type="number" value="0"> <br style="clear:both"><br>' +
-            '<input style="text-align: center; background-color:black; width:100%; padding:5px;" id="btnSend" type="submit" value="GENERATE COUPON"></div>');
 
-        let btn_atc_clear = document.getElementById('btnSend')
-        btn_atc_clear.addEventListener("click", function() {
+        document.getElementsByClassName("reVeb9 DvypSJ aC4gN7 ltJ7fb SYzeqo KVdkfm U4aOaA KoaFhL")[0].innerHTML = '<div>' +
+            '<h2 style="text-align:center">CAVA SCRIPT </h2>' +
+            '<p id="nCount" style="text-align:right; font-weight: bold;">COUPON COUNT : 0</p>' +
+            //catchall
+            '<div class="_0xLoFW _78xIQ-">' +
+            '<label for="email-input" class="z-oVg8 VnVJx_ ka2E9k uMhVZi FxZV-M Q1UH4S _9YcI4f iSVqgF Saptwy _1IcNq DpImHu VCU58c UU2nsI e5GQII yu0rAc XbvwtD pVrzNP cXrhYr reVeb9">' +
+            'Enter Catchall:</label>' +
+            '<div class="FyYmoo JT3_zV _0xLoFW reVeb9 xRIrkR">' +
+            '<input type="email" class="nMYklG WOeOAB z-oVg8 _7Cm1F9 ka2E9k uMhVZi FxZV-M bsVOrE mo6ZnF dUMFv9 K82if3 LyRfpJ pVrzNP NN8L-8 QGmTh2 Vn-7c-" placeholder="es: cavascript.com" id="catchall"></div>' +
+            '</div> <br><br>' +
+            //n coupon
+            '<div class="_0xLoFW _78xIQ-">' +
+            '<label for="email-input" class="z-oVg8 VnVJx_ ka2E9k uMhVZi FxZV-M Q1UH4S _9YcI4f iSVqgF Saptwy _1IcNq DpImHu VCU58c UU2nsI e5GQII yu0rAc XbvwtD pVrzNP cXrhYr reVeb9">' +
+            'N Coupon:</label>' +
+            '<div class="FyYmoo JT3_zV _0xLoFW reVeb9 xRIrkR">' +
+            '<input type="number" class="nMYklG WOeOAB z-oVg8 _7Cm1F9 ka2E9k uMhVZi FxZV-M bsVOrE mo6ZnF dUMFv9 K82if3 LyRfpJ pVrzNP NN8L-8 QGmTh2 Vn-7c-" value="1" id="nCoupon"></div>' +
+            '</div>' +
+            //button generate
+            '<button aria-label="Generate Coupon"' +
+            'class="DJxzzA u9KIT8 NB8Ll4 vk5JMf ZkIJC- Vn-7c- FCIprz heWLCX RzUmIb LyRfpJ Md_Vex NN8L-8 GTG2H9 MfX1a0 WCjo-q EKabf7 aX2-iv r9BRio E6Km4r" type="submit" id="btnGenerateCoupon" style="margin-top:25px;width:100%">' +
+            '<svg class="zds-icon RC794g _98USAM DlJ4rT nXkCf3 DlJ4rT _9l1hln cMfkVL fzejeK" height="1em" width="1em" focusable="false" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M21 3H3a3 3 0 00-3 3v12a3 3 0 003 3h18a3 3 0 003-3V6a3 3 0 00-3-3zm0 1.5c.32 0 .6.12.84.3l-8.82 8.22a1.5 1.5 0 01-2.04 0L2.16 4.79c.24-.17.52-.29.84-.29h18zm0 15H3A1.5 1.5 0 011.5 ' +
+            '18V6.23l8.45 7.89a2.99 2.99 0 004.1 0l8.45-7.9V18c0 .83-.67 1.5-1.5 1.5z"></path></svg><span class="z-oVg8 heWLCX ZkIJC- r9BRio qXofat _7Cm1F9 ka2E9k uMhVZi dgII7d">Generate Coupon</span></button>'
+
+
+        let btnGenerateCoupon = document.getElementById('btnGenerateCoupon')
+        btnGenerateCoupon.addEventListener("click", function() {
             try { genCoupon() } catch (error) {}
         });
-    } catch (error) {}
-}
 
+    } catch (error) { console.log(error) }
+}
 
 async function main() {
     if (link.startsWith("https://" + country + "/zalando-newsletter")) {
@@ -164,12 +184,13 @@ async function main() {
     } else {
         searchSize()
         textBoxMain()
-        if (link != "https://" + country + "/wardrobe/?" && document.getElementsByClassName("uqkIZw ka2E9k uMhVZi FxZV-M z-oVg8 pVrzNP")[0] != undefined)
+        if (link != "https://" + country + "/wardrobe/?" && (document.getElementsByClassName("uqkIZw ka2E9k uMhVZi FxZV-M z-oVg8 pVrzNP")[0] != undefined || document.getElementsByClassName("uqkIZw ka2E9k uMhVZi dgII7d z-oVg8 _88STHx cMfkVL")[0] != undefined))
             if (drop_mode == "on")
                 dropMode()
     }
     setDelay()
 }
+
 
 
 async function mainLogin() {
@@ -250,10 +271,9 @@ async function genCoupon() {
         setCoupon(0)
 
     } else {
-        document.getElementById("nCount").innerHTML = "Error Catchall"
+        document.getElementById("nCount").innerHTML = "ENTER CATCHALL"
     }
 }
-
 async function newsletterR(mail, i) {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
@@ -284,6 +304,7 @@ async function newsletterR(mail, i) {
         })
         .catch((error) => { console.log(error) });;
 }
+
 
 
 function searchSize() {
@@ -363,23 +384,20 @@ async function dropMode() {
 
             if (size_in_stock.length != 0) {
                 sendText("Product in stock, trying atc...", "yellow")
-                if (size_in_stock.length == 1) {
-                    await atcRDrop(size_in_stock[0])
-                } else {
-                    for (let i = 0; count_cart < cart_limit; i++) {
-                        if (xyz == 0) {
-                            sendText("Trying atc.", "yellow")
-                            xyz = 1
-                        } else if (xyz == 1) {
-                            sendText("Trying atc..", "yellow")
-                            xyz = 2
-                        } else if (xyz == 2) {
-                            sendText("Trying atc...", "yellow")
-                            xyz = 0
-                        }
-                        n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                        await atcRDrop(size_in_stock[n])
+                while (count_cart == 0) {
+                    if (xyz == 0) {
+                        sendText("Trying atc.", "yellow")
+                        xyz = 1
+                    } else if (xyz == 1) {
+                        sendText("Trying atc..", "yellow")
+                        xyz = 2
+                    } else if (xyz == 2) {
+                        sendText("Trying atc...", "yellow")
+                        xyz = 0
                     }
+                    n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                    await atcRDrop(size_in_stock[n])
+                    await sleep(parseInt(delay))
                 }
                 break
             }
@@ -391,7 +409,6 @@ async function dropMode() {
     }
 
 }
-
 async function getProduct() {
 
     await fetch(link, {
@@ -426,28 +443,21 @@ async function atcFast() {
     else
         sendText("Error carting item", "red")
 }
-
 async function atc() {
-
-
     try {
+
         if (size != "") {
-
             frsx = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
-
-
             for (var i = 0; i < size.length; i++) {
-
                 if (size_range == "random") {
-                    if (cart_limit > count_cart) {
-                        setCount(i)
-                        await atcR(size[i], i)
-                    }
+                    setCount(i)
+                    await atcR(size[i], i)
+
                 } else if (size_range.includes('-')) {
                     let size_1 = parseFloat(size_range.split('-')[0])
                     let size_2 = parseFloat(size_range.split('-')[1])
                     s = parseFloat(size_eu[i])
-                    if (s >= size_1 && s <= size_2 && cart_limit > count_cart) {
+                    if (s >= size_1 && s <= size_2) {
                         setCount(i)
                         await atcR(size[i], i)
                     }
@@ -455,16 +465,17 @@ async function atc() {
                 } else {
                     let size_1 = parseFloat(size_range)
                     s = parseFloat(size_eu[i])
-                    if (s == size_1 && cart_limit > count_cart) {
+                    if (s == size_1) {
                         setCount(i)
                         await atcR(size[i], i)
+                        break
                     }
                 }
             }
         }
+
     } catch (error) { errorWebhook(error, "atcSavedSku") }
 }
-
 async function atcR(id_prodotto) {
 
     await fetch("https://" + country + "/api/graphql/", {
@@ -492,7 +503,6 @@ async function atcR(id_prodotto) {
                 errorWebhook(error, "atcR_fetch")
         });;
 }
-
 async function checkAtcRes(response) {
 
     try {
@@ -506,7 +516,7 @@ async function checkAtcRes(response) {
 
         if (status == 200 || status == 201) {
             if (message != null) {
-                count_cart++
+                count_cart = 1
                 sendText("Carted", "yellow")
                 setCount(count_cart)
             } else {
@@ -531,7 +541,6 @@ async function checkAtcRes(response) {
             errorWebhook(error, "checkAtcRes_2")
     }
 }
-
 async function atcRDrop(id_prodotto) {
 
     sendText("Carting...", "yellow")
@@ -560,9 +569,7 @@ async function atcRDrop(id_prodotto) {
                 errorWebhook(error, "atcR_fetch")
         });;
 }
-
 async function checkResAtcDrop(response) {
-
     try {
 
         let status = response.status
@@ -575,12 +582,10 @@ async function checkResAtcDrop(response) {
         if (status == 200 || status == 201) {
             message = res[0]["data"]["addToCart"]
             if (message != null) {
+                count_cart = 1
                 sendText("Carted", "green")
-                count_cart++
-                if (count_cart == cart_limit) {
-                    sendText("Getting checkout", "blue")
-                    await getCheckout()
-                }
+                sendText("Getting checkout", "blue")
+                await getCheckout()
             } else {
                 errors = res[0]["errors"][0]
                 if (errors["message"].includes("Received Status: 429 from Cart:") && errors["message"].includes("TOO_MANY_REQUESTS")) {
@@ -614,7 +619,6 @@ async function mainCart() {
 
     checklogin()
 }
-
 async function checklogin() {
     while (true) {
         await sleep(300000)
@@ -622,12 +626,10 @@ async function checklogin() {
         await sleep(5000)
     }
 }
-
 async function checkStockRefresh() {
     await sleep(parseInt(delay))
     document.location = "https://" + country + "/checkout/confirm"
 }
-
 async function checkStockGetCheckout() {
 
     try {
@@ -656,7 +658,6 @@ async function checkStockGetCheckout() {
         errorWebhook(error, "checkStockGetCheckout")
     }
 }
-
 async function getCheckout() {
 
     await fetch("https://" + country + "/checkout/confirm", {
@@ -676,11 +677,12 @@ async function getCheckout() {
             "credentials": "same-origin"
         })
         .then(response => { checkResGetCheckout(response) })
-        .catch((error) => { errorWebhook(error, "getCheckout_fetch") });;
+        .catch((error) => {
+            errorWebhook(error, "getCheckout_fetch")
+            nextstep()
+        });;
 }
-
 async function checkResGetCheckout(response) {
-
     try {
 
         let status = response.status
@@ -689,12 +691,10 @@ async function checkResGetCheckout(response) {
         let x = "";
         let etag = "";
         let checkoutId = ""
-        result = await result
         if (status == 200 || status == 201) {
             if (url == "/checkout/address" || url == "https://" + country + "/checkout/address") {
-                document.location = "https://" + country + "/checkout/address"
-            }
-            if (url == "/checkout/confirm" || url == "https://" + country + "/checkout/confirm") {
+                mainAddress(result)
+            } else if (url == "/checkout/confirm" || url == "https://" + country + "/checkout/confirm") {
                 sendText("Checking out...", "yellow")
                 let html = document.createElement("html")
                 html.innerHTML = result
@@ -706,33 +706,133 @@ async function checkResGetCheckout(response) {
                 etag = etag.replace('"', '')
                 etag = '"' + '\\' + '"' + etag + '\\' + '"' + '"'
                 checkoutId = x.model.checkoutId
-
-                checkoutBuyNow(etag, checkoutId)
-            }
-            if (url.startsWith("/welcomenoaccount/true?target") || url.startsWith("https://" + country + "/welcomenoaccount/true?target")) {
+                await checkoutBuyNow(etag, checkoutId)
+            } else if (url.startsWith("/welcomenoaccount/true?target") || url.startsWith("https://" + country + "/welcomenoaccount/true?target")) {
                 document.location = "https://" + country + "/login?target=/myaccount/"
+            } else if (url.startsWith("https://checkout.payment.zalando.com/payment-method-selection-session/")) {
+                open(url)
+                await sleep(250)
+                getCheckout()
             }
-            if (url != "/cart" && url != '' && url != "https://" + country + "/cart") {}
         }
 
     } catch (error) { errorWebhook(error, "checkResGetCheckout") }
 }
 
 
-async function mainAddress() {
-    await sleep(250)
-    var button = document.getElementsByClassName('z-coast-fjord_deliveryDestinationTabIcon')
-    if (button.length != 0) {
-        button[1].click()
-    }
+async function mainAddress(result) {
+    try {
 
-    await sleep(250)
-    var button = document.getElementsByClassName('z-1-button z-coast-base-primary-accessible undefined z-1-button--primary z-1-button--button')
-    if (button.length != 0) {
-        button[0].click()
-    }
+        let html = document.createElement("html")
+        if (link == "https://" + country + "/checkout/address") {
+            html.innerHTML = document.body
+        } else if (result != undefined) {
+            html.innerHTML = result
+        }
 
-    document.location = 'https://' + country + '/checkout/confirm'
+        let data = html.querySelectorAll('[data-props]')[0].getAttribute('data-props')
+        data = data.substring(0, data.length)
+        let x = JSON.parse(data)
+        id_address = x['model']['addressDetails']['defaultShippingAddress']['id']
+
+        if (id_address != "")
+            defaultAddress()
+
+    } catch (error) { errorWebhook(error, "mainAddress") }
+}
+async function defaultAddress() {
+    xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
+    sendText("Submitting ship...", "yellow")
+    await fetch("https://" + country + "/api/checkout/address/" + id_address + "/default", {
+            "headers": {
+                "accept": "application/json",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-xsrf-token": xsrf,
+                "x-zalando-checkout-app": "web",
+                "x-zalando-footer-mode": "desktop",
+                "x-zalando-header-mode": "desktop"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"isDefaultShipping\":true}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResdefaultAddress(response) })
+        .catch((error) => { errorWebhook(error, "defaultAddress") });;
+}
+async function checkResdefaultAddress(response) {
+    try {
+        let status = response.status
+
+        if (status == 200 || status == 201) {
+            sendText("Submitting ship", "lightgreen")
+            nextstep()
+        } else {
+            sendText("Error Submitting ship", "red")
+            errorWebhook(x, "checkResdefaultAddress_1")
+        }
+
+    } catch (error) {
+        sendText("Error Submitting ship", "red")
+        errorWebhook(error, "checkResdefaultAddress_2")
+    }
+}
+
+async function nextstep() {
+    xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
+    await fetch("https://" + country + "/api/checkout/next-step", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-xsrf-token": xsrf,
+                "x-zalando-checkout-app": "web",
+                "x-zalando-footer-mode": "desktop",
+                "x-zalando-header-mode": "desktop"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResnextstep(response) })
+        .catch((error) => { errorWebhook(error, "selectPayment") });;
+}
+async function checkResnextstep(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+        if (status == 200 || status == 201) {
+            sendText("nextstep", "lightgreen")
+            open(res["url"])
+            await sleep(250)
+            getCheckout()
+        } else {
+            sendText("Error nextstep", "red")
+            errorWebhook(x, "checkResnextstep_1")
+        }
+
+    } catch (error) {
+        sendText("Error nextstep", "red")
+        errorWebhook(error, "checkResnextstep_2")
+    }
 }
 
 async function mainPayment() {
@@ -764,7 +864,6 @@ async function mainPayment() {
 }
 
 
-
 async function mainCheckout() {
     if (ckmode == "Fast") {
         checkoutConfirm()
@@ -774,7 +873,6 @@ async function mainCheckout() {
 
     }
 }
-
 async function checkoutClick() {
 
     try {
@@ -796,9 +894,7 @@ async function checkoutClick() {
 
     } catch (error) { errorWebhook(error, "checkoutClick") }
 }
-
 async function checkoutConfirm() {
-
     try {
 
         var checkoutid = '';
@@ -823,11 +919,9 @@ async function checkoutConfirm() {
         location.reload()
     }
 }
-
 async function checkoutBuyNow(etag, checkoutid) {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
-
     sendText("Placing order...", "yellow")
     await fetch("https://" + country + "/api/checkout/buy-now", {
             "headers": {
@@ -852,7 +946,6 @@ async function checkoutBuyNow(etag, checkoutid) {
         .then(response => { checkRescheckoutBuyNow(response) })
         .catch((error) => { errorWebhook(error, "checkoutBuyNow_fetch") });;
 }
-
 async function checkRescheckoutBuyNow(response) {
 
     try {
@@ -873,7 +966,7 @@ async function checkRescheckoutBuyNow(response) {
             } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error" || url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
                 location.reload()
             } else if (url.startsWith("https://checkout.payment.zalando.com/") || url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/checkoutnow?")) {
-                document.location = url
+                payment1(url)
             } else {
                 errorWebhook(x, "checkRescheckoutBuyNow_1")
                 location.reload()
@@ -894,7 +987,6 @@ async function checkRescheckoutBuyNow(response) {
 async function mainSuccess() {
     foundData()
 }
-
 async function foundData() {
     try {
         let x = 0
@@ -929,11 +1021,9 @@ async function foundData() {
 async function sendWebhooks() {
     chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + quantity_product + "&-&" + email })
 }
-
 async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
-
 async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
@@ -941,10 +1031,6 @@ async function resInfoWebook(message, position) {
 chrome.runtime.sendMessage({ greeting: "zalando_size" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "cartlimitzalando" }, function(response) {
-    cart_limit = response.farewell;
 });
 
 chrome.runtime.sendMessage({ greeting: "dropmodezalando" }, function(response) {

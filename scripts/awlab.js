@@ -104,13 +104,8 @@ async function main() {
 
 
 async function getMainPid() {
-    try {
-
-        pid = document.getElementsByClassName("b-pdp b-size-selector__active js-cmp-inited js-cmp-productMain")[0].getAttribute("data-product-id")
-
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
-            console.log(error)
+    try { pid = document.getElementsByClassName("b-pdp b-size-selector__active js-cmp-inited js-cmp-productMain")[0].getAttribute("data-product-id") } catch (error) {
+        if (error != "TypeError: Cannot read property 'getAttribute' of undefined") errorWebhook(error, "getMainPid")
     }
 }
 
@@ -138,7 +133,11 @@ async function checkStock() {
             "credentials": "include"
         })
         .then(response => { checkResCheckStock(response) })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "checkStock")
+            sendText("Error getting size", "orange")
+        });;
 }
 
 async function checkResCheckStock(response) {
@@ -146,15 +145,19 @@ async function checkResCheckStock(response) {
 
         let status = response.status
         let res = await response.text()
+        let x = res
         res = JSON.parse(res)
         if (status == 200 || status == 201) {
-            console.log(res)
             getSizepidInstock(res)
         } else {
-            console.log("error")
+            sendText("Error Getting size...", "red")
+            errorWebhook(x, "checkResCheckStock")
         }
 
-    } catch (error) { console.log(error) }
+    } catch (error) {
+        sendText("Error Getting size...", "red")
+        errorWebhook(x, "checkResCheckStock_2")
+    }
 }
 
 async function getSizepidInstock(pids) {
@@ -173,7 +176,10 @@ async function getSizepidInstock(pids) {
             sendText("Item out of stock...", "red")
         }
 
-    } catch (error) { console.log(error) }
+    } catch (error) {
+        sendText("Error, Item out of stock...", "red")
+        errorWebhook(error, "getSizepidInstock")
+    }
 }
 
 async function mainAtc() {
@@ -187,7 +193,7 @@ async function mainAtc() {
         if (sizepid != "")
             atcR()
 
-    } catch (error) { console.log(error) }
+    } catch (error) { errorWebhook(error, "mainAtc") }
 }
 
 async function atcR() {
@@ -211,7 +217,11 @@ async function atcR() {
             "credentials": "include"
         })
         .then(response => { checkResAtc(response) })
-        .catch((error) => { errorWebhook(error, "atcR") });;
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "atcR")
+            sendText("Error adding to cart", "orange")
+        });;
 }
 
 async function checkResAtc(response) {
@@ -228,11 +238,13 @@ async function checkResAtc(response) {
     } catch (error) { errorWebhook(error, "checkResAtc") }
 }
 
-async function setDataProduct() {
-    name_product = pid
-    size_product = sizepid
-    price_product = document.getElementsByClassName("b-price__sale")[0].textContent
-    img_product = document.getElementsByClassName("main-image-class")[0].src
+function setDataProduct() {
+    try {
+        name_product = pid
+        size_product = sizepid
+        price_product = document.getElementsByClassName("b-price__sale")[0].textContent
+        img_product = document.getElementsByClassName("main-image-class")[0].src
+    } catch (error) { errorWebhook(error, "setDataProduct") }
 }
 
 async function mainCheckout() {

@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.1.4'
+const version = 'Cava-Scripts 1.1.5'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -474,10 +474,13 @@ function onUserLogged() {
 
     //GESTIONE PAGINA SNS----------------------------------------------
     if (localStorage.getItem("size_sns") != "off") { $("#size_sns").val(localStorage.getItem("size_sns")); }
+    if (localStorage.getItem("mode_sns") != "off") { $("#mode_sns").val(localStorage.getItem("mode_sns")); }
     //gestisco il click del bottone salva
     $("#btn_save_sns").click(function() {
-        var size_sns = $("#size_sns").val();
+        let size_sns = $("#size_sns").val();
+        let mode_sns = $("#mode_sns").val();
 
+        if (mode_sns != '') { localStorage.setItem("mode_sns", mode_sns); } else { localStorage.setItem("mode_sns", "off"); }
         if (!(isBlank(size_sns))) { localStorage.setItem("size_sns", size_sns); } else { localStorage.setItem("size_sns", "off"); }
     });
     //---------------------------------------------------------------------

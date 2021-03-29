@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.1.4";
+const version = "1.1.5";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -80,6 +80,8 @@ function SetStatus_off() {
     setIfNotPresent("payment_mode_offspring", "PayPal");
     setIfNotPresent("guest_mode_offspring", "on");
 
+    //Sns
+    setIfNotPresent("mode_sns", "Fast");
 
     setAllOff([
 
@@ -257,12 +259,18 @@ chrome.runtime.onMessage.addListener(
             case "awlab_coupon":
                 sendResponse({ farewell: localStorage.getItem("coupon_awlab") });
                 break
+            case "awlab_profile":
+                sendResponse({ farewell: localStorage.getItem("profile_awlab") });
+                break
                 // sns
             case "sns":
                 sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
                 break
             case "sns_size":
                 sendResponse({ farewell: localStorage.getItem("size_sns") });
+                break
+            case "sns_mode":
+                sendResponse({ farewell: localStorage.getItem("mode_sns") });
                 break
                 //kickz
             case "kickz":
@@ -597,7 +605,7 @@ async function sendWebhookCheckout(x) {
     if (site == "Zalando") {
         email = x[7]
     }
-    if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Offspring") {
+    if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Offspring" || site == "Awlab") {
         email = x[7]
         payment_link = x[8]
     }
@@ -972,7 +980,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Offspring") {
+    if (site == "Solebox" || site == "Snipes" || site == "Onygo" || site == "Offspring" || site == "Awlab") {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",

@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.1.4'
+const version = 'Cava-Scripts 1.1.5'
 
 $(function() {
     chrome.runtime.sendMessage({ greeting: "userData" }, function(response) {

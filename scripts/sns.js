@@ -6,6 +6,7 @@ let link = document.location.href
 let country = link.split('/')[3]
 
 let size_range = "random"
+let mode = ""
 
 let status_aco = "";
 let delay = "0";
@@ -76,7 +77,8 @@ async function errorRefresh() {
     location.reload()
 }
 
-async function atc() {
+
+async function main() {
 
     while (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
         await sleep(1000)
@@ -85,6 +87,87 @@ async function atc() {
     sizes = document.getElementsByClassName("product-sizes__label");
     sizes = Array.prototype.slice.call(sizes)
     sizes = arreyMixer(sizes)
+
+    if (mode == "Fast") {
+        mainAtcFast()
+    } else {
+        mainAtcBrowser()
+    }
+}
+
+async function mainAtcBrowser() {
+    // try {
+    let cart = 0
+    if (sizes.length != 0) {
+        if (size_range == "random") {
+            n = getRandomIntInclusive(0, sizes.length - 1)
+            sizes[n].click()
+            cart = 1
+        } else {
+            if (size_range.includes('-')) {
+                size_1 = parseFloat(size_range.split('-')[0])
+                size_2 = parseFloat(size_range.split('-')[1])
+                for (let index = 0; index < sizes.length; index++) {
+                    size = sizes[index].getAttribute("data-size-types")
+                    size = JSON.parse(size)
+                    size = parseFloat(size["converted-size-size-eu"])
+                    if (size >= size_1 && size <= size_2) {
+                        sizes[index].click()
+                        cart = 1
+                        break
+                    }
+                }
+            } else {
+                for (let index = 0; index < sizes.length; index++) {
+                    size = sizes[index].getAttribute("data-size-types")
+                    size = JSON.parse(size)
+                    if (size["converted-size-size-eu"] == size_range) {
+                        sizes[index].click()
+                        cart = 1
+                        break
+                    }
+                }
+            }
+        }
+
+        if (cart == 0 && size_range != "random")
+            sendText("Selected sizes not available", "purple")
+        else {
+            document.getElementsByClassName("product-form__btn btn")[0].click()
+        }
+
+
+        for (let index = 0; index < 10; index++) {
+            await sleep(200)
+            if (document.getElementsByClassName("modal slide-right show in")[0] != undefined) {
+                let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
+                let jj = JSON.parse(x)
+                let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+                let jjj = JSON.parse(y)
+                name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
+                size_product = jjj["converted-size-size-eu"]
+                price_product = jj["price"]
+                sendWebhooks()
+                document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
+                break
+            }
+        }
+
+        try { sendText(document.getElementsByClassName("product-view__error")[0].textContent, "purple") } catch (error) { sendText("Item out of stock", "purple") }
+        errorRefresh()
+
+    } else {
+        sendText("Item out of stock", "purple")
+        errorRefresh()
+    }
+
+    // } catch (error) {
+    //     errorWebhooks(error, "mainAtcBrowser")
+    //     errorRefresh()
+    // }
+}
+
+async function mainAtcFast() {
 
     try {
         if (sizes.length != 0) {
@@ -209,11 +292,15 @@ chrome.runtime.sendMessage({ greeting: "sns_size" }, function(response) {
         size_range = response.farewell
 });
 
+chrome.runtime.sendMessage({ greeting: "sns_mode" }, function(response) {
+    mode = response.farewell
+});
+
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         chrome.runtime.sendMessage({ greeting: "sns" }, function(response) {
             if (response.farewell == 'on') {
-                atc();
+                main();
             }
         });
         textBox()
