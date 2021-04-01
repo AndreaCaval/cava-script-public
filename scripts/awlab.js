@@ -1,7 +1,11 @@
-debugger
-
 const site = "Awlab"
 const site1 = "Awlab1"
+
+const site_region = {
+    "en.aw-lab.com": " EN",
+    "es.aw-lab.com": " ES",
+    "www.aw-lab.com": " IT"
+}
 
 const fetch_link = {
     "en.aw-lab.com": {
@@ -45,7 +49,6 @@ let name_product = '';
 let size_product = '';
 let price_product = "";
 let img_product = ""
-let linkpp = ""
 
 
 function sleep(ms) {
@@ -247,21 +250,25 @@ function setDataProduct() {
     } catch (error) { errorWebhook(error, "setDataProduct") }
 }
 
-async function mainCheckout() {
 
-    if (checkout_mode == "ATC Only") {
+async function mainCheckout() {
+    try {
+
         sendWebhooks1()
         document.location = "https://" + country + "/checkout"
-    }
 
+    } catch (error) { errorWebhook(error, "mainCheckout") }
 }
 
+
+
+
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + site_region[country] + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
 
 async function sendWebhooks1() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site1 + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site1 + site_region[country] + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhook(error, position) {

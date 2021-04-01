@@ -4,6 +4,7 @@ const site = "Snipes"
 
 const LINK_REQUEST = {
     "www.snipes.it": {
+        "clear_cart": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.it/on/demandware.store/Sites-snse-SOUTH-Site/it_IT/Cart-AddProduct?format=ajax",
@@ -16,6 +17,7 @@ const LINK_REQUEST = {
         "home_delivery": "_it"
     },
     "www.snipes.nl": {
+        "clear_cart": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.nl/on/demandware.store/Sites-snse-NL-BE-Site/nl_NL/Cart-AddProduct?format=ajax",
@@ -28,6 +30,7 @@ const LINK_REQUEST = {
         "home_delivery": "_nl"
     },
     "www.snipes.fr": {
+        "clear_cart": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.fr/on/demandware.store/Sites-snse-FR-Site/fr_FR/Cart-AddProduct?format=ajax",
@@ -40,6 +43,7 @@ const LINK_REQUEST = {
         "home_delivery": "_fr"
     },
     "www.snipes.com": {
+        "clear_cart": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.com/on/demandware.store/Sites-snse-DE-AT-Site/de_DE/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.com/add-product?format=ajax",
@@ -52,6 +56,7 @@ const LINK_REQUEST = {
         "home_delivery": ""
     },
     "www.snipes.ch": {
+        "clear_cart": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.ch/on/demandware.store/Sites-snse-CH-Site/de_CH/Cart-AddProduct?format=ajax",
@@ -64,6 +69,7 @@ const LINK_REQUEST = {
         "home_delivery": "_ch"
     },
     "www.snipes.es": {
+        "clear_cart": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.es/on/demandware.store/Sites-snse-SOUTH-Site/es_ES/Cart-AddProduct?format=ajax",
@@ -76,6 +82,7 @@ const LINK_REQUEST = {
         "home_delivery": "_es"
     },
     "www.snipes.be": {
+        "clear_cart": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.be/on/demandware.store/Sites-snse-NL-BE-Site/nl_BE/Cart-AddProduct?format=ajax",
@@ -88,6 +95,7 @@ const LINK_REQUEST = {
         "home_delivery": "_be"
     },
     "www.snipes.at": {
+        "clear_cart": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/Cart-RemoveProductLineItem?format=ajax&",
         "get_hmac_token": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/Page-GetHMACToken?format=ajax",
         "generate_csrf": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/CSRF-Generate?format=ajax",
         "add_product": "https://www.snipes.at/add-product?format=ajax",
@@ -99,7 +107,17 @@ const LINK_REQUEST = {
         "remove_dummy": "https://www.snipes.at/on/demandware.store/Sites-snse-DE-AT-Site/de_AT/Cart-RemoveProductLineItem?format=ajax&",
         "home_delivery": "_at"
     }
+}
 
+const site_region = {
+    "www.snipes.it": " IT",
+    "www.snipes.nl": " NL",
+    "www.snipes.fr": " FR",
+    "www.snipes.com": " COM",
+    "www.snipes.ch": " CH",
+    "www.snipes.es": " ES",
+    "www.snipes.be": " BE",
+    "www.snipes.at": " AT",
 }
 
 let size_range = "random"
@@ -197,15 +215,16 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff;background-color: #4CAF50;border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
-            '.btn_cava:hover {background-color: #3e8e41}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {text-align: center; color:white; background-color:black; width:100%; padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff; border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
+            '.btn_cava:hover {background-color: grey}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
             '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSnipes">Status snipes</p> ' +
-            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380189826700000008"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px; margin-right:10px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
+            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380186148600000005"> <br>' +
+            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
+            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001380186148600000005"> <br>' +
+            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br><br>' +
+            '<input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         let btn_start_task = document.getElementById('btn_start_task')
@@ -222,7 +241,7 @@ function textBox() {
                     });
                 }
                 if (isNumeric(input)) {
-                    pidsize = document.getElementById("input_sizepid").value
+                    pidsize = input
                     link_product = "https://" + country + "/p/cava-" + pidsize + ".html?"
                     atcRfast()
                 } else
@@ -238,16 +257,56 @@ function textBox() {
 
         let btn_dummy = document.getElementById('btn_dummy')
         btn_dummy.addEventListener("click", function() {
-            pidsize = document.getElementById("input_sizepid_dummy").value
-            dummy = 1
+            try {
+
+                let input = document.getElementById("input_sizepid_dummy").value
+                if (!isNumeric(input)) {
+                    input = input.replace(/\D/g, '-');
+                    input = input.split('-')
+                    input.forEach(element => {
+                        if (element.length == 22)
+                            input = element
+                    });
+                }
+                if (isNumeric(input)) {
+                    pidsize = input
+                    dummy = 1
+                    atcRfast()
+                } else
+                    sendText("Input error", "red")
+
+            } catch (error) { errorWebhooks(error, "btn_dummy") }
+
             atcRfast()
         });
+
+        let btn_clear_cart = document.getElementById('btn_clear_cart')
+        btn_clear_cart.addEventListener("click", function() {
+            getCart()
+        });
+
+        document.getElementById("input_sizepid_dummy").addEventListener('input', updateValueDummy);
+        if (localStorage.getItem("snipes_dummy") != null)
+            document.getElementById("input_sizepid_dummy").value = localStorage.getItem("snipes_dummy")
+
+        document.getElementById("input_sizepid").addEventListener('input', updateValuePid);
+        if (localStorage.getItem("snipes_pid") != null)
+            document.getElementById("input_sizepid").value = localStorage.getItem("snipes_pid")
 
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
     }
 }
+
+function updateValueDummy(e) {
+    localStorage.setItem("snipes_dummy", e.target.value)
+}
+
+function updateValuePid(e) {
+    localStorage.setItem("snipes_pid", e.target.value)
+}
+
 
 async function addButton() {
     try {
@@ -321,7 +380,6 @@ async function CSRFGenerate() {
                 errorWebhooks(error, "CSRFGenerate")
         });;
 }
-
 async function checkResCSRFGenerate(response) {
     let status = response.status
     let res = await response.text()
@@ -345,8 +403,6 @@ async function checkResCSRFGenerate(response) {
         }
     }
 }
-
-
 async function GetHMACToken() {
     await fetch(LINK_REQUEST[country]["get_hmac_token"], {
             "headers": {
@@ -370,7 +426,6 @@ async function GetHMACToken() {
         .then(response => { checkResGetHMACToken(response) })
         .catch((error) => { errorWebhooks(error, "GetHMACToken") });;
 }
-
 async function checkResGetHMACToken(response) {
     let res = await response.text()
     resInfoWebook(res, "checkResGetHMACToken")
@@ -388,7 +443,6 @@ function changeCountry() {
         errorWebhooks(error, "changeCountry")
     }
 }
-
 async function checkLogin() {
 
     try {
@@ -416,7 +470,6 @@ async function checkLogin() {
         sendText("Error checking login", "red")
     }
 }
-
 async function checkLoginOff() {
 
     try {
@@ -441,7 +494,6 @@ async function checkLoginOff() {
         sendText("Error checking login", "red")
     }
 }
-
 async function login() {
     try {
         let html_login = document.createElement('html')
@@ -482,7 +534,6 @@ async function login() {
         sendText("Error logging in", "red")
     }
 }
-
 async function loginR(data_id, data_value, csrf_token) {
 
     await fetch("https://" + country + "/authentication?rurl=1&format=ajax", {
@@ -509,7 +560,6 @@ async function loginR(data_id, data_value, csrf_token) {
                 errorWebhooks(error, "authentication")
         });;
 }
-
 async function checkResLogin(response) {
 
     let status = response.status
@@ -533,7 +583,6 @@ async function checkResLogin(response) {
     }
 
 }
-
 async function getLogin() {
 
     await fetch("https://" + country + "/login", {
@@ -560,7 +609,6 @@ async function getLogin() {
                 errorWebhooks(error, "getLogin")
         });;
 }
-
 async function checkResgetLogin(response) {
 
     let status = response.status
@@ -580,6 +628,135 @@ async function checkResgetLogin(response) {
             errorWebhooks(res, "checkResgetLogin")
             sendText("Error logging in", "red")
         }
+    }
+}
+
+
+async function getCart() {
+
+    sendText("Getting cart", "blue")
+    await fetch("https://" + country + "/cart", {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResGetCart(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "clearCart")
+            sendText("Error getting cart", "orange")
+        });;
+}
+async function checkResGetCart(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let html_cart = document.createElement("html")
+        if (status == 200 || status == 201) {
+            sendText("Getting cart", "green")
+            html_cart.innerHTML = res.replaceAll("&quot;", "")
+            html_cart = html_cart.querySelectorAll('[class="b-cart-products-list js-cart-line-items"]')[0]
+            html_cart = html_cart.querySelectorAll('[class="b-cart-item-wrapper js-cart-item-wrapper"]')
+            html_cart.forEach(element => {
+                pid_cart = element.getAttribute("data-gtm")
+                if (!isNumeric(pid_cart)) {
+                    pid_cart = pid_cart.replace(/\D/g, '-');
+                    pid_cart = pid_cart.split('-')
+                    pid_cart.forEach(elemen => {
+                        if (elemen.length == 22)
+                            pid_cart = elemen
+                    });
+                }
+                uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                clearCart(pid_cart, uuid_cart)
+            });
+            if (html_cart.length == 0)
+                sendText("Cart empty", "green")
+        } else {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+                sendText("Error getting cart, resolve captcha & retry", "red")
+                addButton()
+            } else {
+                errorWebhooks(x, "checkResGetCart")
+                sendText("Error getting cart", "red")
+            }
+        }
+
+    } catch (error) {
+        errorWebhooks(error, "checkResGetCart")
+        sendText("Error clear cart", "red")
+    }
+}
+async function clearCart(pid_cart, uuid_cart) {
+
+    sendText("Removing item...", "blue")
+    await fetch(LINK_REQUEST[country]["clear_cart"] + "pid=" + pid_cart + "&uuid=" + uuid_cart, {
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://" + country + "/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResClearCart(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "clearCart")
+            sendText("Error removing item", "orange")
+        });;
+}
+async function checkResClearCart(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+
+        if (status == 200 || status == 201) {
+            sendText("Item removed", "green")
+        } else {
+            if (x.includes("\"appId\"")) {
+                sendText("Error removing item..., resolve captcha & retry", "red")
+                addButton()
+            } else {
+                resInfoWebook(x, "checkResClearCart")
+                sendText("Error removing item...", "red")
+            }
+        }
+
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhooks(error + " | " + x, "checkResClearCart")
+
+        sendText("Error removing item...", "red")
     }
 }
 
@@ -990,7 +1167,7 @@ async function gettingShipping() {
                 SubmitPayment()
                 break
             default:
-                ValidateShipping()
+                SelectShippingMethod()
                 break
         }
 
@@ -1460,7 +1637,7 @@ async function checkResRemoveDummy(response) {
 }
 
 async function sendWebhooks(linkpp) {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + site_region[country] + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
 
 async function errorWebhooks(error, position) {

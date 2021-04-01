@@ -95,15 +95,16 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("js-header-search js-sticky-container b-header")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff;background-color: #4CAF50;border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
-            '.btn_cava:hover {background-color: #3e8e41}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {text-align: center; color:white; background-color:black; width:100%; padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff; border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
+            '.btn_cava:hover {background-color: grey}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
             '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusOnygo">Status onygo</p>' +
-            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%" type="text min-width:250px;" id="input_sizepid" placeholder="es: 0001570185357000000002"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px; margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
+            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001570192155400000005"> <br>' +
+            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
+            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001570192155400000005"> <br>' +
+            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br><br>' +
+            '<input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         let btn_start_task = document.getElementById('btn_start_task')
@@ -119,7 +120,7 @@ function textBox() {
                     });
                 }
                 if (isNumeric(input)) {
-                    pidsize = document.getElementById("input_sizepid").value
+                    pidsize = input
                     link_product = "https://www.onygo.com/p/cava-" + pidsize + ".html?"
                     atcRfast()
                 } else
@@ -136,6 +137,14 @@ function textBox() {
         btn_dummy.addEventListener("click", function() {
             try {
                 let input = document.getElementById("input_sizepid_dummy").value
+                if (!isNumeric(input)) {
+                    input = input.replace(/\D/g, '-');
+                    input = input.split('-')
+                    input.forEach(element => {
+                        if (element.length == 22)
+                            input = element
+                    });
+                }
                 if (isNumeric(input)) {
                     pidsize = input
                     dummy = 1
@@ -145,12 +154,32 @@ function textBox() {
             } catch (error) { errorWebhooks(error, "btn_dummy") }
         });
 
+        let btn_clear_cart = document.getElementById('btn_clear_cart')
+        btn_clear_cart.addEventListener("click", function() {
+            getCart()
+        });
+
+        document.getElementById("input_sizepid_dummy").addEventListener('input', updateValueDummy);
+        if (localStorage.getItem("onygo_dummy") != null)
+            document.getElementById("input_sizepid_dummy").value = localStorage.getItem("onygo_dummy")
+
+        document.getElementById("input_sizepid").addEventListener('input', updateValuePid);
+        if (localStorage.getItem("onygo_pid") != null)
+            document.getElementById("input_sizepid").value = localStorage.getItem("onygo_pid")
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
     }
 }
 
+function updateValueDummy(e) {
+    localStorage.setItem("onygo_dummy", e.target.value)
+}
+
+function updateValuePid(e) {
+    localStorage.setItem("onygo_pid", e.target.value)
+}
 async function addButton() {
     try {
         if (document.getElementById('btn_solver') == null) {
@@ -173,11 +202,9 @@ async function addButton() {
         }
     } catch (error) {}
 }
-
 async function sendText(text, color) {
     try { document.getElementById("statusOnygo").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
-
 
 async function main() {
     if (link.startsWith("https://www.onygo.com/p")) {
@@ -194,7 +221,6 @@ async function main() {
         } catch (error) {}
     }
 }
-
 
 async function checkLogin() {
 
@@ -224,7 +250,6 @@ async function checkLogin() {
         sendText("Error checking login", "red")
     }
 }
-
 async function checkLoginOff() {
 
     try {
@@ -249,7 +274,6 @@ async function checkLoginOff() {
         sendText("Error checking login", "red")
     }
 }
-
 async function login() {
 
     try {
@@ -294,7 +318,6 @@ async function login() {
     }
 
 }
-
 async function loginR(data_id, data_value, csrf_token) {
 
     try {
@@ -325,7 +348,6 @@ async function loginR(data_id, data_value, csrf_token) {
 
     } catch (error) { errorWebhooks(error, "loginR") }
 }
-
 async function checkResLogin(response) {
 
     let status = response.status
@@ -348,7 +370,6 @@ async function checkResLogin(response) {
         }
     }
 }
-
 async function getLogin() {
 
     await fetch("https://www.onygo.com/login", {
@@ -375,7 +396,6 @@ async function getLogin() {
                 errorWebhooks(error, "getLogin")
         });;
 }
-
 async function checkResgetLogin(response) {
 
     let status = response.status
@@ -395,6 +415,134 @@ async function checkResgetLogin(response) {
             errorWebhooks(res, "checkResgetLogin")
             sendText("Error logging in", "red")
         }
+    }
+}
+
+async function getCart() {
+
+    sendText("Getting cart", "blue")
+    await fetch("https://www.onygo.com/cart", {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResGetCart(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "clearCart")
+            sendText("Error getting cart", "orange")
+        });;
+}
+async function checkResGetCart(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let html_cart = document.createElement("html")
+        if (status == 200 || status == 201) {
+            sendText("Getting cart", "green")
+            html_cart.innerHTML = res.replaceAll("&quot;", "")
+            html_cart = html_cart.querySelectorAll('[class="b-cart-products-list js-cart-line-items"]')[0]
+            html_cart = html_cart.querySelectorAll('[class="b-cart-item-wrapper js-cart-item-wrapper"]')
+            html_cart.forEach(element => {
+                pid_cart = element.getAttribute("data-gtm")
+                if (!isNumeric(pid_cart)) {
+                    pid_cart = pid_cart.replace(/\D/g, '-');
+                    pid_cart = pid_cart.split('-')
+                    pid_cart.forEach(elemen => {
+                        if (elemen.length == 22)
+                            pid_cart = elemen
+                    });
+                }
+                uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                clearCart(pid_cart, uuid_cart)
+            });
+            if (html_cart.length == 0)
+                sendText("Cart empty", "green")
+        } else {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+                sendText("Error getting cart, resolve captcha & retry", "red")
+                addButton()
+            } else {
+                errorWebhooks(x, "checkResGetCart")
+                sendText("Error getting cart", "red")
+            }
+        }
+
+    } catch (error) {
+        errorWebhooks(error, "checkResGetCart")
+        sendText("Error clear cart", "red")
+    }
+}
+async function clearCart(pid_cart, uuid_cart) {
+
+    sendText("Removing item...", "blue")
+    await fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/Cart-RemoveProductLineItem?format=ajax&pid=" + pid_cart + "&uuid=" + uuid_cart, {
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResClearCart(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "clearCart")
+            sendText("Error removing item", "orange")
+        });;
+}
+async function checkResClearCart(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+
+        if (status == 200 || status == 201) {
+            sendText("Item removed", "green")
+        } else {
+            if (x.includes("\"appId\"")) {
+                sendText("Error removing item..., resolve captcha & retry", "red")
+                addButton()
+            } else {
+                resInfoWebook(x, "checkResClearCart")
+                sendText("Error removing item...", "red")
+            }
+        }
+
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhooks(error + " | " + x, "checkResClearCart")
+
+        sendText("Error removing item...", "red")
     }
 }
 
@@ -429,7 +577,6 @@ async function mainAtc() {
         sendText("Error selecting size", "red")
     }
 }
-
 async function atc() {
 
     try {
@@ -477,7 +624,6 @@ async function atc() {
         }
     }
 }
-
 async function getSizePid(size_r) {
 
     await fetch("https://www.onygo.com/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_size=" + size_r + "&format=ajax", {
@@ -504,7 +650,6 @@ async function getSizePid(size_r) {
                 errorWebhooks(error, "getSizePid")
         });;
 }
-
 async function checkResgetSizePid(response) {
 
     try {
@@ -531,7 +676,6 @@ async function checkResgetSizePid(response) {
         }
     } catch (error) {}
 }
-
 async function atcRfast() {
 
     sendText("Trying atc fast...", "blue")
@@ -559,7 +703,6 @@ async function atcRfast() {
                 errorWebhooks(error, "atcRfast fetch")
         });;
 }
-
 async function checkResAtc(response) {
 
     try {
@@ -652,7 +795,6 @@ async function mainCart() {
         } catch (error) { errorWebhooks(error, "mainCart_2") }
     }
 }
-
 async function getCheckout() {
 
     sendText("Starting checkout...", "blue")
@@ -679,7 +821,6 @@ async function getCheckout() {
                 errorWebhooks(error, "getCheckout fetch")
         });;
 }
-
 async function checkResgetCheckout(response) {
 
     let status = response.status
@@ -706,7 +847,6 @@ async function checkResgetCheckout(response) {
         }
     }
 }
-
 async function gettingShipping() {
 
     sendText("Getting shipping info...", "blue")
@@ -763,7 +903,6 @@ async function gettingShipping() {
     }
 
 }
-
 async function ValidateShipping() {
 
     sendText("Validating address...", "blue")
@@ -791,7 +930,6 @@ async function ValidateShipping() {
                 errorWebhooks(error, "ValidateShipping fetch")
         });;
 }
-
 async function checkResValidateShipping(response) {
 
     try {
@@ -830,7 +968,6 @@ async function checkResValidateShipping(response) {
         mainCart()
     }
 }
-
 async function SubmitShipping() {
 
     sendText("Submitting ship...", "blue")
@@ -858,7 +995,6 @@ async function SubmitShipping() {
                 errorWebhooks(error, "SubmitShipping fetch")
         });;
 }
-
 async function checkResSubmitShipping(response) {
 
     try {
@@ -898,7 +1034,6 @@ async function checkResSubmitShipping(response) {
         mainCart()
     }
 }
-
 async function SubmitPayment() {
 
     sendText("Submittin payment...", "blue")
@@ -926,7 +1061,6 @@ async function SubmitPayment() {
                 errorWebhooks(error, "SubmitPayment fetch")
         });;
 }
-
 async function checkResSubmitPayment(response) {
 
     try {
@@ -991,7 +1125,6 @@ async function checkResSubmitPayment(response) {
         mainCart()
     }
 }
-
 async function PlaceOrder() {
 
     sendText("Placing order...", "blue")
@@ -1019,7 +1152,6 @@ async function PlaceOrder() {
                 errorWebhooks(error, "PlaceOrder fetch")
         });;
 }
-
 async function checkResPlaceOrder(response) {
 
     try {
@@ -1118,7 +1250,6 @@ async function removeDummy() {
                 errorWebhooks(error, "checkResRemoveDummy fetch")
         });;
 }
-
 async function checkResRemoveDummy(response) {
 
     try {
@@ -1158,35 +1289,28 @@ async function checkResRemoveDummy(response) {
 async function sendWebhooks(linkpp) {
     chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
-
 async function errorWebhooks(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
-
 async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
-
 
 chrome.runtime.sendMessage({ greeting: "email_pw_onygo" }, function(response) {
     var x = response.farewell
     email_login = x.split(':')[0]
     pw_login = x.split(':')[1]
 });
-
 chrome.runtime.sendMessage({ greeting: "onygo" }, function(response) {
     status_aco = response.farewell
 });
-
 chrome.runtime.sendMessage({ greeting: "onygo_login" }, function(response) {
     status_login = response.farewell
 });
-
 chrome.runtime.sendMessage({ greeting: "onygo_size" }, function(response) {
     if (response.farewell != "off")
         size_range = response.farewell
 });
-
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()

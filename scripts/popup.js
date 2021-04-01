@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.1.5'
+const version = 'Cava-Scripts 1.1.6'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();

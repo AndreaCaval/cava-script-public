@@ -98,15 +98,16 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff;background-color: #4CAF50;border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
-            '.btn_cava:hover {background-color: #3e8e41}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
-            '<div id="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {text-align: center; color:white; background-color:black; width:100%; padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff; border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
+            '.btn_cava:hover {background-color: grey;}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);} </style>' +
+            '<div id="CavaScripts" class="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
             ' <p id="statusSolebox">Status solebox</p>' +
             // '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
-            // '<input style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
+            // '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
             '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
-            '<input class="btn_cava" style="text-align: center; color:white; background-color:black; width:100%; margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br>' +
+            '<input class="btn_cava" style="margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
+            '<input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br><br>' +
+            '<input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
             " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         let btn_start_task = document.getElementById('btn_start_task')
@@ -136,23 +137,54 @@ function textBox() {
             getCheckout()
         });
 
-        let btn_dummy = document.getElementById('btn_dummy')
-        btn_dummy.addEventListener("click", function() {
-            try {
-                let input = document.getElementById("input_sizepid_dummy").value
-                if (isNumeric(input)) {
-                    pidsize = input
-                    dummy = 1
-                    atcRfast()
-                } else
-                    sendText("Input error", "red")
-            } catch (error) { errorWebhooks(error, "btn_dummy") }
+        let btn_clear_cart = document.getElementById('btn_clear_cart')
+        btn_clear_cart.addEventListener("click", function() {
+            getCart()
         });
+
+        // let btn_dummy = document.getElementById('btn_dummy')
+        // btn_dummy.addEventListener("click", function() {
+        //     try {
+        //         let input = document.getElementById("input_sizepid_dummy").value
+        //         if (!isNumeric(input)) {
+        //             input = input.replace(/\D/g, '-');
+        //             input = input.split('-')
+        //             input.forEach(element => {
+        //                 if (element.length == 16)
+        //                     input = element
+        //             });
+        //         }
+        //         if (isNumeric(input)) {
+        //             pidsize = input
+        //             dummy = 1
+        //             atcRfast()
+        //         } else
+        //             sendText("Input error", "red")
+        //     } catch (error) { errorWebhooks(error, "btn_dummy") }
+        // });
+
+        // document.getElementById("input_sizepid_dummy").addEventListener('input', updateValueDummy);
+        // if (localStorage.getItem("solebox_dummy") != null)
+        //     document.getElementById("input_sizepid_dummy").value = localStorage.getItem("solebox_dummy")
+
+
+        document.getElementById("input_sizepid").addEventListener('input', updateValuePid);
+        if (localStorage.getItem("solebox_pid") != null) {
+            document.getElementById("input_sizepid").value = localStorage.getItem("solebox_pid")
+        }
 
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
     }
+}
+
+function updateValueDummy(e) {
+    localStorage.setItem("solebox_dummy", e.target.value)
+}
+
+function updateValuePid(e) {
+    localStorage.setItem("solebox_pid", e.target.value)
 }
 
 async function addButton() {
@@ -335,7 +367,6 @@ async function checkResLogin(response) {
 
     let status = response.status
     let res = await response.text()
-
     if (status == 200 || status == 201) {
         sendText("Logged in", "green")
         is_login = true
@@ -383,24 +414,162 @@ async function getLogin() {
 }
 
 async function checkResgetLogin(response) {
+    try {
 
-    let status = response.status
-    let res = await response.text()
-    if (status == 200 || status == 201) {
-        return res
-    } else {
-        if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
-            sendText("Error logging in, resolve captcha", "red")
-            addButton()
-            while (is_captcha_solved == false) {
-                await sleep(250)
-            }
-            is_captcha_solved = false
-            login()
+        let status = response.status
+        let res = await response.text()
+        if (status == 200 || status == 201) {
+            return res
         } else {
-            errorWebhooks(res, "checkResgetLogin")
-            sendText("Error logging in", "red")
+            if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
+                sendText("Error logging in, resolve captcha", "red")
+                addButton()
+                while (is_captcha_solved == false) {
+                    await sleep(250)
+                }
+                is_captcha_solved = false
+                login()
+            } else {
+                errorWebhooks(res, "checkResgetLogin")
+                sendText("Error logging in", "red")
+            }
         }
+
+    } catch (error) {
+        errorWebhooks(error, "main")
+        sendText("Error loading page", "red")
+    }
+}
+
+
+async function getCart() {
+
+    sendText("Getting cart", "blue")
+    await fetch("https://www.solebox.com/" + country + "/cart", {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResGetCart(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "clearCart")
+            sendText("Error getting cart", "orange")
+        });;
+}
+
+async function checkResGetCart(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let html_cart = document.createElement("html")
+        if (status == 200 || status == 201) {
+            sendText("Getting cart", "green")
+            html_cart.innerHTML = res.replaceAll("&quot;", "")
+            html_cart = html_cart.querySelectorAll('[class="b-cart-products-list js-cart-line-items"]')[0]
+            html_cart = html_cart.querySelectorAll('[class="b-cart-item-wrapper js-cart-item-wrapper"]')
+            html_cart.forEach(element => {
+                pid_cart = element.getAttribute("data-gtm")
+                if (!isNumeric(pid_cart)) {
+                    pid_cart = pid_cart.replace(/\D/g, '-');
+                    pid_cart = pid_cart.split('-')
+                    pid_cart.forEach(elemen => {
+                        if (elemen.length == 16)
+                            pid_cart = elemen
+                    });
+                }
+                uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper l-col-6"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                clearCart(pid_cart, uuid_cart)
+            });
+            if (html_cart.length == 0)
+                sendText("Cart empty", "green")
+        } else {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+                sendText("Error getting cart, resolve captcha & retry", "red")
+                addButton()
+            } else {
+                errorWebhooks(x, "checkResGetCart")
+                sendText("Error getting cart", "red")
+            }
+        }
+
+    } catch (error) {
+        errorWebhooks(error, "checkResGetCart")
+        sendText("Error clear cart", "red")
+    }
+}
+
+async function clearCart(pid_cart, uuid_cart) {
+
+    sendText("Removing item...", "blue")
+    await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/Cart-RemoveProductLineItem?format=ajax&pid=" + pid_cart + "&uuid=" + uuid_cart, {
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResClearCart(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "clearCart")
+            sendText("Error removing item", "orange")
+        });;
+}
+
+async function checkResClearCart(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+
+        if (status == 200 || status == 201) {
+            sendText("Item removed", "green")
+        } else {
+            if (x.includes("\"appId\"")) {
+                sendText("Error removing item..., resolve captcha & retry", "red")
+                addButton()
+            } else {
+                resInfoWebook(x, "checkResClearCart")
+                sendText("Error removing item...", "red")
+            }
+        }
+
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhooks(error + " | " + x, "checkResClearCart")
+
+        sendText("Error removing item...", "red")
     }
 }
 
@@ -540,7 +709,10 @@ async function checkResgetSizePid(response) {
                 sendText("Error getting product", "red")
             }
         }
-    } catch (error) {}
+    } catch (error) {
+        errorWebhooks(error, "checkResgetSizePid")
+        sendText("Error getting pid", "red")
+    }
 }
 
 async function atcRfast() {
@@ -572,7 +744,6 @@ async function atcRfast() {
 }
 
 async function checkResAtc(response) {
-
     try {
 
         sendText("Carting...", "blue")
@@ -591,6 +762,7 @@ async function checkResAtc(response) {
                     name_product = res["gtm"]["name"]
                     size_product = res["gtm"]["variant"]
                     price_product = res["gtm"]["price"] + '€'
+                    img_product = ""
                     PlaceOrder()
                 } else {
                     if (dummy == 1)
@@ -704,28 +876,34 @@ async function getCheckout() {
 }
 
 async function checkResgetCheckout(response) {
+    try {
 
-    let status = response.status
-    let res = await response.text()
-    if (response.url == "https://www.solebox.com/" + country + "/cart") {
-        is_cart = true
-        sendText("Item out of stock/ Item not available", "red")
-    } else if (status == 200 || status == 201) {
-        html.innerHTML = res
-        gettingShipping()
-    } else {
-        if (res.includes("\"appId\"")) {
-            sendText("Error getting checkout, resolve captcha", "red")
-            addButton()
-            while (is_captcha_solved == false) {
-                await sleep(250)
-            }
-            is_captcha_solved = false
-            mainCart()
+        let status = response.status
+        let res = await response.text()
+        if (response.url == "https://www.solebox.com/" + country + "/cart") {
+            is_cart = true
+            sendText("Item out of stock/ Item not available", "red")
+        } else if (status == 200 || status == 201) {
+            html.innerHTML = res
+            gettingShipping()
         } else {
-            errorWebhooks(res, "checkResgetCheckout")
-            sendText("Error getting checkout", "red")
+            if (res.includes("\"appId\"")) {
+                sendText("Error getting checkout, resolve captcha", "red")
+                addButton()
+                while (is_captcha_solved == false) {
+                    await sleep(250)
+                }
+                is_captcha_solved = false
+                mainCart()
+            } else {
+                errorWebhooks(res, "checkResgetCheckout")
+                sendText("Error getting checkout", "red")
+            }
         }
+
+    } catch (error) {
+        errorWebhooks(error, "checkResgetCheckout")
+        sendText("Error getting checkout", "red")
     }
 }
 
@@ -942,7 +1120,7 @@ async function checkResSubmitShipping(response) {
 
 async function SubmitPayment() {
 
-    sendText("submittimg payment...", "blue")
+    sendText("Submittimg payment...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-SubmitPayment?format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
@@ -982,7 +1160,9 @@ async function checkResSubmitPayment(response) {
             if (error == false) {
                 sendText("Submit payment", "green")
                 if (dummy == 1) {
-                    await removeDummy()
+                    await sleep(500)
+                    sendText("Session ready", "green")
+                        // await removeDummy()
                     dummy = 2
                 } else {
                     PlaceOrder()
@@ -1142,7 +1322,7 @@ async function checkResPlaceOrder(response) {
 }
 
 async function removeDummy() {
-    fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/Cart-RemoveProductLineItem?format=ajax&pid=" + pidsize + "&uuid=" + uuid_dummy, {
+    await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/Cart-RemoveProductLineItem?format=ajax&pid=" + pidsize + "&uuid=" + uuid_dummy, {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -1170,7 +1350,6 @@ async function removeDummy() {
 }
 
 async function checkResRemoveDummy(response) {
-
     try {
 
         let status = response.status

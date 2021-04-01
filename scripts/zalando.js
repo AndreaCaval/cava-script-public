@@ -4,6 +4,57 @@ const site = "Zalando"
 
 const alfabeto = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
+const site_region = {
+    "www.zalando.at": {
+        "ct": "katalog",
+        "ID": " AT"
+    },
+    "www.zalando.be": {
+        "ct": "catalogus",
+        "ID": " BE"
+    },
+    "www.zalando.ch": {
+        "ct": "schuhe",
+        "ID": " CH"
+    },
+    "www.zalando.co.uk": {
+        "ct": "catalog",
+        "ID": " UK"
+    },
+    "www.zalando.cz": {
+        "ct": "katalog",
+        "ID": " CZ"
+    },
+    "www.zalando.de": {
+        "ct": "katalog",
+        "ID": " DE"
+    },
+    "www.zalando.es": {
+        "ct": "catalogo",
+        "ID": " ES"
+    },
+    "www.zalando.fr": {
+        "ct": "catalogue",
+        "ID": " FR"
+    },
+    "www.zalando.it": {
+        "ct": "catalogo",
+        "ID": " IT"
+    },
+    "www.zalando.nl": {
+        "ct": "catalogus",
+        "ID": " NL"
+    },
+    "www.zalando.no": {
+        "ct": "catalog",
+        "ID": " NO"
+    },
+    "www.zalando.pl": {
+        "ct": "katalog",
+        "ID": " PL"
+    },
+}
+
 let link = document.location.href
 let country = link.split('/')[2]
 
@@ -160,7 +211,16 @@ function textBoxCouponGen() {
             try { genCoupon() } catch (error) {}
         });
 
+        document.getElementById("catchall").addEventListener('input', updateValueCatchall);
+        if (localStorage.getItem("zalando_catchall") != null) {
+            document.getElementById("catchall").value = localStorage.getItem("zalando_catchall")
+        }
+
     } catch (error) { console.log(error) }
+}
+
+function updateValueCatchall(e) {
+    localStorage.setItem("zalando_catchall", e.target.value)
 }
 
 async function main() {
@@ -990,7 +1050,7 @@ async function mainSuccess() {
 async function foundData() {
     try {
         let x = 0
-        link_product = "https://" + country + "/catalogo/?q=" + document.getElementsByClassName("z-coast-fjord_article")[0].getAttribute("data-id").replace("z-coast-fjord_article-", "").slice(0, 13)
+        link_product = "https://" + country + "/" + site_region[country]["ct"] + "/?q=" + document.getElementsByClassName("z-coast-fjord_article")[0].getAttribute("data-id").replace("z-coast-fjord_article-", "").slice(0, 13)
         img_product = document.getElementsByClassName('z-2-product-image_image')[0].src;
         quantity_product = document.getElementsByClassName('z-2-product-image_image').length;
         nomep = document.getElementsByClassName('z-text z-coast-fjord-body-bold z-text-body z-text-black')[0].textContent;
@@ -1019,7 +1079,7 @@ async function foundData() {
 }
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + quantity_product + "&-&" + email })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + site_region[country]["ID"] + "&-&" + size_product + "&-&" + quantity_product + "&-&" + email })
 }
 async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
