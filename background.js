@@ -41,6 +41,18 @@ function checkData() {
     }
 }
 
+function getprofiles() {
+    ar = {}
+    np = parseInt(localStorage.getItem("n_profile"))
+    if (np != 0) {
+        for (var i = 1; i <= np; i++) {
+            x = localStorage.getItem("profiles" + String(i))
+            ar["profiles" + String(i)] = x
+        }
+    }
+    return ar
+}
+
 function SetStatus_off() {
 
     function setToOff(key) {
@@ -83,6 +95,9 @@ function SetStatus_off() {
     //Sns
     setIfNotPresent("mode_sns", "Fast");
 
+    //Woodwood
+    setIfNotPresent("mode_woodwood", "Fast");
+
     setAllOff([
 
         //Offspring
@@ -112,6 +127,10 @@ function SetStatus_off() {
         //Sns,
         "status_aco_sns",
         "size_sns",
+
+        //Woodwood,
+        "status_aco_woodwood",
+        "size_woodwood",
 
         //Naked
         "status_aco_naked",
@@ -160,18 +179,6 @@ function SetStatus_off() {
     //Setting-----------------------------------------------------------------------------------------------------
     setToOff("id_webhook")
     setIfNotPresent("delay", 0)
-}
-
-function getprofiles() {
-    ar = {}
-    np = parseInt(localStorage.getItem("n_profile"))
-    if (np != 0) {
-        for (var i = 1; i <= np; i++) {
-            x = localStorage.getItem("profiles" + String(i))
-            ar["profiles" + String(i)] = x
-        }
-    }
-    return ar
 }
 
 SetStatus_off();
@@ -271,6 +278,16 @@ chrome.runtime.onMessage.addListener(
                 break
             case "sns_mode":
                 sendResponse({ farewell: localStorage.getItem("mode_sns") });
+                break
+                // woodwood
+            case "woodwood":
+                sendResponse({ farewell: localStorage.getItem("status_aco_woodwood") });
+                break
+            case "woodwood_size":
+                sendResponse({ farewell: localStorage.getItem("size_woodwood") });
+                break
+            case "woodwood_mode":
+                sendResponse({ farewell: localStorage.getItem("mode_woodwood") });
                 break
                 //kickz
             case "kickz":
@@ -652,7 +669,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -823,7 +840,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -1052,7 +1069,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Sns" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",

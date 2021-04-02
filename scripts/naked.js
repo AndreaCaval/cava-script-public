@@ -79,6 +79,10 @@ async function errorRefresh() {
 
 async function atc() {
 
+    while (document.querySelectorAll('[data-translate="checking_browser"]')[0] != undefined) {
+        await sleep(250)
+    }
+
     sizes = document.querySelectorAll('[data-target="#product-form-select"]');
     sizes = Array.prototype.slice.call(sizes)
     sizes = arreyMixer(sizes)

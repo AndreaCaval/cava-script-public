@@ -566,8 +566,12 @@ async function checkResClearCart(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResClearCart")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "checkResClearCart")
+            errorWebhooks(error, "trycheckResClearCart")
 
         sendText("Error removing item...", "red")
     }
@@ -798,6 +802,10 @@ async function checkResAtc(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResAtc")
+        } catch (error) {}
+
         if (error == "SyntaxError: Unexpected token < in JSON at position 1" || error == "SyntaxError: Unexpected token < in JSON at position 0") {
             sendText("Error carting, resolve captcha", "red")
             addButton()
@@ -808,7 +816,7 @@ async function checkResAtc(response) {
             atcRfast()
 
         } else if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "trycheckResAtc")
+            errorWebhooks(error, "trycheckResAtc")
 
         sendText("Error carting", "red")
     }
@@ -1040,8 +1048,12 @@ async function checkResShippingRates(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResValidateShipping")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "trycheckResValidateShipping")
+            errorWebhooks(error, "trycheckResValidateShipping")
 
         sendText("Error validating address", "red")
         await sleep(1000)
@@ -1109,8 +1121,12 @@ async function checkResSubmitShipping(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResSubmitShipping")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "trycheckResSubmitShipping")
+            errorWebhooks(error, "trycheckResSubmitShipping")
 
         sendText("Error submitting shipping", "red")
         await sleep(1000)
@@ -1206,8 +1222,12 @@ async function checkResSubmitPayment(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResSubmitPayment")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "trycheckResSubmitPayment")
+            errorWebhooks(error, "trycheckResSubmitPayment")
 
         sendText("Error submitting payment", "red")
         await sleep(1000)
@@ -1312,8 +1332,12 @@ async function checkResPlaceOrder(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResPlaceOrder")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "trycheckResPlaceOrder")
+            errorWebhooks(error, "trycheckResPlaceOrder")
 
         sendText("Error placing order", "red")
         await sleep(1000)
@@ -1377,8 +1401,12 @@ async function checkResRemoveDummy(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResRemoveDummy")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "trycheckResRemoveDummy")
+            errorWebhooks(error, "trycheckResRemoveDummy")
 
         sendText("Error removing dummy...", "red")
     }

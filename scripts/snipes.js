@@ -276,8 +276,6 @@ function textBox() {
                     sendText("Input error", "red")
 
             } catch (error) { errorWebhooks(error, "btn_dummy") }
-
-            atcRfast()
         });
 
         let btn_clear_cart = document.getElementById('btn_clear_cart')
@@ -753,8 +751,12 @@ async function checkResClearCart(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResValidateShipping")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error + " | " + x, "checkResClearCart")
+            errorWebhooks(error, "checkResClearCart")
 
         sendText("Error removing item...", "red")
     }
@@ -936,7 +938,6 @@ async function atcRfast() {
 }
 
 async function checkResAtc(response) {
-
     try {
 
         sendText("Carting...", "blue")
@@ -1007,6 +1008,10 @@ async function checkResAtc(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckRes")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckRes")
 
@@ -1209,11 +1214,11 @@ async function SelectShippingMethod() {
 }
 
 async function checkResSelectShippingMethod(response) {
-
     try {
 
         let status = response.status
         let res = await response.text()
+        let x = res
         res = JSON.parse(res)
 
         if (status == 200 || status == 201) {
@@ -1229,7 +1234,7 @@ async function checkResSelectShippingMethod(response) {
                 is_captcha_solved = false
                 SelectShippingMethod()
             } else {
-                resInfoWebook(x, "checkResValidateShipping")
+                resInfoWebook(x, "checkResSelectShippingMethod")
                 sendText("Error selecting shipping method..., restarting...", "red")
                 await sleep(1000)
                 mainCart()
@@ -1237,8 +1242,12 @@ async function checkResSelectShippingMethod(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResSelectShippingMethod")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error, "trycheckResValidateShipping")
+            errorWebhooks(error, "trycheckResSelectShippingMethod")
 
         sendText("Error selecting shipping method...", "red")
         await sleep(1000)
@@ -1280,6 +1289,7 @@ async function checkResValidateShipping(response) {
 
         let status = response.status
         let res = await response.text()
+        let x = res
         res = JSON.parse(res)
 
         if (status == 200 || status == 201) {
@@ -1303,6 +1313,10 @@ async function checkResValidateShipping(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResValidateShipping")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResValidateShipping")
 
@@ -1371,6 +1385,10 @@ async function checkResSubmitShipping(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResSubmitShipping")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResSubmitShipping")
 
@@ -1464,6 +1482,10 @@ async function checkResSubmitPayment(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResSubmitPayment")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResSubmitPayment")
 
@@ -1565,6 +1587,10 @@ async function checkResPlaceOrder(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResPlaceOrder")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResPlaceOrder")
 
@@ -1629,6 +1655,10 @@ async function checkResRemoveDummy(response) {
         }
 
     } catch (error) {
+        try {
+            resInfoWebook(res, "trycheckResRemoveDummy")
+        } catch (error) {}
+
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResRemoveDummy")
 

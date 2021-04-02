@@ -74,6 +74,8 @@ function onUserLogged() {
     if (localStorage.getItem("status_aco_awlab") == "on") { $('#Status_aco_awlab').prop('checked', true); }
     //Onygo
     if (localStorage.getItem("status_aco_onygo") == "on") { $('#Status_aco_onygo').prop('checked', true); }
+    //Woodwood
+    if (localStorage.getItem("status_aco_woodwood") == "on") { $('#Status_aco_woodwood').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Zalando
@@ -120,7 +122,10 @@ function onUserLogged() {
     $('#Status_aco_onygo').click(function() {
         if ($("#Status_aco_onygo").is(':checked')) { localStorage.setItem("status_aco_onygo", "on"); } else { localStorage.setItem("status_aco_onygo", "off"); }
     });
-
+    //Onygo
+    $('#Status_aco_woodwood').click(function() {
+        if ($("#Status_aco_woodwood").is(':checked')) { localStorage.setItem("status_aco_woodwood", "on"); } else { localStorage.setItem("status_aco_woodwood", "off"); }
+    });
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA Login------------------------------------------------
@@ -482,6 +487,19 @@ function onUserLogged() {
 
         if (mode_sns != '') { localStorage.setItem("mode_sns", mode_sns); } else { localStorage.setItem("mode_sns", "off"); }
         if (!(isBlank(size_sns))) { localStorage.setItem("size_sns", size_sns); } else { localStorage.setItem("size_sns", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA SNS----------------------------------------------
+    if (localStorage.getItem("size_woodwood") != "off") { $("#size_woodwood").val(localStorage.getItem("size_woodwood")); }
+    if (localStorage.getItem("mode_woodwood") != "off") { $("#mode_woodwood").val(localStorage.getItem("mode_woodwood")); }
+    //gestisco il click del bottone salva
+    $("#btn_save_woodwood").click(function() {
+        let size_woodwood = $("#size_woodwood").val();
+        let mode_woodwood = $("#mode_woodwood").val();
+
+        if (mode_woodwood != '') { localStorage.setItem("mode_woodwood", mode_woodwood); } else { localStorage.setItem("mode_woodwood", "off"); }
+        if (!(isBlank(size_woodwood))) { localStorage.setItem("size_woodwood", size_woodwood); } else { localStorage.setItem("size_woodwood", "off"); }
     });
     //---------------------------------------------------------------------
 

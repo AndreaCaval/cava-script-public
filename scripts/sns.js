@@ -81,7 +81,7 @@ async function errorRefresh() {
 async function main() {
 
     while (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
-        await sleep(1000)
+        await sleep(250)
     }
 
     sizes = document.getElementsByClassName("product-sizes__label");

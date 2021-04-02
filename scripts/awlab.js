@@ -108,7 +108,17 @@ async function main() {
 
 async function getMainPid() {
     try { pid = document.getElementsByClassName("b-pdp b-size-selector__active js-cmp-inited js-cmp-productMain")[0].getAttribute("data-product-id") } catch (error) {
-        if (error != "TypeError: Cannot read property 'getAttribute' of undefined") errorWebhook(error, "getMainPid")
+        if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
+            errorWebhook(error, "getMainPid")
+        try {
+            y = link.replace(/[^a-zA-Z0-9_]/g, '-');
+            y = y.split('-')
+            y.forEach(element => {
+                if (element.startsWith("AW")) {
+                    pid = element
+                }
+            });
+        } catch (error) { errorWebhook(error, "getMainPid2") }
     }
 }
 

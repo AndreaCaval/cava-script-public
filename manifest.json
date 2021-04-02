@@ -74,6 +74,11 @@
             "all_frames": true
         },
         {
+            "matches": ["https://www.woodwood.com/*/product/*"],
+            "js": ["scripts/woodwood.js"],
+            "all_frames": true
+        },
+        {
             "matches": ["https://www.basket4ballers.com/en/*", "https://www.basket4ballers.com/fr/*"],
             "js": ["scripts/b4b.js"],
             "all_frames": false
