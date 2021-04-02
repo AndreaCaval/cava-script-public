@@ -670,7 +670,12 @@ async function checkResGetCart(response) {
             sendText("Getting cart", "green")
             html_cart.innerHTML = res.replaceAll("&quot;", "")
             html_cart = html_cart.querySelectorAll('[class="b-cart-products-list js-cart-line-items"]')[0]
-            html_cart = html_cart.querySelectorAll('[class="b-cart-item-wrapper js-cart-item-wrapper"]')
+            if (html_cart.getElementsByClassName("b-cart-item-wrapper js-cart-item-wrapper b-cart-item-wrapper--loyalty").length == 0)
+                html_cart = html_cart.getElementsByClassName('b-cart-item-wrapper js-cart-item-wrapper')
+            else
+                html_cart = html_cart.getElementsByClassName('b-cart-item-wrapper js-cart-item-wrapper b-cart-item-wrapper--loyalty')
+
+            html_cart = Array.prototype.slice.call(html_cart)
             html_cart.forEach(element => {
                 pid_cart = element.getAttribute("data-gtm")
                 if (!isNumeric(pid_cart)) {
@@ -681,7 +686,11 @@ async function checkResGetCart(response) {
                             pid_cart = elemen
                     });
                 }
-                uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                try {
+                    uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                } catch (error) {
+                    uuid_cart = element.querySelectorAll('[class="b-cart-btn-wrapper"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                }
                 clearCart(pid_cart, uuid_cart)
             });
             if (html_cart.length == 0)
