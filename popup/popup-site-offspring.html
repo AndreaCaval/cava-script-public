@@ -11,21 +11,20 @@
 </head>
 
 <body>
-    <ul>
-        <li><a href="popup-site-aco.html">Sites</a></li>
-        <li><a href="popup-setting.html">Settings</a></li>
-        <li><a href="popup-info.html ">Info</a></li>
-    </ul>
-    <p style="text-align: center;">Offspring</p>
-    <div style="padding:15px;">
+    <div>
+        <a href="https://twitter.com/CavaScripts " target="_blank "><img src="../icons/logo.png" style="width: 150px;margin: 0px 20px 0px 15px;"></a>
+        <a href="popup-site-aco.html"><img src="../icons/back.png" style="width: 25px;float: right;margin: 20px 0px 0px 10px;position: fixed;"></a>
+        <a href="popup-setting.html"><img src="../icons/settings.png" style="width: 25px;float: right;margin: 20px 0px 0px 70px;position: fixed;"></a>
+    </div>
+    <div class="box" style="padding:15px;">
+        <center><img src="../icons/sites/offspring.png" style="width: 150px;"></center><br>
         <label>Size range (UK): </label>
-        <input style="float: right;" type="text" id="size_offspring" placeholder="es: 7-9">
+        <input type="text" id="size_offspring" placeholder="es: 7-9" min="2.5" max="18" step="0.5">
         <br><br>
-        <input style="text-align: center; width: 100%;" class='btn' id="btn_save_offspring" type="submit" value="Save">
+        <button style="text-align: center; width: 100%;height: 100%;" class='btn' id="btn_save_offspring" type="submit">Save</button>
     </div>
 
     <footer>
-        <br>
         <div class="footer">
             <div>
                 <p class="pversion">

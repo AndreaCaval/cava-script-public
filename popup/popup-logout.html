@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/jquery.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
     <title>Cava Script</title>
     <style>
         body {
@@ -12,7 +15,8 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: rgb(105, 105, 105);
+            background-image: url(../icons/background.png);
+            background-size: cover;
         }
         
         div {
@@ -27,27 +31,51 @@
         }
         
         button {
-            font-size: 200%;
-            background-color: #ff7b00;
-            border-radius: 5px;
-            border: none;
-            text-align: center;
-            color: black;
-            font-family: monospace;
+            box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;
+            background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);
+            border-radius: 6px;
+            border: 1px solid rgb(216, 53, 38);
+            display: inline-block;
+            cursor: pointer;
+            color: rgb(255, 255, 255);
+            font-family: Arial;
+            font-size: 14px;
             font-weight: bold;
-            transition-duration: 0.3s;
-            padding: 10px;
+            padding: 12px 24px;
+            text-decoration: none;
+            text-shadow: rgb(178 62 53) 0px 1px 0px;
+            outline: none;
+        }
+        
+        button:hover {
+            background: linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
+            background-color: #e4685d;
+        }
+        
+        button:active {
+            position: relative;
+            top: 1px;
         }
     </style>
 </head>
 
 <body>
     <div>
-        <br><br><br>
-        <button type="submit" id="button_out">Sign Out</button>
-        <br><br><br>
+        <img src="../icons/logo.png" style="width: 150px;margin: 0px 20px 0px 15px;">
+        <button type="submit" id="button_out" style="width: 200px;">Sign Out</button>
+        <a href="popup-setting.html"><button style="width: 150px;height: 25px;margin-top: 5px;padding: 0px;">Go Back</button></a>
+        <br>
     </div>
-    <script src="/scripts/popup-auth.js"></script>
+    <footer>
+        <div class="footer">
+            <div>
+                <p class="pversion">
+                    <a href="https://twitter.com/CavaScripts " target="_blank "><img class="imgfooter" src="/icons/iconpk.png " height="15 " width="15 "></a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    <script src="/scripts/popup.js"></script>
 </body>
 
 </html>

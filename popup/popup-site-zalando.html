@@ -11,44 +11,41 @@
 </head>
 
 <body>
-    <ul>
-        <li><a href="popup-site-aco.html">Sites</a></li>
-        <li><a href="popup-setting.html">Settings</a></li>
-        <li><a href="popup-info.html ">Info</a></li>
-    </ul>
-    <p style="text-align: center;">Zalando</p>
-    <div style="padding:15px;">
-        <div>
-            <label>Email: </label>
-            <input style="float: right;" type="text" id="email_zalando" placeholder="es: cavascripts@gmail.com">
-            <br><br>
-            <label>Password: </label>
-            <input style="float: right;" type="text" id="pw_zalando" placeholder="es: cavascripts">
-            <br><br>
-            <label>Size Range (EU): </label>
-            <input style="float: right;" type="text" id="size_zalando" placeholder="es: 37-42">
-            <br><br>
-            <label style="float: left;">Drop Mode: </label>
-            <input style="float: right;" type="checkbox" id="zalandoDropMode">
-            <br><br>
-            <label style="float: left;">Cart Mode: </label>
-            <select style="float: right; width: 177px;" id="zalandoCartMode">
+    <div>
+        <a href="https://twitter.com/CavaScripts " target="_blank "><img src="../icons/logo.png" style="width: 150px;margin: 0px 20px 0px 15px;"></a>
+        <a href="popup-site-aco.html"><img src="../icons/back.png" style="width: 25px;float: right;margin: 20px 0px 0px 10px;position: fixed;"></a>
+        <a href="popup-setting.html"><img src="../icons/settings.png" style="width: 25px;float: right;margin: 20px 0px 0px 70px;position: fixed;"></a>
+    </div>
+
+    <div class="box" style="padding:15px;">
+        <center><img src="../icons/sites/zalando.png" style="width: 150px;"></center><br>
+        <label style="float: left;margin-left: 11px;">Email: </label>
+        <input type="text" id="email_zalando" placeholder="es: cavascripts@gmail.com">
+        <br>
+        <label style="float: left;margin-left: 11px;">Password: </label>
+        <input type="password" id="pw_zalando" placeholder="es: cavascripts">
+        <br><br>
+        <label>Size range (EU): </label>
+        <input type="text" id="size_zalando" placeholder="es: 40-45" min="35.5" max="52" step="0.5">
+        <br><br>
+        <label>Drop Mode: </label><input type="checkbox" id="zalandoDropMode" style="float: none;">
+        <br><br>
+        <label>Cart Mode: </label>
+        <select style="width: 177px;" id="zalandoCartMode">
                 <option>Fast</option>
                 <option>Browser</option>
             </select>
-            <br><br>
-            <label style="float: left;">CK Mode: </label>
-            <select style="float: right; width: 177px;" id="zalandoCheckoutMode">
+        <br>
+        <label>CK Mode: </label>
+        <select style="width: 177px;" id="zalandoCheckoutMode">
                 <option>Manual</option>
                 <option>Browser</option>
             </select>
-            <br><br>
-            <input style="text-align: center; width: 100%;" class='btn' id="btnZ" type="submit" value="Save">
-        </div>
+        <br><br>
+        <button style="text-align: center; width: 100%;height: 100%;" class='btn' id="btn_save_zalando" type="submit">Save</button>
     </div>
 
     <footer>
-        <br>
         <div class="footer">
             <div>
                 <p class="pversion">

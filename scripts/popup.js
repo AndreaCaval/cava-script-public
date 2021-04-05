@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.1.6'
+const version = 'Cava-Scripts 1.1.7'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -31,6 +31,41 @@ function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
 
+//auth
+try {
+    const button = document.querySelector("button")
+    if (button.getAttribute("id") == "button_in") sing_in()
+    else if (button.getAttribute("id") == "button_out") sing_out()
+} catch (error) {}
+
+function sing_in() { /* popup-sign-in-script.js */
+    try {
+        const button_in = document.getElementById("button_in");
+        button_in.addEventListener('click', () => {
+            const license = document.getElementById("license").value
+            chrome.runtime.sendMessage({ greeting: 'login', license: license }, function(response) {
+                if (response.farewell == 'success') {
+                    window.location.replace("/popup/popup-site-aco.html");
+                }
+            });
+        });
+    } catch (error) {}
+}
+
+function sing_out() { /* popup-sign-out-script.js */
+    try {
+        const button_out = document.getElementById('button_out');
+        button_out.addEventListener('click', () => {
+            const license = localStorage.getItem("license")
+            chrome.runtime.sendMessage({ greeting: 'logout', license: license }, function(response) {
+                if (response.farewell == 'success') {
+                    window.location.replace("/popup/popup-login.html");
+                }
+            });
+        });
+    } catch (error) {}
+}
+
 $(function() {
 
     chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
@@ -45,8 +80,17 @@ $(function() {
 
 function onUserLogged() {
 
+    chrome.runtime.sendMessage({ greeting: "userData" }, function(response) {
+        const userData = response.farewell
+        try {
+            document.getElementById("imgAvatar").src = "https://cdn.discordapp.com/avatars/" + userData.discordId + "/" + userData.avatar + ".png";
+            document.getElementById("discordTag").innerHTML = userData.discordTag;
+            document.getElementById("discordEmail").innerHTML = userData.discordEmail;
+        } catch (error) {}
+    });
+
     //INSERISCO LA VERSIONE NELLE PAGINE----------------------------------
-    document.getElementById("version").innerHTML = version;
+    try { document.getElementById("version").innerHTML = version; } catch (error) {}
     //--------------------------------------------------------------------
 
     //GESTIONE PAGINA ACO------------------------------------------------
@@ -465,7 +509,7 @@ function onUserLogged() {
         $("#email_kickz").val(email);
         $("#pw_kickz").val(pw);
     }
-    if (localStorage.getItem("size_kickz") != "off") { $("#size_sns").val(localStorage.getItem("size_kickz")); }
+    if (localStorage.getItem("size_kickz") != "off") { $("#size_kickz").val(localStorage.getItem("size_kickz")); }
     //gestisco il click del bottone salva
     $("#btn_save_kickz").click(function() {
         var e = $("#email_kickz").val();
@@ -490,7 +534,7 @@ function onUserLogged() {
     });
     //---------------------------------------------------------------------
 
-    //GESTIONE PAGINA SNS----------------------------------------------
+    //GESTIONE PAGINA WOODWOOD----------------------------------------------
     if (localStorage.getItem("size_woodwood") != "off") { $("#size_woodwood").val(localStorage.getItem("size_woodwood")); }
     if (localStorage.getItem("mode_woodwood") != "off") { $("#mode_woodwood").val(localStorage.getItem("mode_woodwood")); }
     //gestisco il click del bottone salva
@@ -505,10 +549,14 @@ function onUserLogged() {
 
     //GESTIONE PAGINA NAKED----------------------------------------------
     if (localStorage.getItem("size_naked") != "off") { $("#size_naked").val(localStorage.getItem("size_naked")); }
+    if (localStorage.getItem("mode_naked") != "off") { $("#mode_naked").val(localStorage.getItem("mode_naked")); }
+
     //gestisco il click del bottone salva
     $("#btn_save_naked").click(function() {
         var size_naked = $("#size_naked").val();
+        let mode_naked = $("#mode_naked").val();
 
+        if (mode_naked != '') { localStorage.setItem("mode_naked", mode_naked); } else { localStorage.setItem("mode_naked", "off"); }
         if (!(isBlank(size_naked))) { localStorage.setItem("size_naked", size_naked); } else { localStorage.setItem("size_naked", "off"); }
     });
     //---------------------------------------------------------------------

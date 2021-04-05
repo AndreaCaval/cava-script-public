@@ -136,6 +136,7 @@ let country_snipes = "";
 let is_login = false
 let is_cart = false
 let is_captcha_solved = false
+let captchasolver
 
 let img_product = "";
 let name_product = "";
@@ -147,6 +148,7 @@ var pidsize = "";
 var pid = "";
 var size = "";
 
+let time_dummy = ""
 let dummy = 0
 let uuid_dummy = ""
 
@@ -173,6 +175,7 @@ let email = "";
 let phone = "";
 let shippingMethodID = ""
 let csrf_token = "";
+
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -211,21 +214,42 @@ function getRandomIntInclusive(min, max) {
 function textBox() {
     let color_aco = "";
     let color_login = ""
-    if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
-    if (status_login == "off") { color_login = "red" } else { color_login = "green" }
+    if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" } //
+    if (status_login == "off") { color_login = "red" } else { color_login = "green" } //min-width: 200px; max-width: 500px;
     try {
+
         let btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {text-align: center; color:white; background-color:black; width:100%; padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff; border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
-            '.btn_cava:hover {background-color: grey}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);}</style>' +
-            '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
-            ' <p id="statusSnipes">Status snipes</p> ' +
-            '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380186148600000005"> <br>' +
-            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001380186148600000005"> <br>' +
-            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
-            '<input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br><br>' +
-            '<input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
-            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
+            '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
+            '.btn_cava:active {position:relative;top:1px;}' +
+            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fsfondo.png?alt=media&token=f403fdf7-32ee-4773-a1a9-4022916f4bea);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
+            '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
+            '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
+            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
+            '<p style="float:left" id="statusSnipes">Status snipes</p><p style="float:right" id="timerSnipes"></p> <br style="clear:both">' +
+            '<div class="box"><label style="font-weight: 600;">Sizepid Dummy: </label><br>' +
+            '<input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380189826700000008">' +
+            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"></div><br><br>' +
+            '<div class="box"><label style="font-weight: 600;">Sizepid  or  Load Link: </label><br>' +
+            '<input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid" placeholder="es: 0001380189826700000008"><br>' +
+            '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_start_task" type="submit" value="START TASK"></div><br><br>' +
+            '<div class="box"><input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"></div><br><br>' +
+            '<div class="box"><input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"></div><br>' +
+            "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size: 20px; text-transform: uppercase; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+
+        dragElement(document.getElementById("CavaScripts"));
+
+        let btn_left = document.getElementById('btn_left')
+        btn_left.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "left:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_right = document.getElementById('btn_right')
+        btn_right.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "right:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
 
         let btn_start_task = document.getElementById('btn_start_task')
         btn_start_task.addEventListener("click", function() {
@@ -291,9 +315,60 @@ function textBox() {
         if (localStorage.getItem("snipes_pid") != null)
             document.getElementById("input_sizepid").value = localStorage.getItem("snipes_pid")
 
+        if (localStorage.getItem("box") != null)
+            document.getElementById('CavaScripts').style = localStorage.getItem("box")
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
+    }
+}
+
+function dragElement(elmnt) {
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+
+        if (elmnt.offsetTop - pos2 >= 0) {
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
     }
 }
 
@@ -312,13 +387,17 @@ async function addButton() {
         if (document.getElementById('btn_solver') == null) {
 
             let btn1 = document.getElementById("CavaScripts")
-            btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ' +
-                '<br><input style="color:black; width:100%" id="btn_solved" type="submit" value="Solved"> ');
+            btn1.insertAdjacentHTML("beforeend", '<br><div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solver" type="submit" value="OPEN SOLVER"></div>' +
+                '<br><br><div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solved" type="submit" value="SOLVED"></div><br><br>');
 
             let btn_solver = document.getElementById('btn_solver')
             btn_solver.addEventListener("click", function() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
-                window.open('https://' + country + '/view-account', 'test', params)
+                captchasolver = window.open('https://' + country + '/view-account', 'captchasolver', params)
+
+                captchasolver.addEventListener('beforeunload', function(e) {
+                    is_captcha_solved = true
+                });
             });
 
             let btn_solved = document.getElementById('btn_solved')
@@ -327,6 +406,7 @@ async function addButton() {
                 is_captcha_solved = true
             });
         }
+
     } catch (error) {}
 }
 
@@ -334,6 +414,9 @@ async function sendText(text, color) {
     try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
+async function sendTime(time) {
+    try { document.getElementById("timerSnipes").innerHTML = "<span >" + time + "</span>" } catch (error) {}
+}
 
 async function main() {
     if (link.startsWith("https://" + country + "/p")) {
@@ -351,83 +434,43 @@ async function main() {
     }
 }
 
-
-async function CSRFGenerate() {
-    await fetch(LINK_REQUEST[country]["generate_csrf"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
-        .then(response => { checkResCSRFGenerate(response) })
-        .catch((error) => {
-            if (error != "TypeError: Failed to fetch")
-                errorWebhooks(error, "CSRFGenerate")
-        });;
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
 }
-async function checkResCSRFGenerate(response) {
-    let status = response.status
-    let res = await response.text()
-    let x = res
-    res = JSON.parse(res)
-
-    if (status == 200 || status == 201) {
-        csrf_token = res["csrf"]["token"]
-    } else {
-        if (res.includes("\"appId\"")) {
-            sendText("Error generating token, resolve captcha", "red")
-            addButton()
-            while (is_captcha_solved == false) {
-                await sleep(250)
-            }
-            is_captcha_solved = false
-            CSRFGenerate()
+async function checkTimer() {
+    if (localStorage.getItem("timer_snipes") != null) {
+        if (Date.now() - localStorage.getItem("timer_snipes") < 900000) {
+            time = new Date(900000 - parseInt(Date.now() - localStorage.getItem("timer_snipes")))
+            time = time.getMinutes() + ":" + addZero(time.getSeconds());
+            sendTime(time)
+            dummy = 2
+            sendText("Session Ready", "green")
         } else {
-            errorWebhooks(res, "checkResCSRFGenerate")
-            sendText("Error generating token", "red")
+            localStorage.clear("timer_snipes")
+            sendText("Session expired", "red")
+            sendTime("")
+            dummy = 0
         }
     }
-}
-async function GetHMACToken() {
-    await fetch(LINK_REQUEST[country]["get_hmac_token"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "email=" + email + "&csrf_token=" + csrf_token,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
-        .then(response => { checkResGetHMACToken(response) })
-        .catch((error) => { errorWebhooks(error, "GetHMACToken") });;
-}
-async function checkResGetHMACToken(response) {
-    let res = await response.text()
-    resInfoWebook(res, "checkResGetHMACToken")
-
+    while (true) {
+        await sleep(1000)
+        if (localStorage.getItem("timer_snipes") != null) {
+            if (Date.now() - localStorage.getItem("timer_snipes") < 900000) {
+                time = new Date(900000 - parseInt(Date.now() - localStorage.getItem("timer_snipes")))
+                time = time.getMinutes() + ":" + addZero(time.getSeconds());
+                sendTime(time)
+                dummy = 2
+            } else {
+                localStorage.clear("timer_snipes")
+                sendText("Session expired", "red")
+                sendTime("")
+                dummy = 0
+            }
+        }
+    }
 }
 
 
@@ -760,9 +803,6 @@ async function checkResClearCart(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResValidateShipping")
-        } catch (error) {}
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "checkResClearCart")
@@ -1017,9 +1057,6 @@ async function checkResAtc(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckRes")
-        } catch (error) {}
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckRes")
@@ -1137,57 +1174,66 @@ async function gettingShipping() {
         last_name = rdbtn.getAttribute('data-last-name').replaceAll(" ", "+")
         first_name = rdbtn.getAttribute('data-first-name').replaceAll(" ", "+")
         title = rdbtn.getAttribute('data-title').replaceAll(" ", "+")
-
-        originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
-        shipmentUUID = originalShipmentUUID
-        shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
-        address_selector = rdbtn.getAttribute("value")
-
-        try { email = html.querySelector('[aria-label="Email"]').getAttribute('value') } catch (error) { email = html.querySelector('[inputmode="email"]').getAttribute('value') }
-        try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') } catch (error) {}
-
-        csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
-
-        sendText("Getting shipping info", "green")
         try {
-            img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
-            price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
-            name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
-            size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
-            if (link.startsWith("https://" + country + "/cart"))
-                try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
-            else if (pidsize != "")
-                link_product = "https://" + country + "/p/cava-" + pidsize + ".html"
+            originalShipmentUUID = html.querySelector('[class="b-shipping-header"]').getAttribute('data-shipment-uuid')
+            shipmentUUID = originalShipmentUUID
+            shippingMethodID = html.querySelector('[class="b-shipping-form b-address-from"]').getAttribute('data-selected-method')
+            address_selector = rdbtn.getAttribute("value")
+
+            try { email = html.querySelector('[aria-label="Email"]').getAttribute('value') } catch (error) { email = html.querySelector('[inputmode="email"]').getAttribute('value') }
+            try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') } catch (error) { phone = html.querySelector('[name="dwfrm_contact_phone"]').getAttribute('value') }
+            try { csrf_token = html.querySelector('[name="csrf_token"]').getAttribute('value') } catch (error) { csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token') }
+
+
+            sendText("Getting shipping info", "green")
+            try {
+                img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
+                price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replace(/\s/g, '')
+                name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
+                size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
+                if (link.startsWith("https://" + country + "/cart"))
+                    try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
+                else if (pidsize != "")
+                    link_product = "https://" + country + "/p/cava-" + pidsize + ".html"
+            } catch (error) {
+                sendText("Error getting product info", "red")
+                errorWebhooks(error, "getting product")
+            }
+
+            try {
+                if (dummy == 1)
+                    checkout_mode = "Safe"
+
+
+                switch (checkout_mode) {
+                    case "Safe":
+                        SelectShippingMethod()
+                        break
+                    case "Normal":
+                        ValidateShipping()
+                        break
+                    case "Fast":
+                        SubmitShipping()
+                        break
+                    case "UltraFast":
+                        SubmitPayment()
+                        break
+                    default:
+                        SelectShippingMethod()
+                        break
+                }
+            } catch (error) {
+                errorWebhooks(error, "getting shipping2")
+                sendText("Error getting shipping info", "red")
+            }
         } catch (error) {
-            sendText("Error getting product info", "red")
-            errorWebhooks(error, "getting product")
+            if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
+                errorWebhooks(error, "getting shipping1")
+            sendText("Error getting shipping info", "red")
         }
-
-        if (dummy == 1)
-            checkout_mode = "Safe"
-
-
-        switch (checkout_mode) {
-            case "Safe":
-                SelectShippingMethod()
-                break
-            case "Normal":
-                ValidateShipping()
-                break
-            case "Fast":
-                SubmitShipping()
-                break
-            case "UltraFast":
-                SubmitPayment()
-                break
-            default:
-                SelectShippingMethod()
-                break
-        }
-
     } catch (error) {
         if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
-            errorWebhooks(error, "getting shipping")
+            errorWebhooks(error, "getting shipping0")
 
         sendText("Error getting shipping info", "red")
     }
@@ -1251,9 +1297,6 @@ async function checkResSelectShippingMethod(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResSelectShippingMethod")
-        } catch (error) {}
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResSelectShippingMethod")
@@ -1322,9 +1365,6 @@ async function checkResValidateShipping(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResValidateShipping")
-        } catch (error) {}
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResValidateShipping")
@@ -1394,9 +1434,7 @@ async function checkResSubmitShipping(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResSubmitShipping")
-        } catch (error) {}
+
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResSubmitShipping")
@@ -1491,9 +1529,6 @@ async function checkResSubmitPayment(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResSubmitPayment")
-        } catch (error) {}
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResSubmitPayment")
@@ -1549,6 +1584,8 @@ async function checkResPlaceOrder(response) {
                 linkpp = res["continueUrl"]
                 if (linkpp != null) {
                     sendText("Checked out", "green")
+                    localStorage.clear("timer_snipes")
+                    dummy = 0
                     window.open(linkpp)
                     sendWebhooks(linkpp)
                 } else {
@@ -1636,7 +1673,6 @@ async function removeDummy() {
 }
 
 async function checkResRemoveDummy(response) {
-
     try {
 
         let status = response.status
@@ -1647,6 +1683,7 @@ async function checkResRemoveDummy(response) {
         if (status == 200 || status == 201) {
             sendText("Dummy removed", "green")
             await sleep(500)
+            localStorage.setItem("timer_snipes", Date.now())
             sendText("Session ready", "green")
         } else {
             if (x.includes("\"appId\"")) {
@@ -1664,9 +1701,6 @@ async function checkResRemoveDummy(response) {
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResRemoveDummy")
-        } catch (error) {}
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResRemoveDummy")
@@ -1694,6 +1728,7 @@ chrome.runtime.sendMessage({ greeting: "country_snipes" }, function(response) {
 chrome.runtime.sendMessage({ greeting: "email_pw_snipes" }, function(response) {
     var x = response.farewell
     email_login = x.split(':')[0]
+    email = x.split(':')[0]
     pw_login = x.split(':')[1]
 });
 
@@ -1716,8 +1751,9 @@ chrome.runtime.sendMessage({ greeting: "snipes_checkout_mode" }, function(respon
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
-        textBox()
         changeCountry()
+        textBox()
+        checkTimer()
         chrome.runtime.sendMessage({ greeting: "snipes" }, function(response) {
             if (response.farewell == 'on') {
                 main()

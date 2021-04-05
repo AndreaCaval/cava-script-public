@@ -11,34 +11,31 @@
 </head>
 
 <body>
-    <ul>
-        <li><a href="popup-site-aco.html">Sites</a></li>
-        <li><a href="popup-setting.html">Settings</a></li>
-        <li><a href="popup-info.html ">Info</a></li>
-    </ul>
-    <p style="text-align: center;">Onygo</p>
-    <div style="padding:15px;">
-        <div style="float:left;">
-            <a class="site">Login</a>
+    <div>
+        <a href="https://twitter.com/CavaScripts " target="_blank "><img src="../icons/logo.png" style="width: 150px;margin: 0px 20px 0px 15px;"></a>
+        <a href="popup-site-aco.html"><img src="../icons/back.png" style="width: 25px;float: right;margin: 20px 0px 0px 10px;position: fixed;"></a>
+        <a href="popup-setting.html"><img src="../icons/settings.png" style="width: 25px;float: right;margin: 20px 0px 0px 70px;position: fixed;"></a>
+    </div>
+    <div class="box" style="padding:15px;">
+        <center><img src="../icons/sites/onygo.png" style="width: 150px;"></center><br>
+        <div>
+            <text>Autologin:</text><input type="checkbox" id="Status_login_onygo" style="float: none; margin-top: 0px; margin-right: 0px;" name="onygo">
         </div>
-        <div style="float:right;">
-            <input type="checkbox" id="Status_login_onygo" name="Onygo">
-        </div>
+
+        <br>
+        <label style="float: left;margin-left: 11px;">Email: </label>
+        <input type="text" id="email_onygo" placeholder="es: cavascripts@gmail.com">
+        <br>
+        <label style="float: left;margin-left: 11px;">Password: </label>
+        <input type="password" id="pw_onygo" placeholder="es: cavascripts">
         <br><br>
-        <label>Email: </label>
-        <input style="float: right;" type="text" id="email_onygo" placeholder="es: cavascripts@gmail.com">
+        <label>Size range (EU): </label>
+        <input type="text" id="size_onygo" placeholder="es: 40-45" min="35.5" max="52" step="0.5">
         <br><br>
-        <label>Password: </label>
-        <input style="float: right;" type="text" id="pw_onygo" placeholder="es: cavascripts">
-        <br><br>
-        <label>Size Range (EU): </label>
-        <input style="float: right;" type="text" id="size_onygo" placeholder="es: 35-41">
-        <br><br>
-        <input style="text-align: center; width: 100%;" class='btn' id="btn_save_onygo" type="submit" value="Save">
+        <button style="text-align: center; width: 100%;height: 100%;" class='btn' id="btn_save_onygo" type="submit">Save</button>
     </div>
 
     <footer>
-        <br>
         <div class="footer">
             <div>
                 <p class="pversion">

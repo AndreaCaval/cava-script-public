@@ -59,15 +59,85 @@ function textBox() {
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
         var btn1 = document.getElementsByClassName("header")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<div id="CavaScripts" style="font-family: Verdana, Geneva, word-wrap: break-word; sans-serif; position: fixed; right:0; top: 500px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
-            ' <p id="statusSns">Status sns</p> ' +
-            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
+            '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
+            '.btn_cava:active {position:relative;top:1px;} p{font-weight:bold}' +
+            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fsfondo.png?alt=media&token=f403fdf7-32ee-4773-a1a9-4022916f4bea);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
+            '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
+            '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
+            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
+            ' <br> <p id="statusSns">Status sns</p> ' +
+            "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
+
+        dragElement(document.getElementById("CavaScripts"));
+
+        if (localStorage.getItem("box") != null)
+            document.getElementById('CavaScripts').style = localStorage.getItem("box")
+
+        let btn_left = document.getElementById('btn_left')
+        btn_left.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "left:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_right = document.getElementById('btn_right')
+        btn_right.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "right:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
             errorWebhooks(error, "textBox")
     }
 }
 
+function dragElement(elmnt) {
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+
+        if (elmnt.offsetTop - pos2 >= 0) {
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
 async function sendText(text, color) {
     try { document.getElementById("statusSns").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
@@ -96,75 +166,75 @@ async function main() {
 }
 
 async function mainAtcBrowser() {
-    // try {
-    let cart = 0
-    if (sizes.length != 0) {
-        if (size_range == "random") {
-            n = getRandomIntInclusive(0, sizes.length - 1)
-            sizes[n].click()
-            cart = 1
-        } else {
-            if (size_range.includes('-')) {
-                size_1 = parseFloat(size_range.split('-')[0])
-                size_2 = parseFloat(size_range.split('-')[1])
-                for (let index = 0; index < sizes.length; index++) {
-                    size = sizes[index].getAttribute("data-size-types")
-                    size = JSON.parse(size)
-                    size = parseFloat(size["converted-size-size-eu"])
-                    if (size >= size_1 && size <= size_2) {
-                        sizes[index].click()
-                        cart = 1
-                        break
-                    }
-                }
+    try {
+        let cart = 0
+        if (sizes.length != 0) {
+            if (size_range == "random") {
+                n = getRandomIntInclusive(0, sizes.length - 1)
+                sizes[n].click()
+                cart = 1
             } else {
-                for (let index = 0; index < sizes.length; index++) {
-                    size = sizes[index].getAttribute("data-size-types")
-                    size = JSON.parse(size)
-                    if (size["converted-size-size-eu"] == size_range) {
-                        sizes[index].click()
-                        cart = 1
-                        break
+                if (size_range.includes('-')) {
+                    size_1 = parseFloat(size_range.split('-')[0])
+                    size_2 = parseFloat(size_range.split('-')[1])
+                    for (let index = 0; index < sizes.length; index++) {
+                        size = sizes[index].getAttribute("data-size-types")
+                        size = JSON.parse(size)
+                        size = parseFloat(size["converted-size-size-eu"])
+                        if (size >= size_1 && size <= size_2) {
+                            sizes[index].click()
+                            cart = 1
+                            break
+                        }
+                    }
+                } else {
+                    for (let index = 0; index < sizes.length; index++) {
+                        size = sizes[index].getAttribute("data-size-types")
+                        size = JSON.parse(size)
+                        if (size["converted-size-size-eu"] == size_range) {
+                            sizes[index].click()
+                            cart = 1
+                            break
+                        }
                     }
                 }
             }
-        }
 
-        if (cart == 0 && size_range != "random")
-            sendText("Selected sizes not available", "purple")
-        else {
-            document.getElementsByClassName("product-form__btn btn")[0].click()
-        }
-
-
-        for (let index = 0; index < 10; index++) {
-            await sleep(200)
-            if (document.getElementsByClassName("modal slide-right show in")[0] != undefined) {
-                let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
-                let jj = JSON.parse(x)
-                let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-                let jjj = JSON.parse(y)
-                name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
-                size_product = jjj["converted-size-size-eu"]
-                price_product = jj["price"]
-                sendWebhooks()
-                document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
-                break
+            if (cart == 0 && size_range != "random")
+                sendText("Selected sizes not available", "purple")
+            else {
+                document.getElementsByClassName("product-form__btn btn")[0].click()
             }
+
+
+            for (let index = 0; index < 10; index++) {
+                await sleep(200)
+                if (document.getElementsByClassName("modal slide-right show in")[0] != undefined) {
+                    let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
+                    let jj = JSON.parse(x)
+                    let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+                    let jjj = JSON.parse(y)
+                    name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
+                    size_product = jjj["converted-size-size-eu"]
+                    price_product = jj["price"]
+                    sendWebhooks()
+                    document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
+                    break
+                }
+            }
+
+            try { sendText(document.getElementsByClassName("product-view__error")[0].textContent, "purple") } catch (error) { sendText("Item out of stock", "purple") }
+            errorRefresh()
+
+        } else {
+            sendText("Item out of stock", "purple")
+            errorRefresh()
         }
 
-        try { sendText(document.getElementsByClassName("product-view__error")[0].textContent, "purple") } catch (error) { sendText("Item out of stock", "purple") }
-        errorRefresh()
-
-    } else {
-        sendText("Item out of stock", "purple")
+    } catch (error) {
+        errorWebhooks(error, "mainAtcBrowser")
         errorRefresh()
     }
-
-    // } catch (error) {
-    //     errorWebhooks(error, "mainAtcBrowser")
-    //     errorRefresh()
-    // }
 }
 
 async function mainAtcFast() {

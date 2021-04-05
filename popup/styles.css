@@ -1,9 +1,49 @@
+input.setting {
+    padding: 0px;
+    margin: 2px;
+    box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;
+    background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);
+    border-radius: 6px;
+    border: 1px solid rgb(216, 53, 38);
+    display: inline-block;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: rgb(178 62 53) 0px 1px 0px;
+    outline: none;
+    width: 130px;
+    height: 20px;
+}
+
+input.setting:hover {
+    background: linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
+    background-color: #e4685d;
+}
+
+input.setting:active {
+    position: relative;
+    top: 1px;
+}
+
 a.site {
     font-size: 14px;
 }
 
+th {
+    font-weight: bold;
+    text-align: -internal-center;
+}
+
+tr {
+    background: #d46b3b;
+}
+
 th.th1 {
     float: left;
+    padding: 4px;
 }
 
 th.th2 {
@@ -14,18 +54,9 @@ label {
     font-size: 13px;
 }
 
-html {
-    border: 2px;
-    border-style: solid;
-    border-color: rgb(212, 107, 59);
-}
-
 footer {
     clear: both;
     position: relative;
-    height: 15px;
-    margin-top: -15px;
-    margin-bottom: 37px;
 }
 
 .footer {
@@ -50,25 +81,43 @@ footer {
 }
 
 body {
-    width: 305.5px;
+    width: 300px;
     height: 100%;
     margin: 0;
-    background-image: url('/icons/pokemon.jpg');
+    background-image: url('/icons/background.png');
     background-repeat: no-repeat;
-    background-size: 305.5px;
-    color: rgb(129, 200, 247);
+    background-size: cover;
 }
 
-input {
-    background-color: rgba(0, 0, 0, 0.1);
-    border: solid 1px;
-    border-color: white;
-    color: white;
+.input {
+    width: 275px;
+    border: solid 1px #ccc;
+    height: 26px;
+    background: #5E768D;
+    background: -moz-linear-gradient(top, #546A7F 0%, #5E768D 20%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #546A7F), color-stop(20%, #5E768D));
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0px 1px 0px #f2f2f2;
+    -webkit-box-shadow: 0px 1px 0px #F2F2F2;
+    font-family: sans-serif;
+    font-size: 16px;
+    color: #F2F2F2;
+    text-transform: uppercase;
+    text-shadow: 0px -1px 0px #334F71;
+}
+
+.input:focus {
+    background: #728EAA;
+    background: -moz-linear-gradient(top, #668099 0%, #728EAA 20%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #668099), color-stop(20%, #728EAA));
+    outline: 0;
 }
 
 .btn {
     background-color: white;
-    color: black;
+    color: white;
 }
 
 input.btn:active {
@@ -78,7 +127,7 @@ input.btn:active {
 footer {
     padding-left: 15px;
     padding-right: 15px;
-    color: rgb(212, 107, 59);
+    color: white;
 }
 
 ul {
@@ -115,5 +164,62 @@ a {
 }
 
 input[type="checkbox"] {
-    filter: invert(0%) hue-rotate(18deg) brightness(1.7);
+    margin-top: 11px;
+    margin-right: -10px;
+    float: right;
+}
+
+.col {
+    flex: 0 0 25%;
+    max-width: 25%;
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-top: 1%;
+    float: left;
+}
+
+.logo {
+    width: 75%;
+}
+
+button {
+    padding: 0px;
+    box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;
+    background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);
+    border-radius: 6px;
+    border: 1px solid rgb(216, 53, 38);
+    display: inline-block;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: rgb(178 62 53) 0px 1px 0px;
+    outline: none;
+    width: 130px;
+}
+
+button:hover {
+    background: linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
+    background-color: #e4685d;
+}
+
+button:active {
+    position: relative;
+    top: 1px;
+}
+
+.box {
+    background: #ffffff;
+    color: #000;
+    text-align: center;
+    width: 200px;
+    height: 100%;
+    display: inline-block;
+    box-shadow: #A3A3A3 3px 3px 6px -1px;
+    margin-left: 35px;
+    border-radius: 10px;
 }

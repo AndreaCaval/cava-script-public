@@ -18,6 +18,7 @@ let status_aco = "";
 let is_cart = false
 let is_login = false
 let is_captcha_solved = false
+let captchasolver
 
 let img_product = "";
 let price_product = "";
@@ -98,17 +99,37 @@ function textBox() {
     if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         let btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0]
-        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {text-align: center; color:white; background-color:black; width:100%; padding: 5px 25px;font-size: 14px;text-align: center;cursor: pointer;outline: none;color: #fff; border: none;border-radius: 10px;box-shadow: 0 5px #999;}' +
-            '.btn_cava:hover {background-color: grey;}.btn_cava:active {background-color: #3e8e41;box-shadow: 0 5px #666;transform: translateY(4px);} </style>' +
-            '<div id="CavaScripts" class="CavaScripts" style="font-family: Verdana, Geneva, sans-serif; break-word; position: fixed; right:0; top: 350px; z-index: 1000; min-width: 10px; max-width: 500px; background-color: lightgrey; padding: 5px 10px; color: black; border-radius: 10px;">' +
-            ' <p id="statusSolebox">Status solebox</p>' +
-            // '<label>Sizepid Dummy: </label> <br> <input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0190061200000002"> <br>' +
-            // '<input class="btn_cava" style="margin-top:5px; margin-right:10px;" id="btn_dummy" type="submit" value="START DUMMY"> <br><br>' +
-            '<label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
-            '<input class="btn_cava" style="margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"> <br><br>' +
-            '<input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"> <br><br>' +
-            '<input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
-            " <p>ACO: <span style='font-size:20px; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size:20px; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+        btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
+            '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
+            '.btn_cava:active {position:relative;top:1px;}' +
+            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fsfondo.png?alt=media&token=f403fdf7-32ee-4773-a1a9-4022916f4bea);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
+            '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
+            '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
+            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
+            '<p style="float:left" id="statusSolebox">Status solebox</p><p style="float:right" id="timerSnipes"></p> <br style="clear:both">' +
+            '<div class="box"><label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
+            '<input class="btn_cava" style="margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"></div> <br><br>' +
+            '<div class="box"><input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"></div> <br><br>' +
+            '<div class="box"><input class="btn_cava" style="margin-right:10px;" id="btn_clear_cart" type="submit" value="CLEAR CART"></div> <br>' +
+            "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size: 20px; text-transform: uppercase; color:" + color_login + ";' >" + status_login + "</span></p></div>");
+
+        dragElement(document.getElementById("CavaScripts"));
+
+        if (localStorage.getItem("box") != null)
+            document.getElementById('CavaScripts').style = localStorage.getItem("box")
+
+        let btn_left = document.getElementById('btn_left')
+        btn_left.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "left:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_right = document.getElementById('btn_right')
+        btn_right.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "right:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
 
         let btn_start_task = document.getElementById('btn_start_task')
         btn_start_task.addEventListener("click", function() {
@@ -142,32 +163,6 @@ function textBox() {
             getCart()
         });
 
-        // let btn_dummy = document.getElementById('btn_dummy')
-        // btn_dummy.addEventListener("click", function() {
-        //     try {
-        //         let input = document.getElementById("input_sizepid_dummy").value
-        //         if (!isNumeric(input)) {
-        //             input = input.replace(/\D/g, '-');
-        //             input = input.split('-')
-        //             input.forEach(element => {
-        //                 if (element.length == 16)
-        //                     input = element
-        //             });
-        //         }
-        //         if (isNumeric(input)) {
-        //             pidsize = input
-        //             dummy = 1
-        //             atcRfast()
-        //         } else
-        //             sendText("Input error", "red")
-        //     } catch (error) { errorWebhooks(error, "btn_dummy") }
-        // });
-
-        // document.getElementById("input_sizepid_dummy").addEventListener('input', updateValueDummy);
-        // if (localStorage.getItem("solebox_dummy") != null)
-        //     document.getElementById("input_sizepid_dummy").value = localStorage.getItem("solebox_dummy")
-
-
         document.getElementById("input_sizepid").addEventListener('input', updateValuePid);
         if (localStorage.getItem("solebox_pid") != null) {
             document.getElementById("input_sizepid").value = localStorage.getItem("solebox_pid")
@@ -176,6 +171,54 @@ function textBox() {
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
+    }
+}
+
+function dragElement(elmnt) {
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+
+        if (elmnt.offsetTop - pos2 >= 0) {
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
     }
 }
 
@@ -192,13 +235,17 @@ async function addButton() {
         if (document.getElementById('btn_solver') == null) {
 
             let btn1 = document.getElementById("CavaScripts")
-            btn1.insertAdjacentHTML("beforeend", '<br><input style="color:black; width:100%" id="btn_solver" type="submit" value="Open Solver"> ' +
-                '<br><br><input style="color:black; width:100%" id="btn_solved" type="submit" value="Solved"> ');
+            btn1.insertAdjacentHTML("beforeend", '<div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solver" type="submit" value="Open Solver"></div> ' +
+                '<br><br><div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solved" type="submit" value="Solved"></div> <br><br>');
 
             let btn_solver = document.getElementById('btn_solver')
             btn_solver.addEventListener("click", function() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
-                window.open('https://www.solebox.com/' + country + '/view-account', 'test', params)
+                captchasolver = window.open('https://www.solebox.com/' + country + '/view-account', 'captchasolver', params)
+
+                captchasolver.addEventListener('beforeunload', function(e) {
+                    is_captcha_solved = true
+                });
             });
 
             let btn_solved = document.getElementById('btn_solved')
@@ -213,7 +260,6 @@ async function addButton() {
 async function sendText(text, color) {
     try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
-
 
 async function main() {
     if (link.startsWith("https://www.solebox.com/" + country + "/p")) {
