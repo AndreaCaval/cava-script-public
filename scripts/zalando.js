@@ -86,6 +86,9 @@ let link_product = "https://www.zalando.it/"
 
 let id_address
 
+let cart_size_oos = []
+let cart_size_instock = []
+
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -143,10 +146,12 @@ function textBoxMain() {
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
-            '<center><p id="statusZalando">Status Zalando</p></center>' + //<div class="box"> //</div>
+            '<center><p id="statusZalando">Status Zalando</p></center>' +
             '<div class="box"><p id="rCount">Request count: 0</p>' +
-            '<input class="btn_cava" style="text-align: center; background-color:black; width:120px; float:right; margin:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> ' +
-            '<input class="btn_cava" style="text-align: center; background-color:black; width:120px; float:left; margin:5px;" id="btn_atc_fast" type="submit" value="ATC FAST"></div></div>');
+            '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_atc_fast" type="submit" value="ATC FAST"> <br> ' +
+            '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
+            '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> <br> ' +
+            '</div></div>');
 
         dragElement(document.getElementById("CavaScripts"));
 
@@ -163,6 +168,13 @@ function textBoxMain() {
         btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_clear_cart = document.getElementById('btn_clear_cart')
+        btn_clear_cart.addEventListener("click", function() {
+            try { mainClearCart() } catch (error) {
+                errorWebhook(error, "btn_clear_cart")
+            }
         });
 
         let btn_atc_fast = document.getElementById('btn_atc_fast')
@@ -197,7 +209,8 @@ function textBoxCart() {
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
             '<center><p id="statusZalando">Status Zalando</p></center>' +
-            '<div class="box"><p id="rCount">Request count: 0</p><p id="rDelay">Delay: 0ms</p></div></div>');
+            '<div class="box"><p id="rCount">Request count: 0</p><p id="rDelay">Delay: 0ms</p>' +
+            '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"></div></div>');
 
         dragElement(document.getElementById("CavaScripts"));
 
@@ -214,6 +227,13 @@ function textBoxCart() {
         btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_clear_cart = document.getElementById('btn_clear_cart')
+        btn_clear_cart.addEventListener("click", function() {
+            try { mainClearCart() } catch (error) {
+                errorWebhook(error, "btn_clear_cart")
+            }
         });
 
     } catch (error) {
@@ -344,6 +364,108 @@ async function main() {
     setDelay()
 }
 
+
+
+async function mainClearCart() {
+    getProductCart()
+}
+
+async function getProductCart() {
+
+    xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
+    await fetch("https://" + country + "/api/cart/details", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "dpr": "1",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "viewport-width": "1017",
+                "x-xsrf-token": xsrf
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResStock(response) })
+        .catch((error) => { console.log(error) });;
+}
+
+async function checkResStock(response) {
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        res = JSON.parse(res)
+        if (status == 200 || status == 201 || status == 204) {
+            try { cart_size_instock = res["groups"][0]["articles"] } catch (error) {}
+            try { cart_size_oos = res["outOfStockArticles"] } catch (error) {}
+            if (cart_size_oos.length == 0 && cart_size_instock.length == 0) {
+                sendText("Cart empty", "green")
+            } else {
+                checkStock()
+            }
+
+        } else {
+            sendText("Error getting cart stock", "red")
+        }
+
+    } catch (error) { errorWebhook(error, "checkResStock") }
+}
+
+async function checkStock() {
+    cart_size_instock.forEach(element => {
+        clearCart(element["simpleSku"])
+    });
+    cart_size_oos.forEach(element => {
+        clearCart(element["simpleSku"])
+    });
+}
+
+async function clearCart(simplesku) {
+
+    xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
+    await fetch("https://" + country + "/api/cart-gateway/carts/3257fb6cc64e5a94db7fbb69365ff7dbeae7abd58ce27aa9231a01b35ba48a73/items/" + simplesku, {
+            "headers": {
+                "accept": "application/json",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-xsrf-token": xsrf
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "DELETE",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResCrearCart(response) })
+        .catch((error) => { console.log(error) });;
+}
+
+async function checkResCrearCart(response) {
+    try {
+
+        let status = response.status
+        if (status == 200 || status == 201 || status == 204) {
+            sendText("Item removed", "green")
+        } else {
+            sendText("Error removing item", "red")
+        }
+
+    } catch (error) { errorWebhook(error, "checkResCrearCart") }
+}
 
 
 async function mainLogin() {
@@ -669,7 +791,7 @@ async function checkAtcRes(response) {
 
         if (status == 200 || status == 201) {
             if (message != null) {
-                count_cart = 1
+                count_cart += 1
                 sendText("Carted", "yellow")
                 setCount(count_cart)
             } else {

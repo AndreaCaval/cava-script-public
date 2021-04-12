@@ -1,30 +1,9 @@
-const site = "Awlab"
+debugger
 
-const site_region = {
-    "en.aw-lab.com": " EN",
-    "es.aw-lab.com": " ES",
-    "www.aw-lab.com": " IT"
-}
-
-const fetch_link = {
-    "en.aw-lab.com": {
-        "GetAvailability": "https://en.aw-lab.com/on/demandware.store/Sites-awlab-en-Site/en_GB/Product-GetAvailability?format=ajax&pid=",
-        "AddProduct": "https://en.aw-lab.com/on/demandware.store/Sites-awlab-en-Site/en_GB/Cart-AddProduct?format=ajax",
-    },
-    "es.aw-lab.com": {
-        "GetAvailability": "https://es.aw-lab.com/on/demandware.store/Sites-awlab-es-Site/es_ES/Product-GetAvailability?format=ajax&pid=",
-        "AddProduct": "https://es.aw-lab.com/on/demandware.store/Sites-awlab-es-Site/es_ES/Cart-AddProduct?format=ajax",
-    },
-    "www.aw-lab.com": {
-        "GetAvailability": "https://www.aw-lab.com/on/demandware.store/Sites-awlab-it-Site/it_IT/Product-GetAvailability?format=ajax&pid=",
-        "AddProduct": "https://www.aw-lab.com/on/demandware.store/Sites-awlab-it-Site/it_IT/Cart-AddProduct?format=ajax",
-    }
-}
+const site = "Footdistrict"
 
 let link = document.location.href
 let country = link.split('/')[2]
-
-let csrf_token = ""
 
 let size_range = "random"
 
@@ -38,7 +17,13 @@ let payment_mode = ""
 let checkout_mode = ""
 let mode = ""
 
-let pid = ""
+let product_id = ""
+let form_key = ""
+let super_attribute = "" //option-id
+let v3_captcha_response = ""
+let url_post_atc = ""
+
+let sizes = ""
 let sizepid = ""
 let sizepid_instock = []
 
@@ -75,11 +60,15 @@ function arreyMixer(array) {
     return array;
 }
 
+function hasNumber(myString) {
+    return /\d/.test(myString);
+}
+
 function textBox() {
     let color_aco = "";
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
-        var btn1 = document.getElementsByClassName("b-header__banner js-cmp-inited js-cmp-header")[0]
+        var btn1 = document.getElementsByClassName("header content")[0]
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
             '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
             '.btn_cava:active {position:relative;top:1px;} p{font-weight:bold}' +
@@ -87,7 +76,7 @@ function textBox() {
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
-            ' <br> <p id="statusAwlab">Status awlab</p> ' +
+            ' <br> <p id="statusFootdistrict">Status footdistrict</p> ' +
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
@@ -161,44 +150,82 @@ function dragElement(elmnt) {
 }
 
 async function sendText(text, color) {
-    try { document.getElementById("statusAwlab").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusFootdistrict").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
-
 
 async function main() {
 
-    await getMainPid()
+    await sleep(500)
+    await getData()
 
-    if (pid != "")
-        checkStock()
-
-}
-
-async function getMainPid() {
-    try { pid = document.getElementsByClassName("b-pdp b-size-selector__active js-cmp-inited js-cmp-productMain")[0].getAttribute("data-product-id") } catch (error) {
-        if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
-            errorWebhook(error, "getMainPid")
-        try {
-            y = link.replace(/[^a-zA-Z0-9_]/g, '-');
-            y = y.split('-')
-            y.forEach(element => {
-                if (element.startsWith("AW")) {
-                    pid = element
-                }
-            });
-        } catch (error) { errorWebhook(error, "getMainPid2") }
+    if (product_id != "") {
+        mainAtc()
     }
 }
 
+async function getData() {
+    try {
+        form_key = document.getElementsByName("form_key")[0].value
+        v3_captcha_response = document.getElementsByName("v3-recaptcha-response")[0].value
+            // url_post_atc = document.getElementById("product_addtocart_form").action
+        product_id = document.getElementsByName("product")[0].value
+    } catch (error) {
+        if (error != "TypeError: Cannot read property 'textContent' of undefined" && error != "TypeError: Cannot read property 'value' of undefined" && error != "TypeError: Cannot read property 'action' of null")
+            errorWebhook(error, "getData")
+    }
+}
 
-async function checkStock() {
+async function mainAtc() {
+    try {
 
-    sendText("Getting size...", "blue")
-    await fetch(fetch_link[country]["GetAvailability"] + pid, {
+        while (document.getElementsByClassName("swatch-option text")[0] == undefined) {
+            await sleep(250)
+        }
+
+        sizes = document.getElementsByClassName("swatch-option text")
+        sizes = Array.prototype.slice.call(sizes)
+        sizes = arreyMixer(sizes)
+
+        if (size_range == "random") {
+            let n = getRandomIntInclusive(0, sizes.length - 1)
+            size_product = sizes[n].textContent
+            super_attribute = sizes[n].getAttribute("option-id")
+        } else {
+            if (size_range.includes('-')) {
+                for (let index = 0; index < sizes.length; index++) {
+                    if (parseFloat(sizes[index].textContent) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes[index].textContent) <= parseFloat(size_range.split('-')[1])) {
+                        super_attribute = sizes[index].getAttribute("option-id")
+                        size_product = sizes[index].textContent
+                        cart = 1
+                        break
+                    }
+                }
+            } else {
+                for (let index = 0; index < sizes.length; index++) {
+                    if (parseFloat(sizes[index].textContent) == parseFloat(size_range)) {
+                        super_attribute = sizes[index].getAttribute("option-id")
+                        size_product = sizes[index].textContent
+                        cart = 1
+                        break
+                    }
+                }
+            }
+        }
+
+        if (super_attribute != "")
+            atcR()
+
+    } catch (error) { errorWebhook(error, "mainAtc") }
+}
+
+async function atcR() {
+
+    sendText("Trying atc...", "blue")
+    await fetch("https://" + country + "/checkout/cart/add/uenc/aHR0cHM6Ly9mb290ZGlzdHJpY3QuY29tL2FkaWRhcy00ZC1mdXR1cmVjcmFmdC1mejI1NjAuaHRtbA%2C%2C/product/" + product_id + "/", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
                 "sec-ch-ua-mobile": "?0",
                 "sec-fetch-dest": "empty",
@@ -208,91 +235,7 @@ async function checkStock() {
             },
             "referrer": link,
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
-        .then(response => { checkResCheckStock(response) })
-        .catch((error) => {
-            if (error != "TypeError: Failed to fetch")
-                errorWebhook(error, "checkStock")
-            sendText("Error getting size", "orange")
-        });;
-}
-
-async function checkResCheckStock(response) {
-    try {
-
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        if (status == 200 || status == 201) {
-            getSizepidInstock(res)
-        } else {
-            sendText("Error Getting size", "red")
-            errorWebhook(x, "checkResCheckStock")
-        }
-
-    } catch (error) {
-        sendText("Error Getting size", "red")
-        errorWebhook(error, "checkResCheckStock_2")
-    }
-}
-
-async function getSizepidInstock(pids) {
-    try {
-
-        for (var key in pids) {
-            if (pids.hasOwnProperty(key)) {
-                if (pids[key]["status"] != "Sold out" && key.startsWith(pid))
-                    sizepid_instock.push(key)
-            }
-        }
-
-        if (sizepid_instock.length != 0) {
-            mainAtc()
-        } else {
-            sendText("Item out of stock...", "red")
-        }
-
-    } catch (error) {
-        sendText("Error, Item out of stock...", "red")
-        errorWebhook(error, "getSizepidInstock")
-    }
-}
-
-async function mainAtc() {
-    try {
-
-        if (size_range == "random") {
-            let n = getRandomIntInclusive(0, sizepid_instock.length - 1)
-            sizepid = sizepid_instock[n]
-        }
-
-        if (sizepid != "")
-            atcR()
-
-    } catch (error) { errorWebhook(error, "mainAtc") }
-}
-
-async function atcR() {
-
-    sendText("Trying atc...", "blue")
-    await fetch(fetch_link[country]["AddProduct"], {
-            "headers": {
-                "accept": "text/html, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "Quantity=1&sizeTable=&cartAction=add&pid=" + sizepid,
+            "body": "product=" + product_id + "&selected_configurable_option=&related_product=&item=" + product_id + "&form_key=" + form_key + "&super_attribute%5B134%5D=" + super_attribute + "&v3-recaptcha-response=" + v3_captcha_response,
             "method": "POST",
             "mode": "cors",
             "credentials": "include"
@@ -312,7 +255,7 @@ async function checkResAtc(response) {
 
         if (status == 200 || status == 201) {
             sendText("Carted", "green")
-            setDataProduct()
+            await setDataProduct()
             mainCheckout()
         } else { sendText("Error carting", "red") }
 
@@ -321,38 +264,44 @@ async function checkResAtc(response) {
 
 function setDataProduct() {
     try {
-        name_product = pid
-        size_product = sizepid
-        price_product = document.getElementsByClassName("b-price__sale")[0].textContent
-        img_product = document.getElementsByClassName("main-image-class")[0].src
+        name_product = document.querySelector('[itemprop="name"]').textContent
+        price_product = document.getElementsByClassName("product-info-price")[0].textContent.replaceAll("\n", "")
+        img_product = document.getElementsByClassName("img-responsive ls-is-cached lazyloaded ")[0].src
     } catch (error) { errorWebhook(error, "setDataProduct") }
 }
 
 async function mainCheckout() {
     try {
-
         sendWebhooks()
-        document.location = "https://" + country + "/checkout"
-
+        document.location = "https://" + country + "/onestepcheckout/"
     } catch (error) { errorWebhook(error, "mainCheckout_2") }
 }
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + site_region[country] + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "awlab" }, function(response) {
+async function resInfoWebook(message, position) {
+    chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
+}
+
+chrome.runtime.sendMessage({ greeting: "footdistrict" }, function(response) {
     status_aco = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "footdistrict_size" }, function(response) {
+    if (response.farewell != "off" && hasNumber(response.farewell))
+        size_range = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "awlab" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "footdistrict" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }

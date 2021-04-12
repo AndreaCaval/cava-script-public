@@ -1,45 +1,16 @@
 debugger
 
 const site = "Offspring"
-const site1 = "Offspring1"
 
 let size_range = "random"
 let status_aco = ""
-let status_login = ""
-
-let email_login = ""
-let pw_login = ""
-
-let coupon = ""
-let continue_coupon = ""
-
-let payment_mode = ""
-let checkout_mode = "ATC Only Browser"
-let mode = ""
-
-let n_profiles = 0
-let profiles = ""
-let profile = ""
-
-let email = ""
-let phone = ""
-let firstname = ""
-let lastname = ""
-let address1 = ""
-let address2 = ""
-let city = ""
-let postalcode = ""
-let countryCode = ""
-let countryIsoCode = ""
 
 let link = document.location.href
-
 let link_product = link
 let name_product = '';
 let size_product = '';
 let price_product = "£";
 let img_product = ""
-let linkpp = ""
 
 let csrftoken = ""
 
@@ -240,8 +211,8 @@ async function mainAtcBrowser() {
             document.getElementsByClassName("btn btn--sm btn--left product__actions-cart product__actions-cart--pdp js-add-to-bag-btn")[0].click()
             size_product = size
 
-            for (let index = 0; index < 5; index++) {
-                await sleep(500)
+            for (let index = 0; index < 10; index++) {
+                await sleep(200)
                 if (document.getElementsByClassName("overlay-backdrop js-overlayBackdrop overlay-backdrop--is-visible")[0] != undefined) {
                     carted = true
                     mainCheckout()
@@ -262,17 +233,13 @@ async function mainAtcBrowser() {
 }
 
 async function mainCheckout() {
-    await sendWebhooks1()
+    await sendWebhooks()
     document.location = "https://www.offspring.co.uk/checkout/singlePageCheckout"
 }
 
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
-}
-
-async function sendWebhooks1() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site1 + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhook(error, position) {

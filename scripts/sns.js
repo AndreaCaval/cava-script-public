@@ -15,7 +15,7 @@ let name_product = '';
 let size_product = '';
 let price_product = "";
 let link_product = link
-const img_product = "https://pbs.twimg.com/profile_images/1182285202191720448/tKRS_qIF_400x400.png"
+let img_product = "http://img.yeet.mx/proxy/?url=" + document.getElementsByClassName("image-gallery__link")[0].href
 
 let variant_id = "";
 let sizes = "";

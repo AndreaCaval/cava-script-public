@@ -69,7 +69,7 @@ function textBox() {
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
-            ' <br> <p id="statusSns">Status sns</p> ' +
+            ' <br> <p id="statusKickz">Status kickz</p> ' +
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size: 20px; text-transform: uppercase; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
@@ -141,7 +141,6 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
-
 async function sendText(text, color) {
     try { document.getElementById("statusKickz").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
@@ -321,7 +320,7 @@ async function checkRes(response) {
             if (statusCode != "500" && isError != true) {
                 sendText("Carted", "green")
                 sendWebhooks()
-                open("https://www.kickz.com/" + country + "/cart", "_self")
+                document.location = "https://www.kickz.com/" + country + "/cart"
             } else {
                 sendText("Error carting", "red")
                 errorRefresh()

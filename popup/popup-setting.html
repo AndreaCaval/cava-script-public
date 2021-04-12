@@ -25,33 +25,32 @@
             <p id="discordEmail" style="margin: 0px 0px 0px 0px;"></p>
         </div>
     </div>
-    <div style="padding:15px;">
-        <div>
-            <label style="font-size: 16px;margin: 2px;color: black;font-variant-caps: all-petite-caps;font-weight: bold;">Webhook:</label>
-            <input class="setting" style="float: right;display:block;width: 180px;height: 13px;background: #e4685d;padding: 3px;" type="text" id="idWebhook" placeholder="es: https://discordapp.com/api/webhooks/..."><br>
-            <input class="setting" style="text-align: center; width: 100%;" class='btn' id="btnWebhook" type="submit" value="Test Webhook">
-
-            <br><br>
-
-            <label style="font-size: 16px;margin: 2px;color: black;font-variant-caps: all-petite-caps;font-weight: bold;float: left;">Delay (MS):</label>
-            <input class="setting" style="float: left;display:block;width: 60px;border-radius: 0;background: #e4685d;padding: 3px;" type="number" id="nDelay" step="100" placeholder="Enter delay">
-            <input class="setting" style="text-align: center;width: 105px;float: left;height: 28px;" class='btn' id="btnSetting" type="submit" value="Save">
-
-            <br><br><br>
-
-            <div style="height: 2px;background: rgb(238 120 109);"></div><br>
-
-            <input class="setting" style="text-align: center;width: auto;border-radius: 0px;height: 20px;padding: 5px;margin-left: 14px;background: #e4685d;" class='btn' id="importDataSelector" type="file" accept=".json" value="Import data"><br>
-            <input class="setting" style="text-align: center;float: left;" class='btn' id="btnImportData" type="submit" value="Import data">
-            <input class="setting" style="text-align: center;float: right;" class='btn' id="btnExportData" type="submit" value="Export data">
-            <br>
-
-        </div>
+    <br><br>
+    <div class="box" style="padding:15px; ">
+        <label style="font-size: 16px;margin: 2px;color: black;font-variant-caps: all-petite-caps;font-weight: bold;">Webhook:</label>
+        <input class="textbox" style="width: 192px" type="text" id="idWebhook" placeholder="es: https://discordapp.com/api/webhooks/..."><br>
+        <input class="setting" style="text-align: center; width: 100%;" class='btn' id="btnWebhook" type="submit" value="Test Webhook">
+        <br><br>
+        <label style="font-size: 16px;margin: 2px;color: black;font-variant-caps: all-petite-caps;font-weight: bold;float: left;">Delay (MS):</label>
+        <input class="setting" style="text-align: center;width: 45px;float: right;height: 23px;margin: 0;" class='btn' id="btnSetting" type="submit" value="Save">
+        <input class="textbox" type="number" id="nDelay" placeholder="Delay" step="100" max="99999" style="width: 55px; margin-right: 3px;">
     </div>
 
+    <br><br>
+
+    <div class="box" style="padding:15px; ">
+        <input class="setting" style="text-align: center;border-radius: 0px;height: 20px;padding: 5px;background: #e4685d;width: 182px;" class='btn' id="importDataSelector" type="file" accept=".json" value="Import data"><br>
+        <input class="setting" style="text-align: center;float: left;" class='btn' id="btnImportData" type="submit" value="Import data">
+        <input class="setting" style="text-align: center;float: right;" class='btn' id="btnExportData" type="submit" value="Export data">
+        <br>
+
+    </div>
+    <br><br>
     <div style="text-align: center;">
         <a href="popup-logout.html"><button style="height: 30px;">LOGOUT</button></a>
     </div>
+
+    <br>
 
     <footer>
         <div class="footer">

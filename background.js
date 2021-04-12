@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.1.7";
+const version = "1.1.8";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -103,6 +103,12 @@ function SetStatus_off() {
 
     setAllOff([
 
+        //Footdistrict
+        "status_aco_footdistrict",
+        "status_login_footdistrict",
+        "email_pw_footdistrict",
+        "size_footdistrict",
+
         //Offspring
         "status_aco_offspring",
         "status_login_offspring",
@@ -130,6 +136,9 @@ function SetStatus_off() {
         //Sns,
         "status_aco_sns",
         "size_sns",
+
+        //Asos,
+        "status_aco_asos",
 
         //Woodwood,
         "status_aco_woodwood",
@@ -172,12 +181,10 @@ function SetStatus_off() {
         "status_login_onygo",
         "email_pw_onygo",
         "size_onygo",
+
+        //Profile
+        "array_profiles",
     ])
-
-
-    //Profile-----------------------------------------------------------------------------------------------------
-    setIfNotPresent("n_profile", 0)
-    setToOff("default_profile")
 
     //Setting-----------------------------------------------------------------------------------------------------
     setToOff("id_webhook")
@@ -205,13 +212,6 @@ chrome.runtime.onMessage.addListener(
             case "authLog": //auth
                 sendResponse({ farewell: user_signed_in ? "on" : "off" })
                 break
-                //profile
-            case "nprofiles":
-                sendResponse({ farewell: localStorage.getItem("n_profile") });
-                break
-            case "getprofiles":
-                sendResponse({ farewell: getprofiles() });
-                break
                 //setting
             case "webhook":
                 sendResponse({ farewell: localStorage.getItem("id_webhook") });
@@ -219,30 +219,29 @@ chrome.runtime.onMessage.addListener(
             case "delay":
                 sendResponse({ farewell: localStorage.getItem("delay") });
                 break
+                //asos
+            case "asos":
+                sendResponse({ farewell: localStorage.getItem("status_aco_asos") });
+                break
                 // offspring
             case "offspring":
                 sendResponse({ farewell: localStorage.getItem("status_aco_offspring") });
                 break
-            case "offspring_checkout_mode":
-                sendResponse({ farewell: localStorage.getItem("checkout_mode_offspring") });
-                break
-            case "offspring_payment_mode":
-                sendResponse({ farewell: localStorage.getItem("payment_mode_offspring") });
-                break
-            case "offspring_mode":
-                sendResponse({ farewell: localStorage.getItem("guest_mode_offspring") });
-                break
-            case "offspring_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_offspring") });
-                break
             case "offspring_size":
                 sendResponse({ farewell: localStorage.getItem("size_offspring") });
                 break
-            case "offspring_profile":
-                sendResponse({ farewell: localStorage.getItem("profile_offspring") });
+                //footdistrict
+            case "footdistrict":
+                sendResponse({ farewell: localStorage.getItem("status_aco_footdistrict") });
                 break
-            case "email_pw_offspring":
-                sendResponse({ farewell: localStorage.getItem("email_pw_offspring") });
+            case "footdistrict_login":
+                sendResponse({ farewell: localStorage.getItem("status_login_footdistrict") });
+                break
+            case "footdistrict_size":
+                sendResponse({ farewell: localStorage.getItem("size_footdistrict") });
+                break
+            case "email_pw_footdistrict":
+                sendResponse({ farewell: localStorage.getItem("email_pw_footdistrict") });
                 break
                 // awlab
             case "awlab":
@@ -430,6 +429,10 @@ chrome.runtime.onMessage.addListener(
                 logout(licens)
                 sendResponse({ farewell: 'success' });
                 break
+
+            default:
+                sendResponse({ farewell: localStorage.getItem(request.greeting) });
+                break
         }
     });
 
@@ -614,6 +617,8 @@ function loginWebhook(isLoginSuccessful) {
 
 async function sendWebhookCheckout(x) {
 
+    checkoutSound()
+
     x = x.split('&-&')
 
     let name_product = x[1]
@@ -627,14 +632,21 @@ async function sendWebhookCheckout(x) {
     if (site.startsWith("Zalando")) {
         email = x[7]
     }
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site == "Offspring" || site == "Awlab") {
+    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo") {
         email = x[7]
         payment_link = x[8]
     }
-    sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
+    //sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
 
+}
+
+async function checkoutSound() {
+    try {
+        var audio = new Audio('checkout_sound.mp3');
+        audio.play();
+    } catch (error) {}
 }
 
 async function sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product) {
@@ -675,7 +687,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Offspring" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -685,66 +697,6 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             fields: [{
                     name: 'Site',
                     value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
-            ],
-            footer: {
-                text: 'Cava-Scripts ' + version + ' | ' + String(time),
-                icon_url: icon,
-            },
-
-        }
-
-    } else if (site == "Offspring1") {
-
-        myEmbed = {
-            title: ":fire: Pokèmon almost caught! :fire:",
-            description: '[' + name_product + '](' + link_product + ')',
-            thumbnail: { url: img_product },
-            color: ("15715328"),
-            fields: [{
-                    name: 'Site',
-                    value: "Offspring",
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
-            ],
-            footer: {
-                text: 'Cava-Scripts ' + version + ' | ' + String(time),
-                icon_url: icon,
-            },
-
-        }
-
-    } else if (site.startsWith("Awlab1")) {
-
-        myEmbed = {
-            title: ":fire: Pokèmon almost caught! :fire:",
-            description: '[' + name_product + '](' + link_product + ')',
-            thumbnail: { url: img_product },
-            color: ("15715328"),
-            fields: [{
-                    name: 'Site',
-                    value: "Awlab" + site.replace("Awlab1", ""),
                     inline: true
                 },
                 {
@@ -846,7 +798,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Offspring" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -856,76 +808,6 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             fields: [{
                     name: 'Site',
                     value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Discord Name',
-                    value: userData.discordTag,
-                    inline: true
-                }
-            ],
-            footer: {
-                text: 'Cava-Scripts ' + version + ' | ' + String(time),
-                icon_url: icon,
-            },
-
-        }
-
-    } else if (site == "Offspring1") {
-
-        myEmbed = {
-            title: ":fire: Pokèmon almost caught! :fire:",
-            description: '[' + name_product + '](' + link_product + ')',
-            thumbnail: { url: img_product },
-            color: ("15715328"),
-            fields: [{
-                    name: 'Site',
-                    value: "Offspring",
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Discord Name',
-                    value: userData.discordTag,
-                    inline: true
-                }
-            ],
-            footer: {
-                text: 'Cava-Scripts ' + version + ' | ' + String(time),
-                icon_url: icon,
-            },
-
-        }
-
-    } else if (site.startsWith("Awlab1")) {
-
-        myEmbed = {
-            title: ":fire: Pokèmon almost caught! :fire:",
-            description: '[' + name_product + '](' + link_product + ')',
-            thumbnail: { url: img_product },
-            color: ("15715328"),
-            fields: [{
-                    name: 'Site',
-                    value: "Awlab" + site.replace("Awlab1", ""),
                     inline: true
                 },
                 {
@@ -1002,7 +884,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site == "Offspring" || site == "Awlab") {
+    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo") {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -1075,7 +957,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Offspring" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -1085,66 +967,6 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             fields: [{
                     name: 'Site',
                     value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
-            ],
-            footer: {
-                text: 'Cava-Scripts ' + version + ' | ' + String(time),
-                icon_url: icon,
-            },
-
-        }
-
-    } else if (site == "Offspring1") {
-
-        myEmbed = {
-            title: ":fire: Pokèmon almost caught! :fire:",
-            description: '[' + name_product + '](' + link_product + ')',
-            thumbnail: { url: img_product },
-            color: ("15715328"),
-            fields: [{
-                    name: 'Site',
-                    value: "Offspring",
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
-            ],
-            footer: {
-                text: 'Cava-Scripts ' + version + ' | ' + String(time),
-                icon_url: icon,
-            },
-
-        }
-
-    } else if (site.startsWith("Awlab1")) {
-
-        myEmbed = {
-            title: ":fire: Pokèmon almost caught! :fire:",
-            description: '[' + name_product + '](' + link_product + ')',
-            thumbnail: { url: img_product },
-            color: ("15715328"),
-            fields: [{
-                    name: 'Site',
-                    value: "Awlab" + site.replace("Awlab1", ""),
                     inline: true
                 },
                 {

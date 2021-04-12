@@ -20,6 +20,11 @@ let id_product = ""
 let ipa = ""
 let size_in_stock = []
 
+let is_captcha = false
+let sizes = ""
+let sizes_in_stock = []
+let cart = 0
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -145,17 +150,11 @@ async function errorRefresh() {
     location.reload()
 }
 
-
 async function main() {
-
     try {
 
         token = document.getElementsByName("token")[0].value
         id_product = document.getElementsByName("id_product")[0].value
-
-        while (document.querySelectorAll('[class="grecaptcha--product l-col--ib float--none is-hidden"]')[0] != undefined) {
-            await sleep(100)
-        }
 
         await sleep(100)
         let cmb = false
@@ -172,7 +171,6 @@ async function main() {
                 });
                 if (y != "") {
                     eval(y)
-                    console.log(combinations)
                     Object.keys(combinations).forEach(function(key) {
                         if (combinations[key]["quantity"] != 0)
                             size_in_stock.push(key + "-" + combinations[key]["attributes_values"][15])
@@ -183,39 +181,105 @@ async function main() {
                     if (size_in_stock.length == 0) {
                         sendText("Item out of stock...", "red")
                     } else {
-                        size_in_stock = arreyMixer(size_in_stock)
 
-                        if (size_range == "random") {
-                            n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                            ipa = size_in_stock[n].split('-')[0]
-                        } else {
-                            if (size_range.includes('-')) {
-                                for (let index = 0; index < size_in_stock.length; index++) {
-                                    if (parseFloat(size_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(size_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
-                                        ipa = size_in_stock[index].split('-')[0]
-                                        break
-                                    }
-                                }
+                        while (document.getElementsByClassName("product__add-to-cart bfc--table w70 hidden--grecaptcha is-hidden")[0] != undefined) {
+                            sendText("Awaiting captcha resolved...", "yellow")
+                            await sleep(100)
+                            is_captcha = true
+                        }
+
+                        if (is_captcha == true)
+                            atcBrowser()
+                        else {
+
+                            size_in_stock = arreyMixer(size_in_stock)
+
+                            if (size_range == "random") {
+                                n = getRandomIntInclusive(0, size_in_stock.length - 1)
+                                ipa = size_in_stock[n].split('-')[0]
                             } else {
-                                for (let index = 0; index < size_in_stock.length; index++) {
-                                    if (parseFloat(size_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
-                                        ipa = size_in_stock[index].split('-')[0]
-                                        break
+                                if (size_range.includes('-')) {
+                                    for (let index = 0; index < size_in_stock.length; index++) {
+                                        if (parseFloat(size_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(size_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
+                                            ipa = size_in_stock[index].split('-')[0]
+                                            break
+                                        }
+                                    }
+                                } else {
+                                    for (let index = 0; index < size_in_stock.length; index++) {
+                                        if (parseFloat(size_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
+                                            ipa = size_in_stock[index].split('-')[0]
+                                            break
+                                        }
                                     }
                                 }
                             }
+
+                            if (ipa != "")
+                                atcR()
                         }
-                        if (ipa != "")
-                            atcR()
                     }
                 }
 
             } catch (error) { errorWebhook(error, "main_1") }
+
         } while (cmb == false)
 
     } catch (error) {
         if (error != "TypeError: Cannot read property 'value' of undefined")
             errorWebhook(error, "main_2")
+    }
+}
+
+async function atcBrowser() {
+    let sizes = ""
+    let sizes_in_stock = []
+
+    sizes = document.getElementsByClassName("product__attributes-label")
+    sizes = Array.prototype.slice.call(sizes)
+    sizes = arreyMixer(sizes)
+
+    sizes.forEach(element => {
+        if (element.getAttribute("class") != "product__attributes-label product__attributes-label--disable")
+            sizes_in_stock.push(element)
+    });
+
+    if (sizes_in_stock.length == 0) {
+        sendText("Item out of stock...", "red")
+    } else {
+        if (size_range == "random") {
+            n = getRandomIntInclusive(0, sizes_in_stock.length - 1)
+            sizes_in_stock[n].click()
+        } else {
+            if (size_range.includes('-')) {
+                for (let index = 0; index < sizes_in_stock.length; index++) {
+                    if (parseFloat(sizes_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
+                        sizes_in_stock[index].click()
+                        cart = 1
+                        break
+                    }
+                }
+            } else {
+                for (let index = 0; index < sizes_in_stock.length; index++) {
+                    if (parseFloat(sizes_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
+                        sizes_in_stock[index].click()
+                        cart = 1
+                        break
+                    }
+                }
+            }
+        }
+
+        if (cart == 0 && size_range != "random")
+            sendText("Selected sizes not available", "purple")
+        else {
+            sendText("Adding to cart", "blue")
+            document.getElementById("submitAdToCart").click()
+        }
+
+        if (document.getElementsByClassName("fancybox-error")[0] != undefined) {
+            sendText(document.getElementsByClassName("fancybox-error")[0].textContent, "red")
+        }
     }
 }
 

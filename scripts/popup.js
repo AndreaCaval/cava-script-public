@@ -27,6 +27,10 @@ function testWebhook(url_private) {
     request.send(JSON.stringify(params));
 }
 
+function isValid(str) {
+    return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
+}
+
 function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
@@ -120,6 +124,10 @@ function onUserLogged() {
     if (localStorage.getItem("status_aco_onygo") == "on") { $('#Status_aco_onygo').prop('checked', true); }
     //Woodwood
     if (localStorage.getItem("status_aco_woodwood") == "on") { $('#Status_aco_woodwood').prop('checked', true); }
+    //Footdistrict
+    if (localStorage.getItem("status_aco_footdistrict") == "on") { $('#Status_aco_footdistrict').prop('checked', true); }
+    //Asos
+    if (localStorage.getItem("status_aco_asos") == "on") { $('#Status_aco_asos').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Zalando
@@ -166,9 +174,17 @@ function onUserLogged() {
     $('#Status_aco_onygo').click(function() {
         if ($("#Status_aco_onygo").is(':checked')) { localStorage.setItem("status_aco_onygo", "on"); } else { localStorage.setItem("status_aco_onygo", "off"); }
     });
-    //Onygo
+    //Woodwood
     $('#Status_aco_woodwood').click(function() {
         if ($("#Status_aco_woodwood").is(':checked')) { localStorage.setItem("status_aco_woodwood", "on"); } else { localStorage.setItem("status_aco_woodwood", "off"); }
+    });
+    //Footdistrict
+    $('#Status_aco_footdistrict').click(function() {
+        if ($("#Status_aco_footdistrict").is(':checked')) { localStorage.setItem("status_aco_footdistrict", "on"); } else { localStorage.setItem("status_aco_footdistrict", "off"); }
+    });
+    //Asos
+    $('#Status_aco_asos').click(function() {
+        if ($("#Status_aco_asos").is(':checked')) { localStorage.setItem("status_aco_asos", "on"); } else { localStorage.setItem("status_aco_asos", "off"); }
     });
     //---------------------------------------------------------------------
 
@@ -216,141 +232,120 @@ function onUserLogged() {
 
 
     //GESTIONE PAGINA PROFILI----------------------------------------------
-
-    np = parseInt(localStorage.getItem("n_profile"))
-    if (np != 0) {
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
         $('#ProfileSaved').removeAttr('disabled')
         $('#btnEditProfile').removeAttr('disabled')
-        for (var i = 1; i <= np; i++) {
-            x = localStorage.getItem("profiles" + String(i))
-            x = String(x).split('$&')[0]
+        for (let i = 0; i < profiles.length; i++) {
             $('#ProfileSaved').append($('<option>', {
-                value: x,
-                text: x,
-                id: x
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
             }));
-            //$("#ProfileSaved").append(new Option(x,x));
         }
     }
-
-    //gestisco il click del bottone new profile
     $("#btnEditProfile").click(function() {
         $("#ProfileCreator").show();
-        profile = $("#ProfileSaved").val();
-        profile2 = localStorage.getItem(profile);
-        data = localStorage.getItem(profile2);
-        data = data.split('$&')
-        $("#ProfileName").val(data[0]);
-        $("#fname").val(data[1]);
-        $("#lname").val(data[2]);
-        $("#email").val(data[3]);
-        $("#telephone").val(data[4]);
-        $("#addressOne").val(data[5]);
-        $("#addressTwo").val(data[6]);
-        $("#city").val(data[7]);
-        $("#zip").val(data[8]);
-        $("#state").val(data[9]);
-        $("#country").val(data[10]);
-        $("#card_owner_name").val(data[11]);
-        $("#cardNumber").val(data[12]);
-        $("#month_year").val(data[13]);
-        $("#cvv").val(data[14]);
+        profile_edit = $("#ProfileSaved").val();
+        data = JSON.parse(localStorage.getItem(profile_edit))
+        $("#ProfileName").val(profile_edit);
+        $("#FirstName").val(data["FirstName"]);
+        $("#LastName").val(data["LastName"]);
+        $("#Email").val(data["Email"]);
+        $("#Telephone").val(data["Telephone"]);
+        $("#AddressOne").val(data["AddressOne"]);
+        $("#AddressTwo").val(data["AddressTwo"]);
+        $("#City").val(data["City"]);
+        $("#Zip").val(data["Zip"]);
+        $("#State").val(data["State"]);
+        $("#Country").val(data["Country"]);
+        $("#CardOwnerName").val(data["CardOwnerName"]);
+        $("#CardNumber").val(data["CardNumber"]);
+        $("#MMYY").val(data["MMYY"]);
+        $("#CVV").val(data["CVV"]);
     });
-
-    //gestisco il click del bottone new profile
     $("#btnNewProfile").click(function() {
         $("#ProfileCreator").toggle(500);
     });
-
-    //gestisco il click del bottone new profile
     $("#btnDeleteProfile").click(function() {
-        profile = $("#ProfileSaved").val();
-        $("#" + profile + "").remove();
-        nprofile = localStorage.getItem(profile);
-        localStorage.removeItem(profile);
-        localStorage.removeItem(nprofile);
-        np = parseInt(localStorage.getItem("n_profile"));
-        np = np - 1;
-        localStorage.setItem("n_profile", np);
-    });
+        profile_delete = $("#ProfileSaved").val();
 
-    //gestisco il click del bottone salva
+        profiles = localStorage.getItem("array_profiles")
+        profiles = profiles.split('&')
+
+
+        location.reload();
+    });
     $("#btnSaveProfile").click(function() {
         profile_name = $("#ProfileName").val()
-        if (profile_name == null || profile_name == "") {
-            alert("Profile Name Invalid");
+        if (!isValid(profile_name)) {
+            alert("Profile name invalid, remove special characters")
+        } else if (profile_name == null || profile_name == "") {
+            alert("Profile name invalid")
         } else {
-            fn = $("#fname").val();
-            ln = $("#lname").val();
-            email = $("#email").val();
-            tel = $("#telephone").val();
-            ad1 = $("#addressOne").val();
-            ad2 = $("#addressTwo").val();
-            city = $("#city").val();
-            zip = $("#zip").val();
-            state = $("#state").val();
-            country = $("#country").val();
-            cown = $("#card_owner_name").val();
-            cnum = $("#cardNumber").val();
-            mmyy = $("#month_year").val();
-            cvv = $("#cvv").val();
 
-            $("#ProfileName").val("");
-            $("#fname").val("");
-            $("#lname").val("");
-            $("#email").val("");
-            $("#telephone").val("");
-            $("#addressOne").val("");
-            $("#addressTwo").val("");
-            $("#city").val("");
-            $("#zip").val("");
-            $("#state").val("");
-            $("#country").val("");
-            $("#card_owner_name").val("");
-            $("#cardNumber").val("");
-            $("#month_year").val("");
-            $("#cvv").val("");
+            save = true
 
-            data = profile_name + "$&" + fn + "$&" + ln + "$&" + email + "$&" + tel + "$&" + ad1 + "$&" + ad2 + "$&" + city + "$&" + zip + "$&" + state + "$&" + country + "$&" + cown + "$&" + cnum + "$&" + mmyy + "$&" + cvv;
-
-            check = localStorage.getItem(profile_name);
-            if (check != null) {
-                localStorage.setItem(check, data);
-            } else {
-                np = parseInt(localStorage.getItem("n_profile"));
-                np = np + 1;
-                localStorage.setItem("n_profile", np);
-                localStorage.setItem("profiles" + np, data);
-                localStorage.setItem(profile_name, "profiles" + np);
+            if (localStorage.getItem(profile_name) != null) {
+                if (!confirm("Profile already exists, you want to replace it?")) {
+                    save = false
+                }
             }
-            location.reload();
+
+            if (save == true) {
+
+                profiles = localStorage.getItem("array_profiles")
+                if (profiles == "off") {
+                    profiles = []
+                } else {
+                    profiles = profiles.split('&')
+                }
+
+                profiles.push(profile_name)
+                profiles = localStorage.setItem("array_profiles", profiles.join('&'))
+
+                json_profile = {
+                    "FirstName": $("#FirstName").val(),
+                    "LastName": $("#LastName").val(),
+                    "Email": $("#Email").val(),
+                    "Telephone": $("#Telephone").val(),
+                    "AddressOne": $("#AddressOne").val(),
+                    "AddressTwo": $("#AddressTwo").val(),
+                    "City": $("#City").val(),
+                    "Zip": $("#Zip").val(),
+                    "State": $("#State").val(),
+                    "Country": $("#Country").val(),
+                    "CardOwnerName": $("#CardOwnerName").val(),
+                    "CardNumber": $("#CardNumber").val(),
+                    "MMYY": $("#MMYY").val(),
+                    "CVV": $("#CVV").val(),
+                }
+
+                localStorage.setItem(profile_name, JSON.stringify(json_profile))
+
+                location.reload();
+            }
         }
     });
-
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA SETTING----------------------------------------------
-
-    //contollo se l'id è già presente e in caso lo inserisco nell' input
-
-    np = parseInt(localStorage.getItem("n_profile"))
-    if (np != 0) {
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
         $('#ProfileDefault').removeAttr('disabled')
-        for (var i = 1; i <= np; i++) {
-            x = localStorage.getItem("profiles" + String(i))
-            x = String(x).split('$&')[0]
+        for (let i = 0; i < profiles.length; i++) {
             $('#ProfileDefault').append($('<option>', {
-                value: x,
-                text: x,
-                id: x
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
             }));
         }
     }
     if (localStorage.getItem("default_profile") != "off") { $("#ProfileDefault").val(localStorage.getItem("default_profile")); }
     if (localStorage.getItem("id_webhook") != "off") { $("#idWebhook").val(localStorage.getItem("id_webhook")); }
     $("#nDelay").val(localStorage.getItem("delay"));
-
-    //gestisco il click del bottone salva
     $("#btnSetting").click(function() {
         var id = $("#idWebhook").val();
         var d = $("#nDelay").val();
@@ -360,28 +355,26 @@ function onUserLogged() {
         if (d != '') { localStorage.setItem("delay", d); } else { localStorage.setItem("delay", "0"); }
         if (pd != '') { localStorage.setItem("default_profile", pd); } else { localStorage.setItem("default_profile", "off"); }
     });
-
     $("#btnExportData").click(() => {
         saveLocalStorageToJson()
     })
-
     $("#btnImportData").click(() => {
-        const fileSelector = document.getElementById('importDataSelector');
-        const file = fileSelector.files[0]
-            // alert(file.name)
-        const reader = new FileReader()
-        reader.readAsText(file, "UTF-8")
-        reader.onload = (evt) => {
-            const result = evt.target.result
-            const resultObj = JSON.parse(result)
-            importData(resultObj)
-        }
-        reader.onerror = (error) => {
-            alert("Error importing data")
-        }
+        try {
+            const fileSelector = document.getElementById('importDataSelector');
+            const file = fileSelector.files[0]
+                // alert(file.name)
+            const reader = new FileReader()
+            reader.readAsText(file, "UTF-8")
+            reader.onload = (evt) => {
+                const result = evt.target.result
+                const resultObj = JSON.parse(result)
+                importData(resultObj)
+            }
+            reader.onerror = (error) => {
+                alert("Error importing data")
+            }
+        } catch (error) { alert("Error importing data") }
     })
-
-    //gestisco il bottone test webhook
     $("#btnWebhook").click(function() {
         testWebhook($("#idWebhook").val())
     });
@@ -402,25 +395,21 @@ function onUserLogged() {
     if (localStorage.getItem("cart_mode_zalando") != "off") { $("#zalandoCartMode").val(localStorage.getItem("cart_mode_zalando")); }
     if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#zalandoCheckoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
     if (localStorage.getItem("payment_zalando") != "off") { $("#zalandoPaymentMode").val(localStorage.getItem("payment_zalando")); }
-    $("#zalandoCartLimit").val(localStorage.getItem("zalando_cart_limit"));
     if (localStorage.getItem("size_zalando") != "off") { $("#size_zalando").val(localStorage.getItem("size_zalando")); }
 
     //gestisco il click del bottone salva
     $("#btnZ").click(function() {
-        var e = $("#email_zalando").val();
-        var p = $("#pw_zalando").val();
-        var cart = $("#zalandoCartMode").val();
-        var ck = $("#zalandoCheckoutMode").val();
-        var ppp = $("#zalandoPaymentMode").val();
-        var cl = $("#zalandoCartLimit").val();
-        var size_zalando = $("#size_zalando").val();
-
+        let e = $("#email_zalando").val()
+        let p = $("#pw_zalando").val()
+        let cart = $("#zalandoCartMode").val();
+        let ck = $("#zalandoCheckoutMode").val();
+        let ppp = $("#zalandoPaymentMode").val();
+        let size_zalando = $("#size_zalando").val();
+        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_zalando", e + ":" + p) } else { localStorage.setItem("email_pw_zalando", "off"); }
         if (!(isBlank(size_zalando))) { localStorage.setItem("size_zalando", size_zalando); } else { localStorage.setItem("size_zalando", "off"); }
-        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_zalando", e + ":" + p); } else { localStorage.setItem("email_pw_zalando", "off"); }
         if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "off"); }
         if (ck != '') { localStorage.setItem("checkout_mode_zalando", ck); } else { localStorage.setItem("checkout_mode_zalando", "off"); }
         if (ppp != '') { localStorage.setItem("payment_zalando", ppp); } else { localStorage.setItem("payment_zalando", "off"); }
-        if (!(isBlank(cl))) { localStorage.setItem("zalando_cart_limit", cl); } else { localStorage.setItem("zalando_cart_limit", "1"); }
     });
     //DropMode
     if (localStorage.getItem("drop_mode_zalando") == "on") { $('#zalandoDropMode').prop('checked', true); }
@@ -498,6 +487,26 @@ function onUserLogged() {
 
         if (!(isBlank(size_onygo))) { localStorage.setItem("size_onygo", size_onygo); } else { localStorage.setItem("size_onygo", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_onygo", e + ":" + p); } else { localStorage.setItem("email_pw_onygo", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA FOOTDISTRICT----------------------------------------------
+    //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+    if (localStorage.getItem("email_pw_footdistrict") != "off") {
+        var email = localStorage.getItem("email_pw_footdistrict").split(':')[0]
+        var pw = localStorage.getItem("email_pw_footdistrict").split(':')[1]
+        $("#email_footdistrict").val(email);
+        $("#pw_footdistrict").val(pw);
+    }
+    if (localStorage.getItem("size_footdistrict") != "off") { $("#size_footdistrict").val(localStorage.getItem("size_footdistrict")); }
+    //gestisco il click del bottone salva
+    $("#btn_save_footdistrict").click(function() {
+        var e = $("#email_footdistrict").val();
+        var p = $("#pw_footdistrict").val();
+        var size_footdistrict = $("#size_footdistrict").val();
+
+        if (!(isBlank(size_footdistrict))) { localStorage.setItem("size_footdistrict", size_footdistrict); } else { localStorage.setItem("size_footdistrict", "off"); }
+        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_footdistrict", e + ":" + p); } else { localStorage.setItem("email_pw_footdistrict", "off"); }
     });
     //---------------------------------------------------------------------
 
@@ -585,137 +594,19 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA OFFSPRING----------------------------------------------
-    np = parseInt(localStorage.getItem("n_profile"))
-    if (np != 0) {
-        $('#profile_offspring').removeAttr('disabled')
-        for (var i = 1; i <= np; i++) {
-            x = localStorage.getItem("profiles" + String(i))
-            x = String(x).split('$&')[0]
-            $('#profile_offspring').append($('<option>', {
-                value: x,
-                text: x,
-                id: x
-            }));
-        }
-    }
-    if (localStorage.getItem("profile_offspring") != "off") { $("#profile_offspring").val(localStorage.getItem("profile_offspring")); }
 
-    if (localStorage.getItem("account_mode_offspring") == "on") {
-        $('#account_mode_offspring').prop('checked', true);
-        $("#div_account_mode_offspring").toggle(500);
-    }
-    $('#account_mode_offspring').click(function() {
-        if ($("#account_mode_offspring").prop('checked', true) && $("#div_account_mode_offspring").css("display") == "none") {
-            localStorage.setItem("account_mode_offspring", "on");
-            localStorage.setItem("guest_mode_offspring", "off");
-            $("#div_account_mode_offspring").toggle(500);
-            $("#div_guest_mode_offspring").toggle(500);
-        }
-    });
-    if (localStorage.getItem("guest_mode_offspring") == "on") {
-        $('#guest_mode_offspring').prop('checked', true);
-        $("#div_guest_mode_offspring").toggle(500);
-    }
-    $('#guest_mode_offspring').click(function() {
-        if ($("#guest_mode_offspring").prop('checked', true) && $("#div_guest_mode_offspring").css("display") == "none") {
-            localStorage.setItem("guest_mode_offspring", "on");
-            localStorage.setItem("account_mode_offspring", "off");
-            $("#div_guest_mode_offspring").toggle(500);
-            $("#div_account_mode_offspring").toggle(500);
-        }
-    });
-
-    if (localStorage.getItem("checkout_mode_offspring") != "off") { $("#checkout_mode_offspring").val(localStorage.getItem("checkout_mode_offspring")); }
-    if (localStorage.getItem("payment_mode_offspring") != "off") { $("#payment_mode_offspring").val(localStorage.getItem("payment_mode_offspring")); }
     if (localStorage.getItem("size_offspring") != "off") { $("#size_offspring").val(localStorage.getItem("size_offspring")); }
-
-    if (localStorage.getItem("email_pw_offspring") != "off") {
-        var email = localStorage.getItem("email_pw_offspring").split(':')[0]
-        var pw = localStorage.getItem("email_pw_offspring").split(':')[1]
-        $("#email_offspring").val(email);
-        $("#pw_offspring").val(pw);
-    }
     //gestisco il click del bottone salva
     $("#btn_save_offspring").click(function() {
-        let e = $("#email_offspring").val();
-        let p = $("#pw_offspring").val();
         let size_offspring = $("#size_offspring").val();
-        let profile_offspring = $("#profile_offspring").val();
-        let checkout_mode_offspring = $("#checkout_mode_offspring").val();
-        let payment_mode_offspring = $("#payment_mode_offspring").val();
-
-        if (payment_mode_offspring != '') { localStorage.setItem("payment_mode_offspring", payment_mode_offspring); } else { localStorage.setItem("payment_mode_offspring", "off"); }
-        if (checkout_mode_offspring != '') { localStorage.setItem("checkout_mode_offspring", checkout_mode_offspring); } else { localStorage.setItem("checkout_mode_offspring", "off"); }
-        if (profile_offspring != '') { localStorage.setItem("profile_offspring", profile_offspring); } else { localStorage.setItem("profile_offspring", "off"); }
         if (!(isBlank(size_offspring))) { localStorage.setItem("size_offspring", size_offspring); } else { localStorage.setItem("size_offspring", "off"); }
-        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_offspring", e + ":" + p); } else { localStorage.setItem("email_pw_offspring", "off"); }
     });
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA AWLAB----------------------------------------------
 
-    np = parseInt(localStorage.getItem("n_profile"))
-    if (np != 0) {
-        $('#profile_awlab').removeAttr('disabled')
-        for (var i = 1; i <= np; i++) {
-            x = localStorage.getItem("profiles" + String(i))
-            x = String(x).split('$&')[0]
-            $('#profile_awlab').append($('<option>', {
-                value: x,
-                text: x,
-                id: x
-            }));
-        }
-    }
-    if (localStorage.getItem("profile_awlab") != "off") { $("#profile_awlab").val(localStorage.getItem("profile_awlab")); }
-
-    if (localStorage.getItem("account_mode_awlab") == "on") {
-        $('#account_mode_awlab').prop('checked', true);
-        $("#div_accountmode_awlab").toggle(500);
-    }
-    $('#account_mode_awlab').click(function() {
-        if ($("#account_mode_awlab").prop('checked', true) && $("#div_accountmode_awlab").css("display") == "none") {
-            localStorage.setItem("account_mode_awlab", "on");
-            localStorage.setItem("guest_mode_awlab", "off");
-            $("#div_accountmode_awlab").toggle(500);
-            $("#div_guestmode_awlab").toggle(500);
-        }
-    });
-    if (localStorage.getItem("guest_mode_awlab") == "on") {
-        $('#guest_mode_awlab').prop('checked', true);
-        $("#div_guestmode_awlab").toggle(500);
-    }
-    $('#guest_mode_awlab').click(function() {
-        if ($("#guest_mode_awlab").prop('checked', true) && $("#div_guestmode_awlab").css("display") == "none") {
-            localStorage.setItem("guest_mode_awlab", "on");
-            localStorage.setItem("account_mode_awlab", "off");
-            $("#div_guestmode_awlab").toggle(500);
-            $("#div_accountmode_awlab").toggle(500);
-        }
-    });
-
-    if (localStorage.getItem("continue_yes_awlab") == "on") {
-        $('#continue_yes_awlab').prop('checked', true);
-    }
-    $('#continue_yes_awlab').click(function() {
-        if ($("#continue_yes_awlab").prop('checked', true)) {
-            localStorage.setItem("continue_yes_awlab", "on");
-            localStorage.setItem("continue_no_awlab", "off");
-        }
-    });
-    if (localStorage.getItem("continue_no_awlab") == "on") {
-        $('#continue_no_awlab').prop('checked', true);
-    }
-    $('#continue_no_awlab').click(function() {
-        if ($("#continue_no_awlab").prop('checked', true)) {
-            localStorage.setItem("continue_no_awlab", "on");
-            localStorage.setItem("continue_yes_awlab", "off");
-        }
-    });
-
     if (localStorage.getItem("checkout_mode_awlab") != "off") { $("#checkout_mode_awlab").val(localStorage.getItem("checkout_mode_awlab")); }
     if (localStorage.getItem("payment_mode_awlab") != "off") { $("#payment_mode_awlab").val(localStorage.getItem("payment_mode_awlab")); }
-    if (localStorage.getItem("coupon_awlab") != "off") { $("#coupon_awlab").val(localStorage.getItem("coupon_awlab")); }
 
     if (localStorage.getItem("email_pw_awlab") != "off") {
         var email = localStorage.getItem("email_pw_awlab").split(':')[0]
@@ -727,16 +618,12 @@ function onUserLogged() {
     $("#btn_save_awlab").click(function() {
         let e = $("#email_awlab").val();
         let p = $("#pw_awlab").val();
-        let coupon_awlab = $("#coupon_awlab").val();
-        let profile_awlab = $("#profile_awlab").val();
         let checkout_mode_awlab = $("#checkout_mode_awlab").val();
         let payment_mode_awlab = $("#payment_mode_awlab").val();
 
         if (payment_mode_awlab != '') { localStorage.setItem("payment_mode_awlab", payment_mode_awlab); } else { localStorage.setItem("payment_mode_awlab", "off"); }
         if (checkout_mode_awlab != '') { localStorage.setItem("checkout_mode_awlab", checkout_mode_awlab); } else { localStorage.setItem("checkout_mode_awlab", "off"); }
-        if (profile_awlab != '') { localStorage.setItem("profile_awlab", profile_awlab); } else { localStorage.setItem("profile_awlab", "off"); }
 
-        if (!(isBlank(coupon_awlab))) { localStorage.setItem("coupon_awlab", coupon_awlab); } else { localStorage.setItem("coupon_awlab", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_awlab", e + ":" + p); } else { localStorage.setItem("email_pw_awlab", "off"); }
     });
     //---------------------------------------------------------------------

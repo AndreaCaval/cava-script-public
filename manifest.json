@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Cava-Scripts",
     "description": "botterboycava",
-    "version": "1.1.7",
+    "version": "1.1.8",
     "icons": {
         "128": "icons/iconpk.png"
     },
@@ -33,6 +33,18 @@
     "content_scripts": [{
             "matches": ["https://www.offspring.co.uk/*"],
             "js": ["scripts/offspring.js"],
+            "all_frames": true
+        },
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "include_globs": ["https://www.asos.*/*"],
+            "js": ["scripts/asos.js"],
+            "all_frames": true
+        },
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "include_globs": ["*footdistrict.*/*"],
+            "js": ["scripts/footdistrict.js"],
             "all_frames": true
         },
         {
@@ -69,13 +81,13 @@
             "all_frames": true
         },
         {
-            "matches": ["https://www.sneakersnstuff.com/*/product/*"],
-            "js": ["scripts/sns.js"],
+            "matches": ["https://www.woodwood.com/*/product/*"],
+            "js": ["scripts/woodwood.js"],
             "all_frames": true
         },
         {
-            "matches": ["https://www.woodwood.com/*/product/*"],
-            "js": ["scripts/woodwood.js"],
+            "matches": ["https://www.sneakersnstuff.com/*/product/*"],
+            "js": ["scripts/sns.js"],
             "all_frames": true
         },
         {
