@@ -27,6 +27,7 @@ let access_token = ""
 let bag_id = ""
 let customers_id = ""
 let item_carted = 0
+let lang = document.documentElement.lang
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -173,8 +174,6 @@ async function main() {
 
 async function mainCheckStock() {
     try {
-
-        lang = document.documentElement.lang
 
         while (true) {
             await checkStock()
@@ -377,8 +376,6 @@ async function checkResGetBagId(response) {
                 price_product = item["price"]["current"]["text"]
                 size_product = item["size"]
 
-                // img_product = "https://" + item["images"][0]["url"] + "?$XXL$&wid=513&fit=constrain"
-
                 mainCheckout()
             }
         } else {
@@ -393,7 +390,7 @@ async function checkResGetBagId(response) {
 
 async function mainCheckout() {
     sendWebhooks()
-    document.location = "https://" + country + "/" + country2 + "/bag?ctaref=mini%20bag"
+    document.location = "https://" + country + "/" + lang + "/bag?ctaref=mini%20bag"
 }
 
 
