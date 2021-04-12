@@ -389,8 +389,12 @@ async function checkResGetBagId(response) {
 }
 
 async function mainCheckout() {
-    sendWebhooks()
-    document.location = "https://" + country + "/" + lang + "/bag?ctaref=mini%20bag"
+    try {
+
+        sendWebhooks()
+        document.location = document.querySelector('[data-testid="miniBagIcon"]').href
+
+    } catch (error) {}
 }
 
 
