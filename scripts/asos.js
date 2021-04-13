@@ -392,7 +392,11 @@ async function mainCheckout() {
     try {
 
         sendWebhooks()
-        document.location = document.querySelector('[data-testid="miniBagIcon"]').href
+
+        if (document.querySelector('[data-testid="miniBagIcon"]').href != undefined)
+            document.location = document.querySelector('[data-testid="miniBagIcon"]').href
+        else
+            document.location = document.querySelector('[data-test-id="bag-link"]').href
 
     } catch (error) {}
 }

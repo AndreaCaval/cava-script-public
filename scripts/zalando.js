@@ -58,6 +58,8 @@ const site_region = {
 let link = document.location.href
 let country = link.split('/')[2]
 
+let status_aco = "";
+
 let email = ""
 let pw = ""
 let size_range = "random"
@@ -137,6 +139,8 @@ async function sendText(text, color) {
 }
 
 function textBoxMain() {
+    let color_aco = "";
+    if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
         var btn1 = document.getElementsByClassName("z-navicat-header_navContent")[0]
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
@@ -151,7 +155,7 @@ function textBoxMain() {
             '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_atc_fast" type="submit" value="ATC FAST"> <br> ' +
             '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
             '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> <br> ' +
-            '</div></div>');
+            "</div><p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
 
@@ -199,7 +203,8 @@ function textBoxMain() {
 
 function textBoxCart() {
     try {
-
+        let color_aco = "";
+        if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
         let cava_script_info = document.getElementsByClassName("z-navicat-header_navContent")[0]
         cava_script_info.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
             '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
@@ -210,7 +215,8 @@ function textBoxCart() {
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
             '<center><p id="statusZalando">Status Zalando</p></center>' +
             '<div class="box"><p id="rCount">Request count: 0</p><p id="rDelay">Delay: 0ms</p>' +
-            '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"></div></div>');
+            '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"></div>' +
+            "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
 
@@ -1302,6 +1308,10 @@ async function errorWebhook(error, position) {
 async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
+
+chrome.runtime.sendMessage({ greeting: "zalando" }, function(response) {
+    status_aco = response.farewell
+});
 
 chrome.runtime.sendMessage({ greeting: "zalando_size" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
