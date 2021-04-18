@@ -1,6 +1,6 @@
-debugger
+//debugger
 
-const version = 'Cava-Scripts 1.1.7'
+const version = 'Cava-Scripts 1.1.9'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -203,6 +203,8 @@ function onUserLogged() {
     if (localStorage.getItem("status_login_offspring") == "on") { $('#Status_login_offspring').prop('checked', true); }
     //Onygo
     if (localStorage.getItem("status_login_onygo") == "on") { $('#Status_login_onygo').prop('checked', true); }
+    //Awlab
+    if (localStorage.getItem("status_login_awlab") == "on") { $('#Status_login_awlab').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Awlab
@@ -228,6 +230,10 @@ function onUserLogged() {
     //Onygo
     $('#Status_login_onygo').click(function() {
         if ($("#Status_login_onygo").is(':checked')) { localStorage.setItem("status_login_onygo", "on"); } else { localStorage.setItem("status_login_onygo", "off"); }
+    });
+    //Awlab
+    $('#Status_login_awlab').click(function() {
+        if ($("#Status_login_awlab").is(':checked')) { localStorage.setItem("status_login_awlab", "on"); } else { localStorage.setItem("status_login_awlab", "off"); }
     });
 
 
@@ -301,9 +307,10 @@ function onUserLogged() {
                 } else {
                     profiles = profiles.split('&')
                 }
-
-                profiles.push(profile_name)
-                profiles = localStorage.setItem("array_profiles", profiles.join('&'))
+                if (!profiles.includes(profile_name)) {
+                    profiles.push(profile_name)
+                    profiles = localStorage.setItem("array_profiles", profiles.join('&'))
+                }
 
                 json_profile = {
                     "FirstName": $("#FirstName").val(),
@@ -390,6 +397,7 @@ function onUserLogged() {
         $("#email_zalando").val(email);
         $("#pw_zalando").val(pw);
     }
+    $("#delay_zalando").val(localStorage.getItem("delay_zalando"));
     //contollo se sono già presenti nello storage e in caso li inserisco nell' input
     if (localStorage.getItem("coupon_zalando") != "off") { $("#couponZ").val(localStorage.getItem("coupon_zalando")); }
     if (localStorage.getItem("cart_mode_zalando") != "off") { $("#zalandoCartMode").val(localStorage.getItem("cart_mode_zalando")); }
@@ -405,6 +413,9 @@ function onUserLogged() {
         let ck = $("#zalandoCheckoutMode").val();
         let ppp = $("#zalandoPaymentMode").val();
         let size_zalando = $("#size_zalando").val();
+        let delay_zalando = $("#delay_zalando").val();
+
+        if (delay_zalando != '') { localStorage.setItem("delay_zalando", delay_zalando); } else { localStorage.setItem("delay_zalando", "1"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_zalando", e + ":" + p) } else { localStorage.setItem("email_pw_zalando", "off"); }
         if (!(isBlank(size_zalando))) { localStorage.setItem("size_zalando", size_zalando); } else { localStorage.setItem("size_zalando", "off"); }
         if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "off"); }
@@ -533,11 +544,13 @@ function onUserLogged() {
     //GESTIONE PAGINA SNS----------------------------------------------
     if (localStorage.getItem("size_sns") != "off") { $("#size_sns").val(localStorage.getItem("size_sns")); }
     if (localStorage.getItem("mode_sns") != "off") { $("#mode_sns").val(localStorage.getItem("mode_sns")); }
+    $("#delay_sns").val(localStorage.getItem("delay_sns"));
     //gestisco il click del bottone salva
     $("#btn_save_sns").click(function() {
         let size_sns = $("#size_sns").val();
         let mode_sns = $("#mode_sns").val();
-
+        var delay_sns = $("#delay_sns").val();
+        if (delay_sns != '') { localStorage.setItem("delay_sns", delay_sns); } else { localStorage.setItem("delay_sns", "1"); }
         if (mode_sns != '') { localStorage.setItem("mode_sns", mode_sns); } else { localStorage.setItem("mode_sns", "off"); }
         if (!(isBlank(size_sns))) { localStorage.setItem("size_sns", size_sns); } else { localStorage.setItem("size_sns", "off"); }
     });
@@ -605,6 +618,19 @@ function onUserLogged() {
 
     //GESTIONE PAGINA AWLAB----------------------------------------------
 
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileAwlab').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileAwlab').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_awlab") != "off") { $("#ProfileAwlab").val(localStorage.getItem("profile_awlab")); }
     if (localStorage.getItem("checkout_mode_awlab") != "off") { $("#checkout_mode_awlab").val(localStorage.getItem("checkout_mode_awlab")); }
     if (localStorage.getItem("payment_mode_awlab") != "off") { $("#payment_mode_awlab").val(localStorage.getItem("payment_mode_awlab")); }
 
@@ -620,7 +646,9 @@ function onUserLogged() {
         let p = $("#pw_awlab").val();
         let checkout_mode_awlab = $("#checkout_mode_awlab").val();
         let payment_mode_awlab = $("#payment_mode_awlab").val();
+        var profile_awlab = $("#ProfileAwlab").val();
 
+        if (profile_awlab != '') { localStorage.setItem("profile_awlab", profile_awlab); } else { localStorage.setItem("profile_awlab", "off"); }
         if (payment_mode_awlab != '') { localStorage.setItem("payment_mode_awlab", payment_mode_awlab); } else { localStorage.setItem("payment_mode_awlab", "off"); }
         if (checkout_mode_awlab != '') { localStorage.setItem("checkout_mode_awlab", checkout_mode_awlab); } else { localStorage.setItem("checkout_mode_awlab", "off"); }
 

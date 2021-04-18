@@ -349,7 +349,7 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_sns" }, function(response) {
     delay = response.farewell
 });
 

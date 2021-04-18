@@ -1,4 +1,4 @@
-debugger
+//debugger
 
 const site = "Snipes"
 
@@ -318,6 +318,8 @@ function textBox() {
         if (localStorage.getItem("box") != null)
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
+        window.onresize = checkPosition;
+
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
             errorWebhooks(error, "textBox")
@@ -358,7 +360,7 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         // set the element's new position:
 
-        if (elmnt.offsetTop - pos2 >= 0) {
+        if (elmnt.offsetTop - pos2 >= 0 && elmnt.offsetTop - pos2 <= window.innerHeight - document.getElementById("CavaScripts").clientHeight) {
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
@@ -370,6 +372,17 @@ function dragElement(elmnt) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+}
+
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
 }
 
 function updateValueDummy(e) {
@@ -1308,13 +1321,14 @@ async function checkResSelectShippingMethod(response) {
 }
 
 async function ValidateShipping() {
-
     sendText("Validating address...", "blue")
     await fetch(LINK_REQUEST[country]["validate_ship"], {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
                 "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
@@ -1376,13 +1390,14 @@ async function checkResValidateShipping(response) {
 }
 
 async function SubmitShipping() {
-
     sendText("Submitting ship...", "blue")
     await fetch(LINK_REQUEST[country]["submit_ship"], {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
                 "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
@@ -1390,7 +1405,7 @@ async function SubmitShipping() {
             },
             "referrer": "https://" + country + "/checkout?stage=shipping",
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
+            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&dwfrm_contact_subscribe=true&csrf_token=" + csrf_token,
             "method": "POST",
             "mode": "cors",
             "credentials": "include"
@@ -1446,13 +1461,14 @@ async function checkResSubmitShipping(response) {
 }
 
 async function SubmitPayment() {
-
     sendText("Submittin payment...", "blue")
     await fetch(LINK_REQUEST[country]["submit_payment"], {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
                 "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
@@ -1540,13 +1556,14 @@ async function checkResSubmitPayment(response) {
 }
 
 async function PlaceOrder() {
-
     sendText("Placing order...", "blue")
     await fetch(LINK_REQUEST[country]["submit_order"], {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
                 "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",

@@ -1326,7 +1326,7 @@ chrome.runtime.sendMessage({ greeting: "cartmodezalando" }, function(response) {
     cart_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "delay" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_zalando" }, function(response) {
     delay = response.farewell
 });
 

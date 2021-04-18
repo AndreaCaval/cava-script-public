@@ -1,8 +1,8 @@
-debugger
+//debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.1.8";
+const version = "1.1.9";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/iconpk.png?alt=media&token=e0bc7565-d880-42af-80c1-65099bc176d2";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -65,11 +65,14 @@ function SetStatus_off() {
         })
     }
 
+    //Setting-----------------------------------------------------------------------------------------------------
+    setIfNotPresent("delay", 1000)
+
     //Zalando-----------------------------------------------------------------------------------------------------
     setIfNotPresent("cart_mode_zalando", "Fast");
     setIfNotPresent("checkout_mode_zalando", "Fast");
-    setIfNotPresent("payment_zalando", "Cad");
-    setIfNotPresent("zalando_cart_limit", "1");
+    setIfNotPresent("payment_zalando", "COD");
+    setIfNotPresent("delay_zalando", 1000)
 
     //Solebox
     setIfNotPresent("checkout_mode_solebox", "Full Checkout");
@@ -94,6 +97,7 @@ function SetStatus_off() {
 
     //Sns
     setIfNotPresent("mode_sns", "Fast");
+    setIfNotPresent("delay_sns", 1000)
 
     //Naked
     setIfNotPresent("mode_naked", "Fast");
@@ -120,7 +124,6 @@ function SetStatus_off() {
         //Awlab
         "status_aco_awlab",
         "status_login_awlab",
-        "account_mode_awlab",
         "email_pw_awlab",
         "coupon_awlab",
         "continue_no_awlab",
@@ -129,7 +132,6 @@ function SetStatus_off() {
         //Zalando
         "status_aco_zalando",
         "email_pw_zalando",
-        "sku_zalando",
         "drop_mode_zalando",
         "size_zalando",
 
@@ -184,11 +186,10 @@ function SetStatus_off() {
 
         //Profile
         "array_profiles",
-    ])
 
-    //Setting-----------------------------------------------------------------------------------------------------
-    setToOff("id_webhook")
-    setIfNotPresent("delay", 0)
+        //Setting
+        "id_webhook",
+    ])
 }
 
 SetStatus_off();
@@ -201,238 +202,240 @@ chrome.runtime.onMessage.addListener(
         //sendWebhookCheckout
         if (request.greeting.startsWith("checkout_webhook")) sendWebhookCheckout(request.greeting);
         //sendWebhookError
-        if (request.greeting.startsWith("error_webhook")) sendWebhookError(request.greeting);
+        else if (request.greeting.startsWith("error_webhook")) sendWebhookError(request.greeting);
         //sendWebhookInfo
-        if (request.greeting.startsWith("info_webhook")) sendWebhookInfo(request.greeting);
+        else if (request.greeting.startsWith("info_webhook")) sendWebhookInfo(request.greeting);
 
-        switch (request.greeting) {
-            case "userData":
-                sendResponse({ farewell: userData })
-                break
-            case "authLog": //auth
-                sendResponse({ farewell: user_signed_in ? "on" : "off" })
-                break
-                //setting
-            case "webhook":
-                sendResponse({ farewell: localStorage.getItem("id_webhook") });
-                break
-            case "delay":
-                sendResponse({ farewell: localStorage.getItem("delay") });
-                break
-                //asos
-            case "asos":
-                sendResponse({ farewell: localStorage.getItem("status_aco_asos") });
-                break
-                // offspring
-            case "offspring":
-                sendResponse({ farewell: localStorage.getItem("status_aco_offspring") });
-                break
-            case "offspring_size":
-                sendResponse({ farewell: localStorage.getItem("size_offspring") });
-                break
-                //footdistrict
-            case "footdistrict":
-                sendResponse({ farewell: localStorage.getItem("status_aco_footdistrict") });
-                break
-            case "footdistrict_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_footdistrict") });
-                break
-            case "footdistrict_size":
-                sendResponse({ farewell: localStorage.getItem("size_footdistrict") });
-                break
-            case "email_pw_footdistrict":
-                sendResponse({ farewell: localStorage.getItem("email_pw_footdistrict") });
-                break
-                // awlab
-            case "awlab":
-                sendResponse({ farewell: localStorage.getItem("status_aco_awlab") });
-                break
-            case "awlab_checkout_mode":
-                sendResponse({ farewell: localStorage.getItem("checkout_mode_awlab") });
-                break
-            case "awlab_payment_mode":
-                sendResponse({ farewell: localStorage.getItem("payment_mode_awlab") });
-                break
-            case "awlab_mode":
-                sendResponse({ farewell: localStorage.getItem("guest_mode_awlab") });
-                break
-            case "awlab_continue":
-                sendResponse({ farewell: localStorage.getItem("continue_yes_awlab") });
-                break
-            case "awlab_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_awlab") });
-                break
-            case "email_pw_awlab":
-                sendResponse({ farewell: localStorage.getItem("email_pw_awlab") });
-                break
-            case "awlab_coupon":
-                sendResponse({ farewell: localStorage.getItem("coupon_awlab") });
-                break
-            case "awlab_profile":
-                sendResponse({ farewell: localStorage.getItem("profile_awlab") });
-                break
-                // sns
-            case "sns":
-                sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
-                break
-            case "sns_size":
-                sendResponse({ farewell: localStorage.getItem("size_sns") });
-                break
-            case "sns_mode":
-                sendResponse({ farewell: localStorage.getItem("mode_sns") });
-                break
-                // woodwood
-            case "woodwood":
-                sendResponse({ farewell: localStorage.getItem("status_aco_woodwood") });
-                break
-            case "woodwood_size":
-                sendResponse({ farewell: localStorage.getItem("size_woodwood") });
-                break
-            case "woodwood_mode":
-                sendResponse({ farewell: localStorage.getItem("mode_woodwood") });
-                break
-                //kickz
-            case "kickz":
-                sendResponse({ farewell: localStorage.getItem("status_aco_kickz") });
-                break
-            case "kickz_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_kickz") });
-                break
-            case "email_pw_kickz":
-                sendResponse({ farewell: localStorage.getItem("email_pw_kickz") });
-                break
-            case "kickz_size":
-                sendResponse({ farewell: localStorage.getItem("size_kickz") });
-                break
-                //Onygo
-            case "onygo":
-                sendResponse({ farewell: localStorage.getItem("status_aco_onygo") });
-                break
-            case "onygo_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_onygo") });
-                break
-            case "email_pw_onygo":
-                sendResponse({ farewell: localStorage.getItem("email_pw_onygo") });
-                break
-            case "onygo_size":
-                sendResponse({ farewell: localStorage.getItem("size_onygo") });
-                break
-                // snipes
-            case "snipes":
-                sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
-                break
-            case "snipes_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
-                break
-            case "email_pw_snipes":
-                sendResponse({ farewell: localStorage.getItem("email_pw_snipes") });
-                break
-            case "country_snipes":
-                sendResponse({ farewell: localStorage.getItem("country_snipes") });
-                break
-            case "snipes_size":
-                sendResponse({ farewell: localStorage.getItem("size_snipes") });
-                break
-            case "snipes_checkout_mode":
-                sendResponse({ farewell: localStorage.getItem("checkout_mode_snipes") });
-                break
-                //solebox
-            case "solebox":
-                sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
-                break
-            case "solebox_login":
-                sendResponse({ farewell: localStorage.getItem("status_login_solebox") });
-                break
-            case "email_pw_solebox":
-                sendResponse({ farewell: localStorage.getItem("email_pw_solebox") });
-                break
-            case "solebox_size":
-                sendResponse({ farewell: localStorage.getItem("size_solebox") });
-                break
-            case "solebox_payment_mode":
-                sendResponse({ farewell: localStorage.getItem("payment_mode_solebox") });
-                break
-            case "solebox_checkout_mode":
-                sendResponse({ farewell: localStorage.getItem("checkout_mode_solebox") });
-                break
-                //lvr
-            case "lvr":
-                sendResponse({ farewell: localStorage.getItem("status_aco_lvr") });
-                break
-            case "lvr_size":
-                sendResponse({ farewell: localStorage.getItem("size_lvr") });
-                break
-            case "lvr_mode":
-                sendResponse({ farewell: localStorage.getItem("mode_lvr") });
-                break
-                //naked
-            case "naked":
-                sendResponse({ farewell: localStorage.getItem("status_aco_naked") });
-                break
-            case "naked_size":
-                sendResponse({ farewell: localStorage.getItem("size_naked") });
-                break
-            case "naked_mode":
-                sendResponse({ farewell: localStorage.getItem("mode_naked") });
-                break
-                //basket4ballers
-            case "basket4ballers":
-                sendResponse({ farewell: localStorage.getItem("status_aco_basket4ballers") });
-                break
-            case "basket4ballers_size":
-                sendResponse({ farewell: localStorage.getItem("size_b4b") });
-                break
-                //zalando
-            case "zalando":
-                sendResponse({ farewell: localStorage.getItem("status_aco_zalando") });
-                break
-            case "email_pw_zalando":
-                sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
-                break
-            case "zalando_size":
-                sendResponse({ farewell: localStorage.getItem("size_zalando") });
-                break
-            case "cartmodezalando":
-                sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
-                break
-            case "checkoutmodezalando":
-                sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
-                break
-            case "dropmodezalando":
-                sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
-                break
-            case "cartlimitzalando":
-                sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
-                break
-                //auth
-            case "login":
-                const license = request.license
-                const machineId = getMachineId()
-                login(license, machineId)
-                    .then(res => {
-                        saveKeyValue("license", license)
-                        onLoginSuccess(res, license)
-                        loginWebhook(true)
-                        sendResponse({ farewell: 'success' });
-                        checkLoginAtInterval(license, machineId)
+        else {
+            switch (request.greeting) {
+                case "userData":
+                    sendResponse({ farewell: userData })
+                    break
+                case "authLog": //auth
+                    sendResponse({ farewell: user_signed_in ? "on" : "off" })
+                    break
+                    //setting
+                case "webhook":
+                    sendResponse({ farewell: localStorage.getItem("id_webhook") });
+                    break
+                case "delay":
+                    sendResponse({ farewell: localStorage.getItem("delay") });
+                    break
+                    //asos
+                case "asos":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_asos") });
+                    break
+                    // offspring
+                case "offspring":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_offspring") });
+                    break
+                case "offspring_size":
+                    sendResponse({ farewell: localStorage.getItem("size_offspring") });
+                    break
+                    //footdistrict
+                case "footdistrict":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_footdistrict") });
+                    break
+                case "footdistrict_login":
+                    sendResponse({ farewell: localStorage.getItem("status_login_footdistrict") });
+                    break
+                case "footdistrict_size":
+                    sendResponse({ farewell: localStorage.getItem("size_footdistrict") });
+                    break
+                case "email_pw_footdistrict":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_footdistrict") });
+                    break
+                    // awlab
+                case "awlab":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_awlab") });
+                    break
+                case "awlab_checkout_mode":
+                    sendResponse({ farewell: localStorage.getItem("checkout_mode_awlab") });
+                    break
+                case "awlab_payment_mode":
+                    sendResponse({ farewell: localStorage.getItem("payment_mode_awlab") });
+                    break
+                case "awlab_mode":
+                    sendResponse({ farewell: localStorage.getItem("guest_mode_awlab") });
+                    break
+                case "awlab_continue":
+                    sendResponse({ farewell: localStorage.getItem("continue_yes_awlab") });
+                    break
+                case "awlab_login":
+                    sendResponse({ farewell: localStorage.getItem("status_login_awlab") });
+                    break
+                case "email_pw_awlab":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_awlab") });
+                    break
+                case "awlab_coupon":
+                    sendResponse({ farewell: localStorage.getItem("coupon_awlab") });
+                    break
+                case "awlab_profile":
+                    sendResponse({ farewell: localStorage.getItem("profile_awlab") });
+                    break
+                    // sns
+                case "sns":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_sns") });
+                    break
+                case "sns_size":
+                    sendResponse({ farewell: localStorage.getItem("size_sns") });
+                    break
+                case "sns_mode":
+                    sendResponse({ farewell: localStorage.getItem("mode_sns") });
+                    break
+                    // woodwood
+                case "woodwood":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_woodwood") });
+                    break
+                case "woodwood_size":
+                    sendResponse({ farewell: localStorage.getItem("size_woodwood") });
+                    break
+                case "woodwood_mode":
+                    sendResponse({ farewell: localStorage.getItem("mode_woodwood") });
+                    break
+                    //kickz
+                case "kickz":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_kickz") });
+                    break
+                case "kickz_login":
+                    sendResponse({ farewell: localStorage.getItem("status_login_kickz") });
+                    break
+                case "email_pw_kickz":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_kickz") });
+                    break
+                case "kickz_size":
+                    sendResponse({ farewell: localStorage.getItem("size_kickz") });
+                    break
+                    //Onygo
+                case "onygo":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_onygo") });
+                    break
+                case "onygo_login":
+                    sendResponse({ farewell: localStorage.getItem("status_login_onygo") });
+                    break
+                case "email_pw_onygo":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_onygo") });
+                    break
+                case "onygo_size":
+                    sendResponse({ farewell: localStorage.getItem("size_onygo") });
+                    break
+                    // snipes
+                case "snipes":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_snipes") });
+                    break
+                case "snipes_login":
+                    sendResponse({ farewell: localStorage.getItem("status_login_snipes") });
+                    break
+                case "email_pw_snipes":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_snipes") });
+                    break
+                case "country_snipes":
+                    sendResponse({ farewell: localStorage.getItem("country_snipes") });
+                    break
+                case "snipes_size":
+                    sendResponse({ farewell: localStorage.getItem("size_snipes") });
+                    break
+                case "snipes_checkout_mode":
+                    sendResponse({ farewell: localStorage.getItem("checkout_mode_snipes") });
+                    break
+                    //solebox
+                case "solebox":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_solebox") });
+                    break
+                case "solebox_login":
+                    sendResponse({ farewell: localStorage.getItem("status_login_solebox") });
+                    break
+                case "email_pw_solebox":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_solebox") });
+                    break
+                case "solebox_size":
+                    sendResponse({ farewell: localStorage.getItem("size_solebox") });
+                    break
+                case "solebox_payment_mode":
+                    sendResponse({ farewell: localStorage.getItem("payment_mode_solebox") });
+                    break
+                case "solebox_checkout_mode":
+                    sendResponse({ farewell: localStorage.getItem("checkout_mode_solebox") });
+                    break
+                    //lvr
+                case "lvr":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_lvr") });
+                    break
+                case "lvr_size":
+                    sendResponse({ farewell: localStorage.getItem("size_lvr") });
+                    break
+                case "lvr_mode":
+                    sendResponse({ farewell: localStorage.getItem("mode_lvr") });
+                    break
+                    //naked
+                case "naked":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_naked") });
+                    break
+                case "naked_size":
+                    sendResponse({ farewell: localStorage.getItem("size_naked") });
+                    break
+                case "naked_mode":
+                    sendResponse({ farewell: localStorage.getItem("mode_naked") });
+                    break
+                    //basket4ballers
+                case "basket4ballers":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_basket4ballers") });
+                    break
+                case "basket4ballers_size":
+                    sendResponse({ farewell: localStorage.getItem("size_b4b") });
+                    break
+                    //zalando
+                case "zalando":
+                    sendResponse({ farewell: localStorage.getItem("status_aco_zalando") });
+                    break
+                case "email_pw_zalando":
+                    sendResponse({ farewell: localStorage.getItem("email_pw_zalando") });
+                    break
+                case "zalando_size":
+                    sendResponse({ farewell: localStorage.getItem("size_zalando") });
+                    break
+                case "cartmodezalando":
+                    sendResponse({ farewell: localStorage.getItem("cart_mode_zalando") });
+                    break
+                case "checkoutmodezalando":
+                    sendResponse({ farewell: localStorage.getItem("checkout_mode_zalando") });
+                    break
+                case "dropmodezalando":
+                    sendResponse({ farewell: localStorage.getItem("drop_mode_zalando") });
+                    break
+                case "cartlimitzalando":
+                    sendResponse({ farewell: localStorage.getItem("zalando_cart_limit") });
+                    break
+                    //auth
+                case "login":
+                    const license = request.license
+                    const machineId = getMachineId()
+                    login(license, machineId)
+                        .then(res => {
+                            saveKeyValue("license", license)
+                            onLoginSuccess(res, license)
+                            loginWebhook(true)
+                            sendResponse({ farewell: 'success' });
+                            checkLoginAtInterval(license, machineId)
 
-                    })
-                    .catch(e => {
-                        console.log(e)
-                        onLoginFailed(e)
-                        sendResponse({ farewell: 'fail' });
-                    })
+                        })
+                        .catch(e => {
+                            console.log(e)
+                            onLoginFailed(e)
+                            sendResponse({ farewell: 'fail' });
+                        })
 
-                return true;
-            case "logout":
-                const licens = request.license
-                logout(licens)
-                sendResponse({ farewell: 'success' });
-                break
+                    return true;
+                case "logout":
+                    const licens = request.license
+                    logout(licens)
+                    sendResponse({ farewell: 'success' });
+                    break
 
-            default:
-                sendResponse({ farewell: localStorage.getItem(request.greeting) });
-                break
+                default:
+                    sendResponse({ farewell: localStorage.getItem(request.greeting) });
+                    break
+            }
         }
     });
 
