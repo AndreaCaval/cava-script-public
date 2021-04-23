@@ -379,23 +379,22 @@ async function mainClearCart() {
 async function getProductCart() {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
-    await fetch("https://" + country + "/api/cart/details", {
+    await fetch("https://" + country + "/api/cart-gateway/carts", {
             "headers": {
-                "accept": "*/*",
+                "accept": "application/json",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "dpr": "1",
+                "content-type": "application/json",
                 "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
                 "sec-ch-ua-mobile": "?0",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
-                "viewport-width": "1017",
                 "x-xsrf-token": xsrf
             },
             "referrer": link,
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
+            "body": "{}",
+            "method": "POST",
             "mode": "cors",
             "credentials": "include"
         })
@@ -410,8 +409,9 @@ async function checkResStock(response) {
         let res = await response.text()
         res = JSON.parse(res)
         if (status == 200 || status == 201 || status == 204) {
+            cart_id = res["id"]
             try { cart_size_instock = res["groups"][0]["articles"] } catch (error) {}
-            try { cart_size_oos = res["outOfStockArticles"] } catch (error) {}
+            try { cart_size_oos = res["out_of_stock_articles"] } catch (error) {}
             if (cart_size_oos.length == 0 && cart_size_instock.length == 0) {
                 sendText("Cart empty", "green")
             } else {
@@ -426,18 +426,19 @@ async function checkResStock(response) {
 }
 
 async function checkStock() {
+
     cart_size_instock.forEach(element => {
-        clearCart(element["simpleSku"])
+        clearCart(element["simple_sku"])
     });
     cart_size_oos.forEach(element => {
-        clearCart(element["simpleSku"])
+        clearCart(element["simple_sku"])
     });
 }
 
 async function clearCart(simplesku) {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
-    await fetch("https://" + country + "/api/cart-gateway/carts/3257fb6cc64e5a94db7fbb69365ff7dbeae7abd58ce27aa9231a01b35ba48a73/items/" + simplesku, {
+    await fetch("https://" + country + "/api/cart-gateway/carts/" + cart_id + "/items/" + simplesku, {
             "headers": {
                 "accept": "application/json",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -472,6 +473,7 @@ async function checkResCrearCart(response) {
 
     } catch (error) { errorWebhook(error, "checkResCrearCart") }
 }
+
 
 
 async function mainLogin() {

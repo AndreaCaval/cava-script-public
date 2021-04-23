@@ -71,7 +71,7 @@ function textBox() {
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
-
+        window.onresize = checkPosition;
         if (localStorage.getItem("box") != null)
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
@@ -126,7 +126,7 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         // set the element's new position:
 
-        if (elmnt.offsetTop - pos2 >= 0) {
+        if (elmnt.offsetTop - pos2 >= 0 && elmnt.offsetTop - pos2 <= window.innerHeight - document.getElementById("CavaScripts").clientHeight) {
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
@@ -139,16 +139,27 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
-
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
+}
 
 async function sendText(text, color) {
     try { document.getElementById("statusNaked").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function errorRefresh() {
-    sendText("Sleep " + delay + "ms...", "blue")
-    await sleep(parseInt(delay))
-    location.reload()
+    if (delay != "0") {
+        sendText("Sleep " + delay + "ms...", "blue")
+        await sleep(parseInt(delay))
+        location.reload()
+    }
 }
 
 async function main() {
@@ -280,11 +291,20 @@ async function mainAtcFast() {
 
             if (variant_id != "")
                 await atcR()
+            else {
+                if (size_range == "random")
+                    sendText("Item out of stock", "purple")
+                else
+                    sendText("Selected sizes not available", "purple")
+            }
+
 
         } else {
+            sendText("Item out of stock", "purple")
             errorRefresh()
         }
     } catch (error) {
+        sendText("Item out of stock", "purple")
         errorWebhooks(error)
         errorRefresh()
     }
@@ -366,7 +386,7 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_naked" }, function(response) {
     delay = response.farewell
 });
 

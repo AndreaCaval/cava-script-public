@@ -85,6 +85,8 @@ function textBox() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
+
+        window.onresize = checkPosition;
     } catch (error) {
         if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
             errorWebhooks(error, "textBox")
@@ -125,7 +127,7 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         // set the element's new position:
 
-        if (elmnt.offsetTop - pos2 >= 0) {
+        if (elmnt.offsetTop - pos2 >= 0 && elmnt.offsetTop - pos2 <= window.innerHeight - document.getElementById("CavaScripts").clientHeight) {
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
@@ -138,13 +140,25 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
+}
 async function sendText(text, color) {
     try { document.getElementById("statusSns").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function errorRefresh() {
-    await sleep(parseInt(delay))
-    location.reload()
+    if (delay != "0") {
+        await sleep(parseInt(delay))
+        location.reload()
+    }
 }
 
 
@@ -270,10 +284,14 @@ async function mainAtcFast() {
             }
             if (variant_id != "")
                 await atcR()
-            else
-                sendText("Selected sizes not available", "purple")
-
+            else {
+                if (size_range == "random")
+                    sendText("Item out of stock", "purple")
+                else
+                    sendText("Selected sizes not available", "purple")
+            }
         } else {
+            sendText("Item out of stock", "purple")
             errorRefresh()
         }
     } catch (error) {

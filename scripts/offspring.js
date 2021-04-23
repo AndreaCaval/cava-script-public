@@ -5,6 +5,8 @@ const site = "Offspring"
 let size_range = "random"
 let status_aco = ""
 
+let delay = ""
+
 let link = document.location.href
 let link_product = link
 let name_product = '';
@@ -31,7 +33,6 @@ function getRandomIntInclusive(min, max) {
     n = Math.floor(Math.random() * (max - min + 1)) + min;
     return n
 }
-
 async function sendText(text, color) {
     try { document.getElementById("statusOffspring").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
@@ -74,7 +75,7 @@ function textBox() {
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
-
+        window.onresize = checkPosition;
         if (localStorage.getItem("box") != null)
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
@@ -129,7 +130,7 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         // set the element's new position:
 
-        if (elmnt.offsetTop - pos2 >= 0) {
+        if (elmnt.offsetTop - pos2 >= 0 && elmnt.offsetTop - pos2 <= window.innerHeight - document.getElementById("CavaScripts").clientHeight) {
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
@@ -140,6 +141,23 @@ function dragElement(elmnt) {
         /* stop moving when mouse button is released:*/
         document.onmouseup = null;
         document.onmousemove = null;
+    }
+}
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
+}
+
+async function errorRefresh() {
+    if (delay != "0") {
+        await sleep(parseInt(delay))
+        location.reload()
     }
 }
 
@@ -223,14 +241,17 @@ async function mainAtcBrowser() {
             if (carted != true) {
                 errore = document.getElementsByClassName("product-validation__error js-validation-error-restricted product-validation__error--visible")[0].textContent
                 sendText(errore, "red")
+                errorRefresh()
             }
 
         }
     } catch (error) {
         sendText("Error adding to cart", "red")
         errorWebhook(error, "mainAtc")
+        errorRefresh()
     }
 }
+
 
 async function mainCheckout() {
     await sendWebhooks()
@@ -249,6 +270,11 @@ async function errorWebhook(error, position) {
 async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
+
+chrome.runtime.sendMessage({ greeting: "delay_offspring" }, function(response) {
+    delay = response.farewell
+});
+
 
 chrome.runtime.sendMessage({ greeting: "offspring" }, function(response) {
     status_aco = response.farewell

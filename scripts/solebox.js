@@ -114,7 +114,7 @@ function textBox() {
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span> LOGIN: <span style='font-size: 20px; text-transform: uppercase; color:" + color_login + ";' >" + status_login + "</span></p></div>");
 
         dragElement(document.getElementById("CavaScripts"));
-
+        window.onresize = checkPosition;
         if (localStorage.getItem("box") != null)
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
@@ -208,7 +208,7 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         // set the element's new position:
 
-        if (elmnt.offsetTop - pos2 >= 0) {
+        if (elmnt.offsetTop - pos2 >= 0 && elmnt.offsetTop - pos2 <= window.innerHeight - document.getElementById("CavaScripts").clientHeight) {
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
@@ -220,6 +220,16 @@ function dragElement(elmnt) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+}
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
 }
 
 function updateValueDummy(e) {
@@ -243,9 +253,9 @@ async function addButton() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 captchasolver = window.open('https://www.solebox.com/' + country + '/view-account', 'captchasolver', params)
 
-                captchasolver.addEventListener('beforeunload', function(e) {
-                    is_captcha_solved = true
-                });
+                // captchasolver.addEventListener('beforeunload', function(e) {
+                //     is_captcha_solved = true
+                // });
             });
 
             let btn_solved = document.getElementById('btn_solved')
@@ -372,7 +382,7 @@ async function login() {
         loginR(data_id, data_value, csrf_token)
 
     } catch (error) {
-        if (error != "TypeError: span.getAttribute is not a function" && error != "TypeError: Cannot read property 'value' of undefined")
+        if (error != "TypeError: span.getAttribute is not a function" && error != "TypeError: Cannot read property 'value' of undefined" && error != "ReferenceError: res is not defined")
             errorWebhooks(error, "login")
     }
 
@@ -546,11 +556,11 @@ async function checkResGetCart(response) {
             if (html_cart.length == 0)
                 sendText("Cart empty", "green")
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+            if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
                 sendText("Error getting cart, resolve captcha & retry", "red")
                 addButton()
             } else {
-                errorWebhooks(x, "checkResGetCart")
+                errorWebhooks(res, "checkResGetCart")
                 sendText("Error getting cart", "red")
             }
         }

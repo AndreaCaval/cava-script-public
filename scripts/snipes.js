@@ -1,4 +1,4 @@
-//debugger
+debugger
 
 const site = "Snipes"
 
@@ -408,9 +408,9 @@ async function addButton() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 captchasolver = window.open('https://' + country + '/view-account', 'captchasolver', params)
 
-                captchasolver.addEventListener('beforeunload', function(e) {
-                    is_captcha_solved = true
-                });
+                // captchasolver.addEventListener('beforeunload', function(e) {
+                //     is_captcha_solved = true
+                // });
             });
 
             let btn_solved = document.getElementById('btn_solved')
@@ -582,7 +582,7 @@ async function login() {
         loginR(data_id, data_value, csrf_token)
 
     } catch (error) {
-        if (error != "TypeError: span.getAttribute is not a function" && error != "ReferenceError: res is not defined")
+        if (error != "TypeError: span.getAttribute is not a function" && error != "ReferenceError: res is not defined" && error != "ReferenceError: res is not defined")
             errorWebhooks(error, "login")
 
         sendText("Error logging in", "red")
@@ -752,11 +752,11 @@ async function checkResGetCart(response) {
             if (html_cart.length == 0)
                 sendText("Cart empty", "green")
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+            if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
                 sendText("Error getting cart, resolve captcha & retry", "red")
                 addButton()
             } else {
-                errorWebhooks(x, "checkResGetCart")
+                errorWebhooks(res, "checkResGetCart")
                 sendText("Error getting cart", "red")
             }
         }
@@ -1063,7 +1063,7 @@ async function checkResAtc(response) {
                     sendText("Too many requests", "red")
                 } else {
                     sendText(errorMessage, "red")
-                    errorWebhooks(errorMessage, "checkRes")
+                    errorWebhooks(errorMessage, "checkResAtc")
                 }
 
             } else { sendText("Error carting", "red") }
@@ -1072,7 +1072,7 @@ async function checkResAtc(response) {
     } catch (error) {
 
         if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error, "trycheckRes")
+            errorWebhooks(error, "trycheckResAtc")
 
         sendText("Error carting", "red")
     }
@@ -1350,7 +1350,6 @@ async function ValidateShipping() {
 }
 
 async function checkResValidateShipping(response) {
-
     try {
 
         let status = response.status
@@ -1405,7 +1404,7 @@ async function SubmitShipping() {
             },
             "referrer": "https://" + country + "/checkout?stage=shipping",
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&dwfrm_contact_subscribe=true&csrf_token=" + csrf_token,
+            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token, //&dwfrm_contact_subscribe=true
             "method": "POST",
             "mode": "cors",
             "credentials": "include"

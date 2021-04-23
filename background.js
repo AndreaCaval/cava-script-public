@@ -1,4 +1,4 @@
-//debugger
+debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
@@ -94,6 +94,7 @@ function SetStatus_off() {
     setIfNotPresent("checkout_mode_offspring", "Full Checkout");
     setIfNotPresent("payment_mode_offspring", "PayPal");
     setIfNotPresent("guest_mode_offspring", "on");
+    setIfNotPresent("delay_offspring", 1000)
 
     //Sns
     setIfNotPresent("mode_sns", "Fast");
@@ -101,9 +102,11 @@ function SetStatus_off() {
 
     //Naked
     setIfNotPresent("mode_naked", "Fast");
+    setIfNotPresent("delay_naked", 1000)
 
     //Woodwood
     setIfNotPresent("mode_woodwood", "Fast");
+    setIfNotPresent("delay_woodwood", 1000)
 
     setAllOff([
 
@@ -112,6 +115,7 @@ function SetStatus_off() {
         "status_login_footdistrict",
         "email_pw_footdistrict",
         "size_footdistrict",
+        "profile_footdistrict",
 
         //Offspring
         "status_aco_offspring",
@@ -164,6 +168,7 @@ function SetStatus_off() {
         //Lvr
         "status_aco_lvr",
         "size_lvr",
+        "profile_lvr",
 
         //Snipes
         "status_aco_snipes",
@@ -639,7 +644,7 @@ async function sendWebhookCheckout(x) {
         email = x[7]
         payment_link = x[8]
     }
-    sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
+    //sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
 

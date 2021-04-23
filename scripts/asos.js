@@ -90,8 +90,10 @@ function textBox() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
+
+        window.onresize = checkPosition;
     } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
+        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of null")
             errorWebhooks(error, "textBox")
     }
 }
@@ -130,7 +132,7 @@ function dragElement(elmnt) {
         pos4 = e.clientY;
         // set the element's new position:
 
-        if (elmnt.offsetTop - pos2 >= 0) {
+        if (elmnt.offsetTop - pos2 >= 0 && elmnt.offsetTop - pos2 <= window.innerHeight - document.getElementById("CavaScripts").clientHeight) {
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
@@ -142,6 +144,16 @@ function dragElement(elmnt) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+}
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
 }
 async function sendText(text, color) {
     try { document.getElementById("statusAsos").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
@@ -254,19 +266,23 @@ async function mainAtc() {
 
     getToken()
 
+    if (bag_id == "") {
+        sendText("Generate a valid Bag Id", "orange")
+        if (access_token != "") {
+            customers_id = JSON.parse(localStorage.getItem("Asos.TokenManager.token"))
+            customers_id = customers_id.profile.sub
+            await getBagId()
+        }
+    }
     if (bag_id != "" && access_token != "") {
         atcR()
-    } else {
-        if (bag_id == "") {
-            sendText("Generate a valid Bag Id", "orange")
-        }
     }
 }
 
 async function getBagId() {
 
     sendText("Getting bag id...", "blue")
-    await fetch("https://www.asos.com/api/commerce/bag/v4/customers/" + customers_id + "/bags/getbag?expand=summary,total&lang=it-IT&keyStoreDataversion=hnm9sjt-28", {
+    await fetch("https://www.asos.com/api/commerce/bag/v4/customers/" + customers_id + "/bags/getbag?expand=summary,total&lang=" + lang + "&keyStoreDataversion=hnm9sjt-28", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -295,7 +311,7 @@ async function getBagId() {
         })
         .then(response => { checkResGetBagId(response) })
         .catch((error) => {
-            sendText("Error checking stock", "orange")
+            sendText("Error getting bag id", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhooks(error, "getBagId")
         });;
@@ -353,14 +369,14 @@ async function atcR() {
             "mode": "cors",
             "credentials": "include"
         })
-        .then(response => { checkResGetBagId(response) })
+        .then(response => { checkResatcR(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhooks(error, "atcR")
         });;
 }
-async function checkResGetBagId(response) {
+async function checkResatcR(response) {
     try {
 
         let status = response.status
@@ -376,6 +392,8 @@ async function checkResGetBagId(response) {
                 price_product = item["price"]["current"]["text"]
                 size_product = item["size"]
 
+                // img_product = "https://" + item["images"][0]["url"] + "?$XXL$&wid=513&fit=constrain"
+
                 mainCheckout()
             }
         } else {
@@ -384,7 +402,7 @@ async function checkResGetBagId(response) {
 
     } catch (error) {
         sendText("Error adding to cart", "red")
-        errorWebhooks(error, "checkResGetBagId")
+        errorWebhooks(error, "checkResatcR")
     }
 }
 

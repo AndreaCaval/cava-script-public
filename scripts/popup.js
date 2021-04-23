@@ -1,4 +1,4 @@
-//debugger
+debugger
 
 const version = 'Cava-Scripts 1.1.9'
 
@@ -203,8 +203,8 @@ function onUserLogged() {
     if (localStorage.getItem("status_login_offspring") == "on") { $('#Status_login_offspring').prop('checked', true); }
     //Onygo
     if (localStorage.getItem("status_login_onygo") == "on") { $('#Status_login_onygo').prop('checked', true); }
-    //Awlab
-    if (localStorage.getItem("status_login_awlab") == "on") { $('#Status_login_awlab').prop('checked', true); }
+    //Footdistrict
+    if (localStorage.getItem("status_login_footdistrict") == "on") { $('#Status_login_footdistrict').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Awlab
@@ -231,9 +231,9 @@ function onUserLogged() {
     $('#Status_login_onygo').click(function() {
         if ($("#Status_login_onygo").is(':checked')) { localStorage.setItem("status_login_onygo", "on"); } else { localStorage.setItem("status_login_onygo", "off"); }
     });
-    //Awlab
-    $('#Status_login_awlab').click(function() {
-        if ($("#Status_login_awlab").is(':checked')) { localStorage.setItem("status_login_awlab", "on"); } else { localStorage.setItem("status_login_awlab", "off"); }
+    //Footdistrict
+    $('#Status_login_footdistrict').click(function() {
+        if ($("#Status_login_footdistrict").is(':checked')) { localStorage.setItem("status_login_footdistrict", "on"); } else { localStorage.setItem("status_login_footdistrict", "off"); }
     });
 
 
@@ -278,7 +278,15 @@ function onUserLogged() {
         profile_delete = $("#ProfileSaved").val();
 
         profiles = localStorage.getItem("array_profiles")
-        profiles = profiles.split('&')
+        if (profiles.includes('&')) {
+            profiles = profiles.split('&')
+            const index = profiles.indexOf(profile_delete);
+            if (index > -1) {
+                profiles.splice(index, 1);
+            }
+            localStorage.removeItem(profile_delete)
+            profiles = localStorage.setItem("array_profiles", profiles.join('&'))
+        }
 
 
         location.reload();
@@ -404,7 +412,6 @@ function onUserLogged() {
     if (localStorage.getItem("checkout_mode_zalando") != "off") { $("#zalandoCheckoutMode").val(localStorage.getItem("checkout_mode_zalando")); }
     if (localStorage.getItem("payment_zalando") != "off") { $("#zalandoPaymentMode").val(localStorage.getItem("payment_zalando")); }
     if (localStorage.getItem("size_zalando") != "off") { $("#size_zalando").val(localStorage.getItem("size_zalando")); }
-
     //gestisco il click del bottone salva
     $("#btnZ").click(function() {
         let e = $("#email_zalando").val()
@@ -415,7 +422,7 @@ function onUserLogged() {
         let size_zalando = $("#size_zalando").val();
         let delay_zalando = $("#delay_zalando").val();
 
-        if (delay_zalando != '') { localStorage.setItem("delay_zalando", delay_zalando); } else { localStorage.setItem("delay_zalando", "1"); }
+        if (delay_zalando != '') { localStorage.setItem("delay_zalando", delay_zalando); } else { localStorage.setItem("delay_zalando", "1000"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_zalando", e + ":" + p) } else { localStorage.setItem("email_pw_zalando", "off"); }
         if (!(isBlank(size_zalando))) { localStorage.setItem("size_zalando", size_zalando); } else { localStorage.setItem("size_zalando", "off"); }
         if (cart != '') { localStorage.setItem("cart_mode_zalando", cart); } else { localStorage.setItem("cart_mode_zalando", "off"); }
@@ -502,20 +509,34 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA FOOTDISTRICT----------------------------------------------
-    //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileFootdistrict').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileFootdistrict').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_footdistrict") != "off") { $("#ProfileFootdistrict").val(localStorage.getItem("profile_footdistrict")); }
     if (localStorage.getItem("email_pw_footdistrict") != "off") {
-        var email = localStorage.getItem("email_pw_footdistrict").split(':')[0]
-        var pw = localStorage.getItem("email_pw_footdistrict").split(':')[1]
+        let email = localStorage.getItem("email_pw_footdistrict").split(':')[0]
+        let pw = localStorage.getItem("email_pw_footdistrict").split(':')[1]
         $("#email_footdistrict").val(email);
         $("#pw_footdistrict").val(pw);
     }
     if (localStorage.getItem("size_footdistrict") != "off") { $("#size_footdistrict").val(localStorage.getItem("size_footdistrict")); }
     //gestisco il click del bottone salva
     $("#btn_save_footdistrict").click(function() {
-        var e = $("#email_footdistrict").val();
-        var p = $("#pw_footdistrict").val();
-        var size_footdistrict = $("#size_footdistrict").val();
+        let e = $("#email_footdistrict").val();
+        let p = $("#pw_footdistrict").val();
+        let size_footdistrict = $("#size_footdistrict").val();
+        let profile_footdistrict = $("#ProfileFootdistrict").val();
 
+        if (profile_footdistrict != '') { localStorage.setItem("profile_footdistrict", profile_footdistrict); } else { localStorage.setItem("profile_footdistrict", "off"); }
         if (!(isBlank(size_footdistrict))) { localStorage.setItem("size_footdistrict", size_footdistrict); } else { localStorage.setItem("size_footdistrict", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_footdistrict", e + ":" + p); } else { localStorage.setItem("email_pw_footdistrict", "off"); }
     });
@@ -549,8 +570,8 @@ function onUserLogged() {
     $("#btn_save_sns").click(function() {
         let size_sns = $("#size_sns").val();
         let mode_sns = $("#mode_sns").val();
-        var delay_sns = $("#delay_sns").val();
-        if (delay_sns != '') { localStorage.setItem("delay_sns", delay_sns); } else { localStorage.setItem("delay_sns", "1"); }
+        let delay_sns = $("#delay_sns").val();
+        if (delay_sns != '') { localStorage.setItem("delay_sns", delay_sns); } else { localStorage.setItem("delay_sns", "1000"); }
         if (mode_sns != '') { localStorage.setItem("mode_sns", mode_sns); } else { localStorage.setItem("mode_sns", "off"); }
         if (!(isBlank(size_sns))) { localStorage.setItem("size_sns", size_sns); } else { localStorage.setItem("size_sns", "off"); }
     });
@@ -559,11 +580,13 @@ function onUserLogged() {
     //GESTIONE PAGINA WOODWOOD----------------------------------------------
     if (localStorage.getItem("size_woodwood") != "off") { $("#size_woodwood").val(localStorage.getItem("size_woodwood")); }
     if (localStorage.getItem("mode_woodwood") != "off") { $("#mode_woodwood").val(localStorage.getItem("mode_woodwood")); }
+    $("#delay_woodwood").val(localStorage.getItem("delay_woodwood"));
     //gestisco il click del bottone salva
     $("#btn_save_woodwood").click(function() {
         let size_woodwood = $("#size_woodwood").val();
         let mode_woodwood = $("#mode_woodwood").val();
-
+        let delay_woodwood = $("#delay_woodwood").val();
+        if (delay_woodwood != '') { localStorage.setItem("delay_woodwood", delay_woodwood); } else { localStorage.setItem("delay_woodwood", "1000"); }
         if (mode_woodwood != '') { localStorage.setItem("mode_woodwood", mode_woodwood); } else { localStorage.setItem("mode_woodwood", "off"); }
         if (!(isBlank(size_woodwood))) { localStorage.setItem("size_woodwood", size_woodwood); } else { localStorage.setItem("size_woodwood", "off"); }
     });
@@ -572,12 +595,13 @@ function onUserLogged() {
     //GESTIONE PAGINA NAKED----------------------------------------------
     if (localStorage.getItem("size_naked") != "off") { $("#size_naked").val(localStorage.getItem("size_naked")); }
     if (localStorage.getItem("mode_naked") != "off") { $("#mode_naked").val(localStorage.getItem("mode_naked")); }
-
+    $("#delay_naked").val(localStorage.getItem("delay_naked"));
     //gestisco il click del bottone salva
     $("#btn_save_naked").click(function() {
         var size_naked = $("#size_naked").val();
         let mode_naked = $("#mode_naked").val();
-
+        let delay_naked = $("#delay_naked").val();
+        if (delay_naked != '') { localStorage.setItem("delay_naked", delay_naked); } else { localStorage.setItem("delay_naked", "1000"); }
         if (mode_naked != '') { localStorage.setItem("mode_naked", mode_naked); } else { localStorage.setItem("mode_naked", "off"); }
         if (!(isBlank(size_naked))) { localStorage.setItem("size_naked", size_naked); } else { localStorage.setItem("size_naked", "off"); }
     });
@@ -594,13 +618,28 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA LVR----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileLvr').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileLvr').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_lvr") != "off") { $("#ProfileLvr").val(localStorage.getItem("profile_lvr")); }
     if (localStorage.getItem("mode_lvr") != "off") { $("#mode_lvr").val(localStorage.getItem("mode_lvr")); }
     if (localStorage.getItem("size_lvr") != "off") { $("#size_lvr").val(localStorage.getItem("size_lvr")); }
     //gestisco il click del bottone salva
     $("#btn_save_lvr").click(function() {
         let size_lvr = $("#size_lvr").val();
         let mode_lvr = $("#mode_lvr").val();
+        let profile_lvr = $("#ProfileLvr").val();
 
+        if (profile_lvr != '') { localStorage.setItem("profile_lvr", profile_lvr); } else { localStorage.setItem("profile_lvr", "off"); }
         if (mode_lvr != '') { localStorage.setItem("mode_lvr", mode_lvr); } else { localStorage.setItem("mode_lvr", "off"); }
         if (!(isBlank(size_lvr))) { localStorage.setItem("size_lvr", size_lvr); } else { localStorage.setItem("size_lvr", "off"); }
     });
@@ -609,9 +648,12 @@ function onUserLogged() {
     //GESTIONE PAGINA OFFSPRING----------------------------------------------
 
     if (localStorage.getItem("size_offspring") != "off") { $("#size_offspring").val(localStorage.getItem("size_offspring")); }
+    $("#delay_offspring").val(localStorage.getItem("delay_offspring"));
     //gestisco il click del bottone salva
     $("#btn_save_offspring").click(function() {
         let size_offspring = $("#size_offspring").val();
+        let delay_offspring = $("#delay_offspring").val();
+        if (delay_offspring != '') { localStorage.setItem("delay_offspring", delay_offspring); } else { localStorage.setItem("delay_offspring", "1000"); }
         if (!(isBlank(size_offspring))) { localStorage.setItem("size_offspring", size_offspring); } else { localStorage.setItem("size_offspring", "off"); }
     });
     //---------------------------------------------------------------------
@@ -646,7 +688,7 @@ function onUserLogged() {
         let p = $("#pw_awlab").val();
         let checkout_mode_awlab = $("#checkout_mode_awlab").val();
         let payment_mode_awlab = $("#payment_mode_awlab").val();
-        var profile_awlab = $("#ProfileAwlab").val();
+        let profile_awlab = $("#ProfileAwlab").val();
 
         if (profile_awlab != '') { localStorage.setItem("profile_awlab", profile_awlab); } else { localStorage.setItem("profile_awlab", "off"); }
         if (payment_mode_awlab != '') { localStorage.setItem("payment_mode_awlab", payment_mode_awlab); } else { localStorage.setItem("payment_mode_awlab", "off"); }
