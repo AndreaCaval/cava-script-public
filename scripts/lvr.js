@@ -286,14 +286,11 @@ async function mainFast() {
                     eval(element.textContent)
             });
             x = window.__BODY_MODEL__
-                //x = JSON.parse(x)
 
             ItemId = x["ItemParameters"]["ItemId"]
             SeasonId = x["ItemParameters"]["SeasonId"]
             CollectionId = x["ItemParameters"]["CollectionId"]
             VendorColorId = x["ItemParameters"]["VendorColorId"]
-
-            console.log(x)
 
             sizes = x["Availability"]
             let selectSize = document.querySelector("[data-id = 'ItemPage-SelectSize']")
@@ -302,18 +299,16 @@ async function mainFast() {
                 y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
                 y = Array.prototype.slice.call(y)
                 y.forEach(element => {
-                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent + " (NIKE USA)")
+                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent)
                 });
                 document.getElementsByClassName("_1607_GmTdI")[1].click()
             } else {
-                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent + " (NIKE USA)")
+                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent)
             }
-            console.log(size_instock)
             if (size_range == "random") {
                 do {
                     n = getRandomIntInclusive(0, sizes.length - 1)
-                    console.log(sizes[n]["SelectedDescription"])
-                } while (!size_instock.includes(sizes[n]["SelectedDescription"]))
+                } while (!size_instock.includes((parseFloat(sizes[n]["SelectedDescription"]).toString())))
                 size = sizes[n]["SelectedDescription"]
                 SizeId = sizes[n]["SizeOrd"]
                 SizeTypeId = sizes[n]["SizeTypeId"]
@@ -371,7 +366,7 @@ async function mainFast() {
 
 async function mainGift() {
     try {
-
+        await sleep(1000)
         if (document.querySelector("[data-id='ItemPage-SelectsContainer']") == undefined) {
             sendText("Item out of stock", "red")
         } else {
@@ -385,10 +380,8 @@ async function mainGift() {
                     eval(element.textContent)
             });
             x = window.__BODY_MODEL__
-            console.log(x)
             ItemCode = x["ItemCode"]
             EncodedVendorColorId = x.Availability[0].ColorAvailability[0].EncodedVendorColorId
-
             sizes = x["Availability"]
             let selectSize = document.querySelector("[data-id = 'ItemPage-SelectSize']")
             if (selectSize.getElementsByClassName("_1607_GmTdI zq1tU3hfyW")[0] == undefined) {
@@ -396,16 +389,16 @@ async function mainGift() {
                 y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
                 y = Array.prototype.slice.call(y)
                 y.forEach(element => {
-                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent + " (NIKE USA)")
+                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent)
                 });
                 document.getElementsByClassName("_1607_GmTdI")[1].click()
             } else {
-                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent + " (NIKE USA)")
+                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent)
             }
             if (size_range == "random") {
                 do {
                     n = getRandomIntInclusive(0, sizes.length - 1)
-                } while (!size_instock.includes(sizes[n]["SelectedDescription"]))
+                } while (!size_instock.includes((parseFloat(sizes[n]["SelectedDescription"]).toString())))
                 size = sizes[n]["SelectedDescription"]
                 SizeId = sizes[n]["SizeOrd"]
                 SizeTypeId = sizes[n]["SizeTypeId"]
@@ -720,7 +713,12 @@ async function confirmloggeduserandcreateorder() {
             "credentials": "include"
         })
         .then(response => { checkResCk(response) })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => {
+            sendText("Error checking out", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "confirmloggeduserandcreateorder fetch")
+
+        });;
 }
 
 async function checkResCk(response) {
