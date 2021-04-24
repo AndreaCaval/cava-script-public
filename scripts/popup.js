@@ -1,4 +1,4 @@
-debugger
+//debugger
 
 const version = 'Cava-Scripts 1.1.9'
 
@@ -609,10 +609,12 @@ function onUserLogged() {
 
     //GESTIONE PAGINA B4B----------------------------------------------
     if (localStorage.getItem("size_b4b") != "off") { $("#size_b4b").val(localStorage.getItem("size_b4b")); }
+    $("#delay_b4b").val(localStorage.getItem("delay_b4b"));
     //gestisco il click del bottone salva
     $("#btn_save_b4b").click(function() {
-        var size_b4b = $("#size_b4b").val();
-
+        let size_b4b = $("#size_b4b").val();
+        let delay_b4b = $("#delay_b4b").val();
+        if (delay_b4b != '') { localStorage.setItem("delay_b4b", delay_b4b); } else { localStorage.setItem("delay_b4b", "1000"); }
         if (!(isBlank(size_b4b))) { localStorage.setItem("size_b4b", size_b4b); } else { localStorage.setItem("size_b4b", "off"); }
     });
     //---------------------------------------------------------------------

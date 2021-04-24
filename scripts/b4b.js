@@ -366,7 +366,7 @@ async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_b4b" }, function(response) {
     delay = response.farewell
 });
 
