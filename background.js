@@ -644,7 +644,7 @@ async function sendWebhookCheckout(x) {
         email = x[7]
         payment_link = x[8]
     }
-    //sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
+    sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product)
     sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
 

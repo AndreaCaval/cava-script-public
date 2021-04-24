@@ -299,16 +299,23 @@ async function mainFast() {
                 y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
                 y = Array.prototype.slice.call(y)
                 y.forEach(element => {
-                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent)
+                    size_instock.push(parseFloat(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent))
                 });
                 document.getElementsByClassName("_1607_GmTdI")[1].click()
             } else {
-                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent)
+                size_instock.push(parseFloat(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent))
             }
+            size_instock = Array.prototype.slice.call(size_instock)
+            size_instock = arreyMixer(size_instock)
             if (size_range == "random") {
-                do {
-                    n = getRandomIntInclusive(0, sizes.length - 1)
-                } while (!size_instock.includes((parseFloat(sizes[n]["SelectedDescription"]).toString())))
+                let n = 0
+                for (let index = 0; index < sizes.length + 1; index++) {
+                    if (index == sizes.length) { return }
+                    if (size_instock.includes(parseFloat(sizes[index]["SizeValue"]))) {
+                        n = index
+                        break
+                    }
+                }
                 size = sizes[n]["SelectedDescription"]
                 SizeId = sizes[n]["SizeOrd"]
                 SizeTypeId = sizes[n]["SizeTypeId"]
@@ -389,16 +396,23 @@ async function mainGift() {
                 y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
                 y = Array.prototype.slice.call(y)
                 y.forEach(element => {
-                    size_instock.push(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent)
+                    size_instock.push(parseFloat(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent))
                 });
                 document.getElementsByClassName("_1607_GmTdI")[1].click()
             } else {
-                size_instock.push(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent)
+                size_instock.push(parseFloat(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent))
             }
+            size_instock = Array.prototype.slice.call(size_instock)
+            size_instock = arreyMixer(size_instock)
             if (size_range == "random") {
-                do {
-                    n = getRandomIntInclusive(0, sizes.length - 1)
-                } while (!size_instock.includes((parseFloat(sizes[n]["SelectedDescription"]).toString())))
+                let n = 0
+                for (let index = 0; index < sizes.length + 1; index++) {
+                    if (index == sizes.length) { return }
+                    if (size_instock.includes(parseFloat(sizes[index]["SizeValue"]))) {
+                        n = index
+                        break
+                    }
+                }
                 size = sizes[n]["SelectedDescription"]
                 SizeId = sizes[n]["SizeOrd"]
                 SizeTypeId = sizes[n]["SizeTypeId"]
@@ -489,9 +503,13 @@ async function checkResgiftRichiesta(response) {
         let status = response.status
         let res = await response.json()
         if (status == 200 || status == 201) {
-            Token = res["Token"]
-            if (Token != "") {
-                giftAccetta()
+            if (res.Error == "None") {
+                Token = res["Token"]
+                if (Token != "") {
+                    giftAccetta()
+                }
+            } else {
+                sendText(res.Error, "red")
             }
         } else {
             sendText("Error giftRichiesta", "red")
@@ -538,7 +556,7 @@ async function checkResgiftAccetta(response) {
             if (res.Error == "None")
                 sendText("Success", "green")
             else
-                sendText(res.ErrorDescription)
+                sendText(res.Error)
         } else {
             sendText("Error checkResgiftAccetta", "red")
         }
@@ -582,13 +600,12 @@ async function checkRes(response) {
         let res = await response.text()
         res = JSON.parse(res)
         if (status == 200 || status == 201) {
-            if (res["Error"] == "None") {
+            if (res.Error == "None") {
                 sendText("Carted ", "green")
                 sendWebhooks()
                 getCheckout()
-                    // document.location = "https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=#checkout"
             } else {
-                sendText(res["Error"], "red")
+                sendText(res.ErrorDescription, "red")
             }
         } else {
             sendText("Error carting ", "red")
@@ -725,11 +742,12 @@ async function checkResCk(response) {
     let status = response.status
     if (status == 200 || staus == 201) {
         sendText("Checked out", "green")
-        document.location = "https://www.luisaviaroma.com/myarea/thanksBuy.aspx?"
+        document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
     } else {
         sendText("Error checking out...", "red")
     }
 }
+
 
 async function sendWebhooks() {
     chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
