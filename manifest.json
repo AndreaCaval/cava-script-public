@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Cava-Scripts",
     "description": "botterboycava",
-    "version": "1.1.9",
+    "version": "1.2.0",
     "icons": {
         "128": "icons/iconpk.png"
     },

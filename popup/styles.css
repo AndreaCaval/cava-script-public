@@ -115,15 +115,6 @@ body {
     outline: 0;
 }
 
-.btn {
-    background-color: white;
-    color: white;
-}
-
-input.btn:active {
-    background-color: grey;
-}
-
 footer {
     padding-left: 15px;
     padding-right: 15px;

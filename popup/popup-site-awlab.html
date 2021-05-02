@@ -14,10 +14,39 @@
     <div>
         <a href="https://twitter.com/CavaScripts " target="_blank "><img src="../icons/logo.png" style="width: 150px;margin: 0px 20px 0px 15px;"></a>
         <a href="popup-site-aco.html"><img src="../icons/back.png" style="width: 25px;float: right;margin: 20px 0px 0px 10px;position: fixed;"></a>
+        <a href="popup-profile.html"><img src="../icons/profile.png" style="width: 25px;float: right;margin: 20px 0px 0px 40px;position: fixed;"></a>
         <a href="popup-setting.html"><img src="../icons/settings.png" style="width: 25px;float: right;margin: 20px 0px 0px 70px;position: fixed;"></a>
     </div>
     <div class="box" style="padding:15px;">
         <center><img src="../icons/sites/awlab.png" style="width: 100px;"></center><br>
+        <div>
+            <text>Autologin:</text><input type="checkbox" id="Status_login_awlab" style="float: none; margin-top: 0px; margin-right: 0px;" name="awlab">
+        </div>
+
+        <br>
+        <label>Email: </label>
+        <input type="text" id="email_awlab" placeholder="es: cavascripts@gmail.com">
+        <br>
+        <label>Password: </label>
+        <input type="text" id="pw_awlab" placeholder="es: cavascripts">
+        <br><br>
+        <label>Payment: </label>
+        <select style="width: 177px;" id="payment_mode_awlab">
+            <option>PayPal</option>
+            <option>Credit Card</option>
+        </select>
+        <br>
+        <label>CK Mode: </label>
+        <select style="width: 177px;" id="checkout_mode_awlab">
+            <option>Full Checkout</option>
+            <option>ATC Only</option>
+        </select>
+        <br>
+        <label>Profiles:</label>
+        <select style="width: 177px;" id="ProfileAwlab" disabled>
+        </select>
+        <br><br>
+        <button style="text-align: center; width: 100%;height: 100%;" class='btn' id="btn_save_awlab" type="submit">Save</button>
     </div>
 
     <footer>

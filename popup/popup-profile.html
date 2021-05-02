@@ -1,0 +1,92 @@
+<!doctype html>
+<!--pagina dei profili-->
+<html>
+
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/jquery.min.js"></script>
+    <script src="/scripts/popup.js"></script>
+    <title>Estensione</title>
+</head>
+
+<body>
+    <div>
+        <a href="https://twitter.com/CavaScripts " target="_blank"><img src="../icons/logo.png" style="width: 150px;margin: 0px 20px 0px 15px;"></a>
+        <a href="popup-site-aco.html"><img src="../icons/back.png" style="width: 25px;float: right;margin: 20px 0px 0px 10px;position: fixed;"></a>
+        <img src="../icons/profile.png" style="width: 25px;float: right;margin: 20px 0px 0px 40px;position: fixed;">
+        <a href="popup-setting.html"><img src="../icons/settings.png" style="width: 25px;float: right;margin: 20px 0px 0px 70px;position: fixed;"></a>
+    </div>
+    <div style="padding:15px;">
+
+        <label style="font-size: 16px;margin: 2px;color: black;font-variant-caps: all-petite-caps;font-weight: bold;">Profiles:</label>
+        <br>
+        <select style="float: left; width: 49%; height: 17px;" id="ProfileSaved" disabled>
+        </select>
+        <button style="float: right;text-align: center;width: 25%;height: 100%;margin-left: 3px;" class="profile" id="btnDeleteProfile" type="submit" value="Delete">Delete</button>
+        <button style="float: right; text-align: center; width: 24%; height: 100%;" class='profile' id="btnEditProfile" type="submit" value="Edit" disabled>Edit</button>
+
+        <br><br>
+        <button style="text-align: center; width: 100%;" class='profile' id="btnNewProfile" type="submit" value="New Profile">New Profile</button>
+        <br><br>
+
+        <div id="ProfileCreator" style="display: none; padding: 15px 15px 0px 15px;">
+
+            <div style="text-align: center;margin: 5px;">
+                <input style="width: 50%;" id="ProfileName" class="profInput" placeholder="Profile Name" required>
+            </div>
+            <div style="float: left; width: 50%;margin: -2px">
+                <input style="width: 93%;" id="FirstName" class="profInput" placeholder="First Name">
+                <br>
+                <input style="width: 93%;" id="Email" class="profInput" placeholder="E-mail">
+                <br>
+                <input style="width: 93%;" id="AddressOne" class="profInput" placeholder="Address">
+                <br>
+                <input style="width: 93%;" id="City" class="profInput" placeholder="City">
+                <br>
+                <input style="width: 93%;" id="State" class="profInput" placeholder="State">
+                <br>
+                <input style="width: 93%;" id="CardOwnerName" class="profInput" placeholder="Card Owner Name">
+                <br>
+                <input style="width: 93%;" id="MMYY" class="profInput" placeholder="MM/YY">
+            </div>
+
+            <div style="float: right; width: 50%;margin: -2px">
+                <input style="width: 93%;" id="LastName" class="profInput" placeholder="Last Name">
+                <br>
+                <input style="width: 93%;" id="Telephone" class="profInput" placeholder="Telephone">
+                <br>
+                <input style="width: 93%;" id="AddressTwo" class="profInput" placeholder="Address 2">
+                <br>
+                <input style="width: 93%;" id="Zip" class="profInput" placeholder="Zip Code">
+                <br>
+                <input style="width: 93%;" id="Country" class="profInput" placeholder="Country">
+                <br>
+                <input style="width: 93%;" id="CardNumber" class="profInput" placeholder="Card Number">
+                <br>
+                <input style="width: 93%;" id="CVV" class="profInput" placeholder="CVV">
+            </div>
+
+            <p style="clear:both;"></p>
+            <div style="text-align: center;">
+                <button style="text-align: center; width: 75%;margin: 10px;" class='btn' id="btnSaveProfile" type="submit" value="Save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer">
+            <div>
+                <p class="pversion">
+                    <a href="https://twitter.com/CavaScripts " target="_blank "><img class="imgfooter" src="/icons/iconpk.png " height="15 " width="15 "></a>
+                </p>
+            </div>
+            <div>
+                <p class="version" id="version"></p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

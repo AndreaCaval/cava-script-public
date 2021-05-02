@@ -1,6 +1,6 @@
-//debugger
+debugger
 
-const version = 'Cava-Scripts 1.1.9'
+const version = 'Cava-Scripts 1.2.0'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -128,6 +128,12 @@ function onUserLogged() {
     if (localStorage.getItem("status_aco_footdistrict") == "on") { $('#Status_aco_footdistrict').prop('checked', true); }
     //Asos
     if (localStorage.getItem("status_aco_asos") == "on") { $('#Status_aco_asos').prop('checked', true); }
+    //Kith
+    if (localStorage.getItem("status_aco_kith") == "on") { $('#Status_aco_kith').prop('checked', true); }
+    //Courir
+    if (localStorage.getItem("status_aco_courir") == "on") { $('#Status_aco_courir').prop('checked', true); }
+    //Supreme
+    if (localStorage.getItem("status_aco_supreme") == "on") { $('#Status_aco_supreme').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Zalando
@@ -186,6 +192,18 @@ function onUserLogged() {
     $('#Status_aco_asos').click(function() {
         if ($("#Status_aco_asos").is(':checked')) { localStorage.setItem("status_aco_asos", "on"); } else { localStorage.setItem("status_aco_asos", "off"); }
     });
+    //Kith
+    $('#Status_aco_kith').click(function() {
+        if ($("#Status_aco_kith").is(':checked')) { localStorage.setItem("status_aco_kith", "on"); } else { localStorage.setItem("status_aco_kith", "off"); }
+    });
+    //Courir
+    $('#Status_aco_courir').click(function() {
+        if ($("#Status_aco_courir").is(':checked')) { localStorage.setItem("status_aco_courir", "on"); } else { localStorage.setItem("status_aco_courir", "off"); }
+    });
+    //Supreme
+    $('#Status_aco_supreme').click(function() {
+        if ($("#Status_aco_supreme").is(':checked')) { localStorage.setItem("status_aco_supreme", "on"); } else { localStorage.setItem("status_aco_supreme", "off"); }
+    });
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA Login------------------------------------------------
@@ -205,6 +223,8 @@ function onUserLogged() {
     if (localStorage.getItem("status_login_onygo") == "on") { $('#Status_login_onygo').prop('checked', true); }
     //Footdistrict
     if (localStorage.getItem("status_login_footdistrict") == "on") { $('#Status_login_footdistrict').prop('checked', true); }
+    //Courir
+    if (localStorage.getItem("status_login_courir") == "on") { $('#Status_login_courir').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Awlab
@@ -234,6 +254,10 @@ function onUserLogged() {
     //Footdistrict
     $('#Status_login_footdistrict').click(function() {
         if ($("#Status_login_footdistrict").is(':checked')) { localStorage.setItem("status_login_footdistrict", "on"); } else { localStorage.setItem("status_login_footdistrict", "off"); }
+    });
+    //Courir
+    $('#Status_login_courir').click(function() {
+        if ($("#Status_login_courir").is(':checked')) { localStorage.setItem("status_login_courir", "on"); } else { localStorage.setItem("status_login_courir", "off"); }
     });
 
 
@@ -462,6 +486,32 @@ function onUserLogged() {
     });
     //---------------------------------------------------------------------
 
+    //GESTIONE PAGINA COURIR----------------------------------------------
+    //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+    if (localStorage.getItem("email_pw_courir") != "off") {
+        var email = localStorage.getItem("email_pw_courir").split(':')[0]
+        var pw = localStorage.getItem("email_pw_courir").split(':')[1]
+        $("#email_courir").val(email);
+        $("#pw_courir").val(pw);
+    }
+    if (localStorage.getItem("size_courir") != "off") { $("#size_courir").val(localStorage.getItem("size_courir")); }
+    if (localStorage.getItem("payment_mode_courir") != "off") { $("#payment_mode_courir").val(localStorage.getItem("payment_mode_courir")); }
+    if (localStorage.getItem("checkout_mode_courir") != "off") { $("#checkout_mode_courir").val(localStorage.getItem("checkout_mode_courir")); }
+    //gestisco il click del bottone salva
+    $("#btn_save_courir").click(function() {
+        var e = $("#email_courir").val();
+        var p = $("#pw_courir").val();
+        var size_courir = $("#size_courir").val();
+        var payment_mode_courir = $("#payment_mode_courir").val();
+        var checkout_mode_courir = $("#checkout_mode_courir").val();
+
+        if (payment_mode_courir != '') { localStorage.setItem("payment_mode_courir", payment_mode_courir); } else { localStorage.setItem("payment_mode_courir", "off"); }
+        if (checkout_mode_courir != '') { localStorage.setItem("checkout_mode_courir", checkout_mode_courir); } else { localStorage.setItem("checkout_mode_courir", "off"); }
+        if (!(isBlank(size_courir))) { localStorage.setItem("size_courir", size_courir); } else { localStorage.setItem("size_courir", "off"); }
+        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_courir", e + ":" + p); } else { localStorage.setItem("email_pw_courir", "off"); }
+    });
+    //---------------------------------------------------------------------
+
     //GESTIONE PAGINA SNIPES----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
     if (localStorage.getItem("email_pw_snipes") != "off") {
@@ -551,12 +601,14 @@ function onUserLogged() {
         $("#pw_kickz").val(pw);
     }
     if (localStorage.getItem("size_kickz") != "off") { $("#size_kickz").val(localStorage.getItem("size_kickz")); }
+    $("#delay_kickz").val(localStorage.getItem("delay_kickz"));
     //gestisco il click del bottone salva
     $("#btn_save_kickz").click(function() {
-        var e = $("#email_kickz").val();
-        var p = $("#pw_kickz").val();
-        var size_kickz = $("#size_kickz").val();
-
+        let e = $("#email_kickz").val();
+        let p = $("#pw_kickz").val();
+        let size_kickz = $("#size_kickz").val();
+        let delay_kickz = $("#delay_kickz").val();
+        if (delay_kickz != '') { localStorage.setItem("delay_kickz", delay_kickz); } else { localStorage.setItem("delay_kickz", "1000"); }
         if (!(isBlank(size_kickz))) { localStorage.setItem("size_kickz", size_kickz); } else { localStorage.setItem("size_kickz", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_kickz", e + ":" + p); } else { localStorage.setItem("email_pw_kickz", "off"); }
     });
@@ -647,8 +699,64 @@ function onUserLogged() {
     });
     //---------------------------------------------------------------------
 
-    //GESTIONE PAGINA OFFSPRING----------------------------------------------
+    //GESTIONE PAGINA SUPREME----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileSupreme').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileSupreme').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_supreme") != "off") { $("#ProfileSupreme").val(localStorage.getItem("profile_supreme")); }
+    if (localStorage.getItem("payment_mode_supreme") != "off") { $("#payment_mode_supreme").val(localStorage.getItem("payment_mode_supreme")); }
+    if (localStorage.getItem("checkout_mode_supreme") != "off") { $("#checkout_mode_supreme").val(localStorage.getItem("checkout_mode_supreme")); }
+    if (localStorage.getItem("size_supreme") != "off") { $("#size_supreme").val(localStorage.getItem("size_supreme")); }
+    //gestisco il click del bottone salva
+    $("#btn_save_lvr").click(function() {
+        let size_supreme = $("#size_supreme").val();
+        let payment_mode_supreme = $("#payment_mode_supreme").val();
+        let checkout_mode_supreme = $("#checkout_mode_supreme").val();
+        let profile_supreme = $("#ProfileSupreme").val();
+        if (profile_supreme != '') { localStorage.setItem("profile_supreme", profile_supreme); } else { localStorage.setItem("profile_supreme", "off"); }
+        if (payment_mode_supreme != '') { localStorage.setItem("payment_mode_supreme", payment_mode_supreme); } else { localStorage.setItem("payment_mode_supreme", "off"); }
+        if (checkout_mode_supreme != '') { localStorage.setItem("checkout_mode_supreme", checkout_mode_supreme); } else { localStorage.setItem("checkout_mode_supreme", "off"); }
+        if (!(isBlank(size_supreme))) { localStorage.setItem("size_supreme", size_supreme); } else { localStorage.setItem("size_supreme", "off"); }
+    });
+    //---------------------------------------------------------------------
 
+    //GESTIONE PAGINA Kith----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileKith').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileKith').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_kith") != "off") { $("#ProfileKith").val(localStorage.getItem("profile_kith")); }
+    if (localStorage.getItem("checkout_mode_kith") != "off") { $("#checkout_mode_kith").val(localStorage.getItem("checkout_mode_kith")); }
+    if (localStorage.getItem("size_kith") != "off") { $("#size_kith").val(localStorage.getItem("size_kith")); }
+    //gestisco il click del bottone salva
+    $("#btn_save_kith").click(function() {
+        let size_kith = $("#size_kith").val();
+        let checkout_mode_kith = $("#checkout_mode_kith").val();
+        let profile_kith = $("#ProfileKith").val();
+        if (profile_kith != '') { localStorage.setItem("profile_kith", profile_kith); } else { localStorage.setItem("profile_kith", "off"); }
+        if (checkout_mode_kith != '') { localStorage.setItem("checkout_mode_kith", checkout_mode_kith); } else { localStorage.setItem("checkout_mode_kith", "off"); }
+        if (!(isBlank(size_kith))) { localStorage.setItem("size_kith", size_kith); } else { localStorage.setItem("size_kith", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA OFFSPRING----------------------------------------------
     if (localStorage.getItem("size_offspring") != "off") { $("#size_offspring").val(localStorage.getItem("size_offspring")); }
     $("#delay_offspring").val(localStorage.getItem("delay_offspring"));
     //gestisco il click del bottone salva
@@ -657,6 +765,15 @@ function onUserLogged() {
         let delay_offspring = $("#delay_offspring").val();
         if (delay_offspring != '') { localStorage.setItem("delay_offspring", delay_offspring); } else { localStorage.setItem("delay_offspring", "1000"); }
         if (!(isBlank(size_offspring))) { localStorage.setItem("size_offspring", size_offspring); } else { localStorage.setItem("size_offspring", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA ASOS----------------------------------------------
+    $("#delay_asos").val(localStorage.getItem("delay_asos"));
+    //gestisco il click del bottone salva
+    $("#btn_save_asos").click(function() {
+        let delay_asos = $("#delay_asos").val();
+        if (delay_asos != '') { localStorage.setItem("delay_asos", delay_asos); } else { localStorage.setItem("delay_asos", "1000"); }
     });
     //---------------------------------------------------------------------
 

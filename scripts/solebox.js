@@ -101,11 +101,11 @@ function textBox() {
         let btn1 = document.getElementsByClassName("b-header-wrapper js-sticky-element")[0]
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
             '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
-            '.btn_cava:active {position:relative;top:1px;}' +
-            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fsfondo.png?alt=media&token=f403fdf7-32ee-4773-a1a9-4022916f4bea);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
+            '.btn_cava:active {position:relative;top:1px;} p{font-weight:bold}' +
+            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fbackground.png?alt=media&token=90d4ab30-1b59-434f-8729-b2a43a84d445);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
-            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
+            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fleft.png?alt=media&token=ae01ab54-0f26-47ac-9fdf-8774188499bd" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fright.png?alt=media&token=887cb8d7-4399-43ff-a197-96afe8626dc6" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
             '<p style="float:left" id="statusSolebox">Status solebox</p><p style="float:right" id="timerSnipes"></p> <br style="clear:both">' +
             '<div class="box"><label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
             '<input class="btn_cava" style="margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"></div> <br><br>' +
@@ -263,6 +263,8 @@ async function addButton() {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
+
+            checkPosition()
         }
     } catch (error) {}
 }
@@ -1007,7 +1009,7 @@ async function gettingShipping() {
 
         try {
             img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
-            price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replaceAll("\n", "")
+            price_product = html.querySelectorAll("[class='b-sticky-button-wrapper']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replace(/\s/g, '')
             name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
             size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
             if (link.startsWith("https://www.solebox.com/" + country + "/cart"))
@@ -1486,39 +1488,39 @@ chrome.runtime.sendMessage({ greeting: "email_pw_solebox" }, function(response) 
     pw_login = x.split(':')[1]
 });
 
-chrome.runtime.sendMessage({ greeting: "solebox" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "solebox_login" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_login_solebox" }, function(response) {
     status_login = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "solebox_size" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_solebox" }, function(response) {
     if (response.farewell != "off")
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "solebox_payment_mode" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "payment_mode_solebox" }, function(response) {
     if (response.farewell == "Credit Card")
         payment_mode = "CREDIT_CARD"
     else
         payment_mode = "Paypal"
 });
 
-chrome.runtime.sendMessage({ greeting: "solebox_checkout_mode" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_solebox" }, function(response) {
     checkout_mode = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "solebox" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             }
         });
-        chrome.runtime.sendMessage({ greeting: "solebox_login" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_login_solebox" }, function(response) {
             if (response.farewell == 'on') {
                 checkLogin();
             } else

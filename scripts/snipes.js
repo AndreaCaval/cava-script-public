@@ -221,11 +221,11 @@ function textBox() {
         let btn1 = document.getElementsByClassName("b-header-sticky js-header-sticky js-header-search")[0]
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
             '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
-            '.btn_cava:active {position:relative;top:1px;}' +
-            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fsfondo.png?alt=media&token=f403fdf7-32ee-4773-a1a9-4022916f4bea);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
+            '.btn_cava:active {position:relative;top:1px;} p{font-weight:bold}' +
+            '#CavaScripts {position: fixed;right: 0;top: 350px; z-index:1000;width:300px;background-image: url(https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fbackground.png?alt=media&token=90d4ab30-1b59-434f-8729-b2a43a84d445);background-size: cover;padding: 10px 10px;color: black; border-radius: 10px;font-family: Arial;text-align: left;}' +
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
-            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fleft.png?alt=media&token=4bfb16c9-cb38-4493-b80e-452dc18f35ba" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/estensione%20grafica%2Fright.png?alt=media&token=45a8c855-ccf9-4f80-9c55-113ccd8ed863" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
+            '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fleft.png?alt=media&token=ae01ab54-0f26-47ac-9fdf-8774188499bd" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fright.png?alt=media&token=887cb8d7-4399-43ff-a197-96afe8626dc6" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
             '<p style="float:left" id="statusSnipes">Status snipes</p><p style="float:right" id="timerSnipes"></p> <br style="clear:both">' +
             '<div class="box"><label style="font-weight: 600;">Sizepid Dummy: </label><br>' +
             '<input style="color:black; width:100%; min-width:250px;" type="text" id="input_sizepid_dummy" placeholder="es: 0001380189826700000008">' +
@@ -418,6 +418,8 @@ async function addButton() {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
+
+            checkPosition()
         }
 
     } catch (error) {}
@@ -486,7 +488,6 @@ async function checkTimer() {
     }
 }
 
-
 function changeCountry() {
     try {
         let url_product = link.split(country)
@@ -498,7 +499,6 @@ function changeCountry() {
     }
 }
 async function checkLogin() {
-
     try {
 
         let script = ""
@@ -872,11 +872,11 @@ async function atc() {
             } else {
                 let sizes = document.getElementsByClassName('js-pdp-attribute-tile b-size-value js-size-value b-swatch-circle b-swatch-value b-swatch-value--selectable b-swatch-value--orderable')
                 let n = getRandomIntInclusive(0, sizes.length - 1)
-                getSizePid(sizes[n].getAttribute("data-attr-value"))
+                getSizePid(document.querySelector("[data-value='" + sizes[n].getAttribute("data-attr-value") + "']").getAttribute("data-href"))
             }
         } else {
             if (!size_range.includes('-')) {
-                getSizePid(size_range)
+                getSizePid(document.querySelector("[data-value='" + size_range + "']").getAttribute("data-href"))
             } else {
 
                 // let size_box = size_range.split('-')
@@ -896,7 +896,8 @@ async function atc() {
                     }
                 }
                 if (size_random != "")
-                    getSizePid(size_random)
+                    getSizePid(document.querySelector("[data-value='" + size_random + "']").getAttribute("data-href"))
+
             }
         }
 
@@ -910,15 +911,15 @@ async function atc() {
     }
 }
 
-async function getSizePid(size_r) {
+async function getSizePid(req) {
 
-    let type = "212"
-    if (!hasNumber(size_r))
-        type = "5903"
-    if (size_r.includes('-'))
-        type = "9360"
+    // let type = "212"
+    // if (!hasNumber(size_r))
+    //     type = "5903"
+    // if (size_r.includes('-'))
+    //     type = "9360"
 
-    await fetch("https://" + country + "/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_" + type + "=" + size_r + "&format=ajax", {
+    await fetch("https://" + country + "" + req + "&format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -1201,7 +1202,7 @@ async function gettingShipping() {
             sendText("Getting shipping info", "green")
             try {
                 img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
-                price_product = html.querySelectorAll("[class='b-checkout-price-row-total']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replace(/\s/g, '')
+                price_product = html.querySelectorAll("[class='b-sticky-button-wrapper']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replace(/\s/g, '')
                 name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
                 size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
                 if (link.startsWith("https://" + country + "/cart"))
@@ -1232,7 +1233,7 @@ async function gettingShipping() {
                         SubmitPayment()
                         break
                     default:
-                        SelectShippingMethod()
+                        SubmitShipping()
                         break
                 }
             } catch (error) {
@@ -1748,20 +1749,20 @@ chrome.runtime.sendMessage({ greeting: "email_pw_snipes" }, function(response) {
     pw_login = x.split(':')[1]
 });
 
-chrome.runtime.sendMessage({ greeting: "snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_snipes" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "snipes_login" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_login_snipes" }, function(response) {
     status_login = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "snipes_size" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_snipes" }, function(response) {
     if (response.farewell != "off")
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "snipes_checkout_mode" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_snipes" }, function(response) {
     checkout_mode = response.farewell
 });
 
@@ -1770,12 +1771,12 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
         changeCountry()
         textBox()
         checkTimer()
-        chrome.runtime.sendMessage({ greeting: "snipes" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_snipes" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }
         });
-        chrome.runtime.sendMessage({ greeting: "snipes_login" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_login_snipes" }, function(response) {
             if (response.farewell == 'on') {
                 checkLogin()
             } else
