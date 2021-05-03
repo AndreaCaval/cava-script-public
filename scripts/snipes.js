@@ -418,9 +418,9 @@ async function addButton() {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
-
-            checkPosition()
         }
+
+        checkPosition()
 
     } catch (error) {}
 }

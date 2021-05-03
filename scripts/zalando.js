@@ -155,9 +155,6 @@ function textBoxMain() {
             '<input class="btn_cava" style="margin-top:5px;" id="btn_atc_fast" type="submit" value="ATC FAST"> <br> ' +
             '<input class="btn_cava" style="margin-top:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"> <br>' +
             '<input class="btn_cava" style="margin-top:5px;" id="btn_gen_coupon" type="submit" value="GEN COUPON"> <br></div><br><br>' +
-            '<div class="box"><label>Coupon: </label> <br> <input style="color:black; type=text; width:100%;" id="input_coupon"> <br>' +
-            '<label>Dummy Pid: </label> <br> <input style="color:black; type=text; width:100%;" id="input_sizepid" placeholder="es: NI115N001-A130060000"> <br>' +
-            '<input class="btn_cava" style="margin-top:5px;" id="btn_gen_session" type="submit" value="GEN SESSION"> <br> </div>' +
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
 
@@ -198,9 +195,6 @@ function textBoxCart() {
             '<center><p id="statusZalando">Status Zalando</p></center>' +
             '<div class="box"><p id="rCount">Request count: 0</p><p id="rDelay">Delay: 0ms</p>' +
             '<input class="btn_cava" style="text-align: center; background-color:black; width:200px;  margin:5px;" id="btn_clear_cart" type="submit" value="CLEAR CART"></div> <br><br>' +
-            '<div class="box"><label>Coupon: </label> <br> <input style="color:black; type=text; width:100%;" id="input_coupon"> <br>' +
-            '<label>Dummy Pid: </label> <br> <input style="color:black; type=text; width:100%;" id="input_sizepid" placeholder="es: NI115N001-A130060000"> <br>' +
-            '<input class="btn_cava" style="margin-top:5px;" id="btn_gen_session" type="submit" value="GEN SESSION"> <br> </div>' +
             "<p style='margin: 20px 0px 0px 0px;text-align: center;font-size: 15px;'>ACO: <span style='margin-right: 15px;font-size: 20px; text-transform: uppercase; color:" + color_aco + ";'>" + status_aco + "</span></p></div>");
 
         htmlCavaScripts()
@@ -209,6 +203,62 @@ function textBoxCart() {
         if (error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
             errorWebhook(error, "setDisplayInfo_main")
     }
+}
+
+function htmlCavaScripts() {
+    try {
+
+        dragElement(document.getElementById("CavaScripts"));
+        window.onresize = checkPosition;
+        if (localStorage.getItem("box") != null)
+            document.getElementById('CavaScripts').style = localStorage.getItem("box")
+
+        let btn_left = document.getElementById('btn_left')
+        btn_left.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "left:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_right = document.getElementById('btn_right')
+        btn_right.addEventListener("click", function() {
+            document.getElementById('CavaScripts').style = "right:0;top: 350px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        });
+
+        let btn_clear_cart = document.getElementById('btn_clear_cart')
+        btn_clear_cart.addEventListener("click", function() {
+            try { mainClearCart() } catch (error) {
+                errorWebhook(error, "btn_clear_cart")
+            }
+        });
+
+        let btn_gen_session = document.getElementById('btn_gen_session')
+        btn_gen_session.addEventListener("click", function() {
+            try {
+
+                coupon_code = document.getElementById("input_coupon").value
+                sizepid = document.getElementById("input_sizepid").value
+                session = 1
+                atcR(sizepid)
+
+            } catch (error) {}
+        });
+
+        document.getElementById("input_sizepid").addEventListener('input', updateValueDummy);
+        if (localStorage.getItem("zalando_dummy") != null)
+            document.getElementById("input_sizepid").value = localStorage.getItem("zalando_dummy")
+
+    } catch (error) {}
+}
+async function checkPosition() {
+    let positon_top = 0
+    try {
+        positon_top = window.innerHeight - document.getElementById("CavaScripts").clientHeight
+        if (positon_top < document.getElementById("CavaScripts").getAttribute("style").replace(/[^\d,.-]/g, '') && positon_top >= 0) {
+            document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
+            localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
+        }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {

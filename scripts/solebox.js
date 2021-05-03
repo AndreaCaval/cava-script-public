@@ -264,8 +264,10 @@ async function addButton() {
                 is_captcha_solved = true
             });
 
-            checkPosition()
         }
+
+        checkPosition()
+
     } catch (error) {}
 }
 

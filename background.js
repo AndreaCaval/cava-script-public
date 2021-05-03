@@ -490,7 +490,7 @@ async function sendWebhookCheckout(x) {
             payment_link = x[8]
         } catch (error) {}
     }
-    //sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
+    sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
     sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
 
