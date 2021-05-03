@@ -418,9 +418,9 @@ async function addButton() {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
-        }
 
-        checkPosition()
+            checkPosition()
+        }
 
     } catch (error) {}
 }
@@ -434,9 +434,9 @@ async function sendTime(time) {
 }
 
 async function main() {
-    if (link.startsWith("https://" + country + "/p")) {
+    if (link.includes("/p/")) {
         mainAtc()
-    } else if (link.startsWith("https://" + country + "/cart")) {
+    } else if (link.includes("/cart")) {
         mainCart()
     } else if (link == LINK_REQUEST[country]["add_product"]) {
         try {

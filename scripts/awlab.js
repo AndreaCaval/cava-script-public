@@ -455,8 +455,8 @@ async function mainUnLoggedCheckoutShipping() {
         document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_address1").value = profile["AddressOne"]
         document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_postal").value = profile["Zip"]
         document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_city").value = profile["City"]
-        document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_states_state").value = profile["State"] //FC
         document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_country").value = profile["Country"]
+        document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_states_state").value = profile["State"] //FC
 
         await sleep(500)
         document.getElementsByClassName("b-btn_fourth b-checkout__proceed js-cmp-inited js-cmp-button")[0].click()
