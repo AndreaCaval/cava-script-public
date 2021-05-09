@@ -488,6 +488,51 @@ async function checkTimer() {
     }
 }
 
+async function CSRFGenerate() {
+    await fetch(LINK_REQUEST[country]["generate_csrf"], {
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResCSRFGenerate(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "CSRFGenerate")
+        });;
+}
+
+async function checkResCSRFGenerate(response) {
+
+    try {
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+        if (status == 200 || status == 201) {
+            csrf_token = res["csrf"]["token"]
+            console.log(csrf_token)
+        } else {
+            if (!x.includes("\"appId\"") && !x.includes("_pxAppId")) {
+                errorWebhooks(x, "checkResCSRFGenerate")
+            }
+        }
+    } catch (error) {}
+}
+
 function changeCountry() {
     try {
         let url_product = link.split(country)
@@ -1017,9 +1062,9 @@ async function checkResAtc(response) {
             error = res["error"]
             if (error == false) {
                 sendText("Carted", "green")
+                name_product = res["gtm"]["name"]
+                size_product = res["gtm"]["variant"]
                 if (dummy == 2) {
-                    name_product = res["gtm"]["name"]
-                    size_product = res["gtm"]["variant"]
                     price_product = res["gtm"]["price"] + '€'
                     img_product = ""
                     PlaceOrder()
@@ -1204,7 +1249,8 @@ async function gettingShipping() {
                 img_product = html.getElementsByClassName("b-item-image-wrapper")[0].querySelectorAll("img")[0].getAttribute('data-src')
                 price_product = html.querySelectorAll("[class='b-sticky-button-wrapper']")[0].querySelectorAll('[class="t-checkout-price-value"]')[0].textContent.replace(/\s/g, '')
                 name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
-                size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[0].textContent
+                if (size_product == "")
+                    size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[2].textContent
                 if (link.startsWith("https://" + country + "/cart"))
                     try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
                 else if (pidsize != "")

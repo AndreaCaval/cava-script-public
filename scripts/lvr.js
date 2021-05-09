@@ -516,7 +516,7 @@ async function checkResgiftRichiesta(response) {
                     giftAccetta()
                 }
             } else {
-                sendText(res.Error, "red")
+                sendText(res.ErrorDescription, "red")
             }
         } else {
             sendText("Error giftRichiesta", "red")
@@ -690,14 +690,15 @@ async function getData() {
         email = x["UserInfo"]["Id"]
         account_FirstName = x["UserInfo"]["FirstName"]
         account_LastName = x["UserInfo"]["LastName"]
-        FirstName = x["UserInfo"]["ShippingAddresses"][0]["FirstName"]
-        LastName = x["UserInfo"]["ShippingAddresses"][0]["LastName"]
-        phone = x["UserInfo"]["ShippingAddresses"][0]["Phone"]
-        address = x["UserInfo"]["ShippingAddresses"][0]["Address"]
-        country_code = x["UserInfo"]["ShippingAddresses"][0]["CountryId"]
-        zipcode = x["UserInfo"]["ShippingAddresses"][0]["ZipCode"]
-        city = x["UserInfo"]["ShippingAddresses"][0]["City"]
-        state = x["UserInfo"]["ShippingAddresses"][0]["StateId"]
+
+        FirstName = profile["FirstName"]
+        LastName = profile["LastName"]
+        phone = profile["Telephone"]
+        address = profile["AddressOne"]
+        country_code = profile["Country"]
+        zipcode = profile["Zip"]
+        city = profile["City"]
+        state = profile["State"]
         if (state == "")
             state = null
 

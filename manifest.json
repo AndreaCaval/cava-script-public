@@ -31,6 +31,10 @@
         "persistent": true
     },
     "content_scripts": [{
+            "matches": ["https://www.supremenewyork.com/*"],
+            "js": ["scripts/supreme.js"],
+            "all_frames": true
+        }, {
             "matches": ["https://www.offspring.co.uk/*"],
             "js": ["scripts/offspring.js"],
             "all_frames": true

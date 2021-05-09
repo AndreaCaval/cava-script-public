@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.0'
+const version = 'Cava-Scripts 1.2.1'
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -717,7 +717,7 @@ function onUserLogged() {
     if (localStorage.getItem("checkout_mode_supreme") != "off") { $("#checkout_mode_supreme").val(localStorage.getItem("checkout_mode_supreme")); }
     if (localStorage.getItem("size_supreme") != "off") { $("#size_supreme").val(localStorage.getItem("size_supreme")); }
     //gestisco il click del bottone salva
-    $("#btn_save_lvr").click(function() {
+    $("#btn_save_supreme").click(function() {
         let size_supreme = $("#size_supreme").val();
         let payment_mode_supreme = $("#payment_mode_supreme").val();
         let checkout_mode_supreme = $("#checkout_mode_supreme").val();

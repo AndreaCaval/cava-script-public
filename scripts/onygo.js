@@ -289,9 +289,8 @@ async function addButton() {
                 is_captcha_solved = true
             });
 
+            checkPosition()
         }
-
-        checkPosition()
 
     } catch (error) {}
 }
@@ -491,7 +490,7 @@ async function checkResLogin(response) {
         sendText("Logged in", "green")
         is_login = true
     } else {
-        if (res.includes("\"appId\"")) {
+        if (res.includes("\"appId\"") || res.includes("\"PX-ABR\"")) {
             sendText("Error logging in, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -538,7 +537,7 @@ async function checkResgetLogin(response) {
     if (status == 200 || status == 201) {
         return res
     } else {
-        if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
+        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
             sendText("Error logging in, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -610,7 +609,7 @@ async function checkResGetCart(response) {
             if (html_cart.length == 0)
                 sendText("Cart empty", "green")
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+            if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
                 sendText("Error getting cart, resolve captcha & retry", "red")
                 addButton()
             } else {
@@ -664,7 +663,7 @@ async function checkResClearCart(response) {
         if (status == 200 || status == 201) {
             sendText("Item removed", "green")
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error removing item..., resolve captcha & retry", "red")
                 addButton()
             } else {
@@ -796,7 +795,7 @@ async function checkResgetSizePid(response) {
             pidsize = res["product"]["id"]
             atcRfast()
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error getting product, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -874,7 +873,7 @@ async function checkResAtc(response) {
                 }
             }
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error carting, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -968,7 +967,7 @@ async function checkResgetCheckout(response) {
         html.innerHTML = res
         gettingShipping()
     } else {
-        if (res.includes("\"appId\"")) {
+        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
             sendText("Error getting checkout, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -1078,7 +1077,7 @@ async function checkResValidateShipping(response) {
             sendText("Validating address", "green")
             SubmitShipping()
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error validating address, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1143,7 +1142,7 @@ async function checkResSubmitShipping(response) {
             sendText("Submit shipping", "green")
             SubmitPayment()
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error submitting shipping, open solver", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1216,7 +1215,7 @@ async function checkResSubmitPayment(response) {
                     PlaceOrder()
                 }
             } else {
-                if (x.includes("\"appId\"")) {
+                if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                     sendText("Error submitting payment, resolve captcha", "red")
                     addButton()
                     while (is_captcha_solved == false) {
@@ -1235,7 +1234,7 @@ async function checkResSubmitPayment(response) {
             }
 
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error submitting payment, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1332,7 +1331,7 @@ async function checkResPlaceOrder(response) {
             }
 
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error placing order, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1400,7 +1399,7 @@ async function checkResRemoveDummy(response) {
             localStorage.setItem("timer_onygo", Date.now())
             sendText("Session ready", "green")
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error removing dummy..., resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
