@@ -32,6 +32,7 @@ let lang = document.documentElement.lang
 let browseSizeSchema = ""
 let browseCurrency = ""
 let geocountry = ""
+let browseCountry = ""
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -164,8 +165,12 @@ async function sendText(text, color) {
 }
 
 function getToken() {
-    data = JSON.parse(localStorage.getItem("Asos.TokenManager.token"))
-    access_token = data["access_token"]
+    try {
+
+        data = JSON.parse(localStorage.getItem("Asos.TokenManager.token"))
+        access_token = data["access_token"]
+
+    } catch (error) { errorWebhooks(error, "getToken") }
 }
 
 async function main() {
@@ -279,6 +284,7 @@ async function mainAtc() {
             browseSizeSchema = document.cookie.split('; ').find(row => row.startsWith('browseSizeSchema')).substring(17)
             browseCurrency = document.cookie.split('; ').find(row => row.startsWith('browseCurrency')).substring(15)
             geocountry = document.cookie.split('; ').find(row => row.startsWith('geocountry')).substring(11)
+            browseCountry = document.cookie.split('; ').find(row => row.startsWith('browseCountry')).substring(14)
             await getBagId()
         }
     }
