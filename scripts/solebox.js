@@ -267,7 +267,6 @@ async function addButton() {
         }
 
         checkPosition()
-
     } catch (error) {}
 }
 
@@ -431,7 +430,7 @@ async function checkResLogin(response) {
         sendText("Logged in", "green")
         is_login = true
     } else {
-        if (res.includes("\"appId\"")) {
+        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
             sendText("Error logging in, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -481,7 +480,7 @@ async function checkResgetLogin(response) {
         if (status == 200 || status == 201) {
             return res
         } else {
-            if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
+            if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
                 sendText("Error logging in, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -560,7 +559,7 @@ async function checkResGetCart(response) {
             if (html_cart.length == 0)
                 sendText("Cart empty", "green")
         } else {
-            if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
+            if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
                 sendText("Error getting cart, resolve captcha & retry", "red")
                 addButton()
             } else {
@@ -616,7 +615,7 @@ async function checkResClearCart(response) {
         if (status == 200 || status == 201) {
             sendText("Item removed", "green")
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error removing item..., resolve captcha & retry", "red")
                 addButton()
             } else {
@@ -760,7 +759,7 @@ async function checkResgetSizePid(response) {
             pidsize = res["product"]["id"]
             atcRfast()
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error getting product, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -842,7 +841,7 @@ async function checkResAtc(response) {
                 }
             }
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error carting, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -886,7 +885,7 @@ async function checkResAtc(response) {
 async function mainCart() {
 
     if (checkout_mode != "ATC Only") {
-        while (is_login == false) {
+        while (is_login == false && status_login == "on") {
             await sleep(250)
         }
 
@@ -1089,7 +1088,7 @@ async function checkResShippingRates(response) {
             sendText("Shipping rates", "green")
             SubmitShipping()
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error getting shipping rates, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1102,8 +1101,6 @@ async function checkResShippingRates(response) {
             } else {
                 resInfoWebook(x, "checkResShippingRates")
                 sendText("Error getting shipping rates", "red")
-                await sleep(1000)
-                mainCart()
             }
         }
 
@@ -1116,15 +1113,13 @@ async function checkResShippingRates(response) {
             errorWebhooks(error, "trycheckResValidateShipping")
 
         sendText("Error validating address", "red")
-        await sleep(1000)
-        mainCart()
     }
 }
 
 async function SubmitShipping() {
 
     sendText("Submitting ship...", "blue")
-    await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-SubmitShipping?region=europe&country=undefined&addressId=" + address_id + "&format=ajax", {
+    await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-SubmitShipping?region=europe&country=" + country_code + "&addressId=" + address_id + "&format=ajax", {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
                 "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -1160,9 +1155,12 @@ async function checkResSubmitShipping(response) {
 
         if (status == 200 || status == 201) {
             sendText("Submit shipping", "green")
-            SubmitPayment()
+            if (is_login == false)
+                SubmitPayment()
+            else
+                PlaceOrder()
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error submitting shipping, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1175,8 +1173,6 @@ async function checkResSubmitShipping(response) {
             } else {
                 resInfoWebook(x, "checkResSubmitShipping")
                 sendText("Error submitting shipping", "red")
-                await sleep(1000)
-                mainCart()
             }
         }
 
@@ -1189,8 +1185,6 @@ async function checkResSubmitShipping(response) {
             errorWebhooks(error, "trycheckResSubmitShipping")
 
         sendText("Error submitting shipping", "red")
-        await sleep(1000)
-        mainCart()
     }
 }
 
@@ -1244,7 +1238,7 @@ async function checkResSubmitPayment(response) {
                     PlaceOrder()
                 }
             } else {
-                if (x.includes("\"appId\"")) {
+                if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                     sendText("Error submitting payment, resolve captcha", "red")
                     addButton()
                     while (is_captcha_solved == false) {
@@ -1259,13 +1253,11 @@ async function checkResSubmitPayment(response) {
                 } else {
                     resInfoWebook(x, "checkResSubmitPayment_1")
                     sendText("Error submitting payment", "red")
-                    await sleep(1000)
-                    mainCart()
                 }
             }
 
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error submitting payment, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1276,8 +1268,6 @@ async function checkResSubmitPayment(response) {
             } else {
                 resInfoWebook(x, "checkResSubmitPayment_2")
                 sendText("Error submitting payment", "red")
-                await sleep(1000)
-                mainCart()
             }
         }
 
@@ -1290,8 +1280,6 @@ async function checkResSubmitPayment(response) {
             errorWebhooks(error, "trycheckResSubmitPayment")
 
         sendText("Error submitting payment", "red")
-        await sleep(1000)
-        mainCart()
     }
 }
 
@@ -1344,38 +1332,34 @@ async function checkResPlaceOrder(response) {
                     sendText("Checked out", "green")
                     window.open(linkpp)
                     sendWebhooks(linkpp)
-                } else {
-                    errorMessage = res['errorMessage']
-                    resInfoWebook(x, "checkResPlaceOrder_1")
-                    if (errorMessage == "undefined" || errorMessage == undefined) {
-                        await sleep(1000)
-                        mainCart()
-                    } else {
-                        sendText(errorMessage, "red")
-                        errorWebhooks(errorMessage, "checkResPlaceOrder_1")
-                        await sleep(1000)
-                        mainCart()
-                    }
                 }
             } else {
-                errorMessage = res['errorMessage']
-                resInfoWebook(x, "checkResPlaceOrder_2")
                 if (res["redirectUrl"] == "/" + country + "/cart") {
                     sendText("Item out of stock", "red")
-                } else
-                if (errorMessage == "undefined" || errorMessage == undefined) {
-                    await sleep(1000)
-                    mainCart()
+                } else if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
+                    sendText("Error placing order, resolve captcha", "red")
+                    addButton()
+                    while (is_captcha_solved == false) {
+                        await sleep(250)
+                    }
+                    is_captcha_solved = false
+                    PlaceOrder()
+                } else if (res["missingPayment"] == true) {
+                    SubmitPayment()
                 } else {
-                    sendText(errorMessage, "red")
-                    errorWebhooks(errorMessage, "checkResPlaceOrder_2")
-                    await sleep(1000)
-                    mainCart()
+                    errorMessage = res['errorMessage']
+                    resInfoWebook(x, "checkResPlaceOrder_2")
+                    if (errorMessage == "undefined" || errorMessage == undefined) {
+                        sendText(errorMessage, "red")
+                    } else {
+                        sendText(errorMessage, "red")
+                        errorWebhooks(errorMessage, "checkResPlaceOrder_2")
+                    }
                 }
             }
 
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error placing order, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1386,8 +1370,6 @@ async function checkResPlaceOrder(response) {
             } else {
                 resInfoWebook(x, "checkResPlaceOrder_3")
                 sendText("Error placing order", "red")
-                await sleep(1000)
-                mainCart()
             }
         }
 
@@ -1400,8 +1382,6 @@ async function checkResPlaceOrder(response) {
             errorWebhooks(error, "trycheckResPlaceOrder")
 
         sendText("Error placing order", "red")
-        await sleep(1000)
-        mainCart()
     }
 }
 
@@ -1446,7 +1426,7 @@ async function checkResRemoveDummy(response) {
             await sleep(500)
             sendText("Session ready", "green")
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error removing dummy..., resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
