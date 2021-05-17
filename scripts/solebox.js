@@ -272,6 +272,7 @@ async function addButton() {
 
 async function sendText(text, color) {
     try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    checkPosition()
 }
 
 async function main() {
