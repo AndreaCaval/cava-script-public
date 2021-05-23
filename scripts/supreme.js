@@ -23,11 +23,14 @@ let profile = []
 let sizes = ""
 let style = ""
 
-let link_product = link
+let link_product = ""
 let name_product = '';
 let size_product = '';
 let price_product = "";
-let img_product = ""
+let img_product = "https://assets.supremenewyork.com/"
+
+let order_number = ""
+let order_email = ""
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -165,26 +168,34 @@ async function main() {
         mainCheckout()
     else if (link.includes("shop") && checkout_mode != "CK Only" && document.getElementById("style") != null)
         mainAtc()
+    else if (link.startsWith("https://www.supremenewyork.com/checkout/"))
+        mainSuccess()
+
 }
 
 async function mainAtc() {
     try {
 
-        style = document.getElementById("style").value
+        try {
+            style = document.getElementById("style").value
 
-        sizes = document.getElementById("size").querySelectorAll("option")
-        sizes = Array.prototype.slice.call(sizes)
-        sizes = arreyMixer(sizes)
+            sizes = document.getElementById("size").querySelectorAll("option")
+            sizes = Array.prototype.slice.call(sizes)
+            sizes = arreyMixer(sizes)
 
-        if (size_range == "random") {
-            document.getElementById("size").value = sizes[0].getAttribute("value")
-        } else {
-            sizes.forEach(element => {
-                if (element.textContent == size_range) {
-                    document.getElementById("size").value = element.getAttribute("value")
-                        // size = element.getAttribute("value")
-                }
-            });
+            if (size_range == "random") {
+                document.getElementById("size").value = sizes[0].getAttribute("value")
+            } else {
+                sizes.forEach(element => {
+                    if (element.textContent == size_range) {
+                        document.getElementById("size").value = element.getAttribute("value")
+                            // size = element.getAttribute("value")
+                    }
+                });
+            }
+        } catch (error) {
+            if (error != "TypeError: Cannot read property 'getAttribute' of undefined")
+                errorWebhook(error, "mainAtc1")
         }
 
         sendText("trying atc...", "blue")
@@ -198,7 +209,7 @@ async function mainAtc() {
             }
         }
 
-    } catch (error) { errorWebhook(error, "mainAtc") }
+    } catch (error) { errorWebhook(error, "mainAtc2") }
 }
 
 async function atcR() {}
@@ -222,6 +233,8 @@ async function mainCheckout() {
                 document.getElementById("credit_card_type").value = "paypal"
                 document.getElementById("paypal_message").style = "display: block;"
                 document.getElementById("card_details").style = "display: none;"
+
+                sendText("Data filled", "green")
             } else {
                 document.getElementById("credit_card_type").value = "credit card"
                 document.getElementById("paypal_message").style = "display: none;"
@@ -233,8 +246,9 @@ async function mainCheckout() {
                 if (profile["MMYY"].split('/')[1].length == 2) document.getElementById("credit_card_year").value = "20" + profile["MMYY"].split('/')[1]
                 else document.getElementById("credit_card_year").value = profile["MMYY"].split('/')[1]
                 document.getElementById("vval").value = profile["CVV"]
-            }
 
+                sendText("Data filled", "green")
+            }
             // document.getElementById("order_terms").checked = true
         } else {
             sendText("Error profile", "red")
@@ -243,12 +257,53 @@ async function mainCheckout() {
     } catch (error) { errorWebhook(error, "mainCheckout") }
 }
 
+async function mainSuccess() {
+    try {
 
-async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
+        price_product = document.getElementById("total").textContent
+        link_product = document.getElementsByClassName("cart-image")[0].querySelector("a").href
+        img_product = document.getElementsByClassName("cart-image")[0].querySelector("img").src
+        let mixpanel = false
+
+        let scripts1 = document.querySelectorAll("script")
+        scripts1.forEach(element => {
+            if (element.textContent.includes("Purchase Success")) {
+                eval(element.textContent)
+            }
+        });
+
+        let scripts2 = document.querySelectorAll("script")
+        scripts2.forEach(element => {
+            if (element.textContent.includes("ecommerce:addItem")) {
+                eval(element.textContent.substring(31, element.textContent.length - 16))
+            }
+        });
+
+        order_email = profile["Email"]
+
+        sendWebhooks()
+
+    } catch (error) { errorWebhook(error, "mainSuccess") }
 }
 
-async function errorWebhooks(error, position) {
+function ga_tracka(a, b, order) {
+    name_product = order["Products"][0]["Name"] + order["Products"][0]["Color"]
+    size_product = order["Products"][0]["Size"]
+}
+
+function ga_track(a, orderid, sku, pname, colorsize, price1, quantity) {
+    if (a == "ecommerce:addItem") {
+        // name_product = pname
+        // size_product = colorsize
+        order_number = orderid
+    }
+}
+
+async function sendWebhooks() {
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + order_email + "&-&" + order_number })
+}
+
+async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
 

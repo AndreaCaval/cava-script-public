@@ -20,6 +20,8 @@ let id_product = ""
 let ipa = ""
 let size_in_stock = []
 
+let carted = 0
+
 let is_captcha = false
 let sizes = ""
 let sizes_in_stock = []
@@ -156,7 +158,6 @@ async function sendText(text, color) {
 }
 
 async function errorRefresh() {
-    sendText("Sleep " + delay + "ms...", "blue")
     await sleep(parseInt(delay))
     location.reload()
 }
@@ -243,55 +244,78 @@ async function main() {
 }
 
 async function atcBrowser() {
-    let sizes = ""
-    let sizes_in_stock = []
+    try {
+        carted = document.getElementsByClassName("shopping_cart is-visuallyhidden")[0].getElementsByClassName("ajax_cart_quantity")[0].textContent
 
-    sizes = document.getElementsByClassName("product__attributes-label")
-    sizes = Array.prototype.slice.call(sizes)
-    sizes = arreyMixer(sizes)
+        let sizes = ""
+        let sizes_in_stock = []
 
-    sizes.forEach(element => {
-        if (element.getAttribute("class") != "product__attributes-label product__attributes-label--disable")
-            sizes_in_stock.push(element)
-    });
+        sizes = document.getElementsByClassName("product__attributes-label")
+        sizes = Array.prototype.slice.call(sizes)
+        sizes = arreyMixer(sizes)
 
-    if (sizes_in_stock.length == 0) {
-        sendText("Item out of stock...", "red")
-    } else {
-        if (size_range == "random") {
-            n = getRandomIntInclusive(0, sizes_in_stock.length - 1)
-            sizes_in_stock[n].click()
+        sizes.forEach(element => {
+            if (element.getAttribute("class") != "product__attributes-label product__attributes-label--disable")
+                sizes_in_stock.push(element)
+        });
+
+        if (sizes_in_stock.length == 0) {
+            sendText("Item out of stock...", "red")
         } else {
-            if (size_range.includes('-')) {
-                for (let index = 0; index < sizes_in_stock.length; index++) {
-                    if (parseFloat(sizes_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
-                        sizes_in_stock[index].click()
-                        cart = 1
-                        break
-                    }
-                }
+            if (size_range == "random") {
+                n = getRandomIntInclusive(0, sizes_in_stock.length - 1)
+                sizes_in_stock[n].click()
+                size_product = sizes_in_stock[n].textContent
             } else {
-                for (let index = 0; index < sizes_in_stock.length; index++) {
-                    if (parseFloat(sizes_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
-                        sizes_in_stock[index].click()
-                        cart = 1
-                        break
+                if (size_range.includes('-')) {
+                    for (let index = 0; index < sizes_in_stock.length; index++) {
+                        if (parseFloat(sizes_in_stock[index].split('-')[1]) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes_in_stock[index].split('-')[1]) <= parseFloat(size_range.split('-')[1])) {
+                            sizes_in_stock[index].click()
+                            size_product = sizes_in_stock[index].textContent
+                            cart = 1
+                            break
+                        }
+                    }
+                } else {
+                    for (let index = 0; index < sizes_in_stock.length; index++) {
+                        if (parseFloat(sizes_in_stock[index].split('-')[1]) == parseFloat(size_range)) {
+                            sizes_in_stock[index].click()
+                            size_product = sizes_in_stock[index].textContent
+                            cart = 1
+                            break
+                        }
                     }
                 }
             }
+            await sleep(250)
+            if (cart == 0 && size_range != "random")
+                sendText("Selected sizes not available", "purple")
+            else {
+                sendText("Adding to cart", "blue")
+                document.getElementById("submitAdToCart").click()
+            }
+            for (let index = 0; index < 5; index++) {
+                await sleep(250)
+                if (carted != document.getElementsByClassName("shopping_cart is-visuallyhidden")[0].getElementsByClassName("ajax_cart_quantity")[0].textContent) {
+                    name_product = document.querySelector('[itemprop="name"]').textContent
+                    img_product = document.querySelector('[itemprop="image"]').textContent
+                    price_product = document.querySelector('[itemprop="price"]').textContent
+                    await sendWebhooks()
+                    await sleep(100)
+                    document.location = "https://www.basket4ballers.com/" + country + "/commande"
+                    break
+                }
+            }
+
+            if (document.getElementsByClassName("fancybox-error")[0] != undefined) {
+                sendText(document.getElementsByClassName("fancybox-error")[0].textContent, "red")
+            } else if (carted == document.getElementsByClassName("shopping_cart is-visuallyhidden")[0].getElementsByClassName("ajax_cart_quantity")[0].textContent) {
+                sendText("Size oos", "red")
+                errorRefresh()
+            }
         }
 
-        if (cart == 0 && size_range != "random")
-            sendText("Selected sizes not available", "purple")
-        else {
-            sendText("Adding to cart", "blue")
-            document.getElementById("submitAdToCart").click()
-        }
-
-        if (document.getElementsByClassName("fancybox-error")[0] != undefined) {
-            sendText(document.getElementsByClassName("fancybox-error")[0].textContent, "red")
-        }
-    }
+    } catch (error) {}
 }
 
 async function atcR() {

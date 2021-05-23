@@ -1,6 +1,7 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.1'
+const version = 'Cava-Scripts 1.2.2'
+let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
     var request = new XMLHttpRequest();
@@ -367,7 +368,27 @@ function onUserLogged() {
             }
         }
     });
-    //---------------------------------------------------------------------
+    $("#btnExportProfiles").click(() => {
+        saveLocalStorageToJsonProfile()
+    })
+    $("#btnImportProfiles").click(() => {
+            try {
+                const fileSelector = document.getElementById('importProfileSelector');
+                const file = fileSelector.files[0]
+                    // alert(file.name)
+                const reader = new FileReader()
+                reader.readAsText(file, "UTF-8")
+                reader.onload = (evt) => {
+                    const result = evt.target.result
+                    const resultObj = JSON.parse(result)
+                    importData(resultObj)
+                }
+                reader.onerror = (error) => {
+                    alert("Error importing profiles")
+                }
+            } catch (error) { alert("Error importing profiles") }
+        })
+        //---------------------------------------------------------------------
 
     //GESTIONE PAGINA SETTING----------------------------------------------
     profiles = localStorage.getItem("array_profiles")
@@ -420,8 +441,8 @@ function onUserLogged() {
 
     //---------------------------------------------------------------------
 
-    //GESTIONE PAGINA ZALANDO----------------------------------------------
 
+    //GESTIONE PAGINA ZALANDO----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
     if (localStorage.getItem("email_pw_zalando") != "off") {
         var email = localStorage.getItem("email_pw_zalando").split(':')[0]
@@ -462,9 +483,22 @@ function onUserLogged() {
 
     //GESTIONE PAGINA SOLEBOX----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileSolebox').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileSolebox').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_solebox") != "off") { $("#ProfileSolebox").val(localStorage.getItem("profile_solebox")); }
     if (localStorage.getItem("email_pw_solebox") != "off") {
-        var email = localStorage.getItem("email_pw_solebox").split(':')[0]
-        var pw = localStorage.getItem("email_pw_solebox").split(':')[1]
+        let email = localStorage.getItem("email_pw_solebox").split(':')[0]
+        let pw = localStorage.getItem("email_pw_solebox").split(':')[1]
         $("#email_solebox").val(email);
         $("#pw_solebox").val(pw);
     }
@@ -473,12 +507,14 @@ function onUserLogged() {
     if (localStorage.getItem("checkout_mode_solebox") != "off") { $("#checkout_mode_solebox").val(localStorage.getItem("checkout_mode_solebox")); }
     //gestisco il click del bottone salva
     $("#btn_save_solebox").click(function() {
-        var e = $("#email_solebox").val();
-        var p = $("#pw_solebox").val();
-        var size_solebox = $("#size_solebox").val();
-        var payment_mode_solebox = $("#payment_mode_solebox").val();
-        var checkout_mode_solebox = $("#checkout_mode_solebox").val();
+        let e = $("#email_solebox").val();
+        let p = $("#pw_solebox").val();
+        let size_solebox = $("#size_solebox").val();
+        let payment_mode_solebox = $("#payment_mode_solebox").val();
+        let checkout_mode_solebox = $("#checkout_mode_solebox").val();
+        let profile_solebox = $("#ProfileSolebox").val();
 
+        if (profile_solebox != '') { localStorage.setItem("profile_solebox", profile_solebox); } else { localStorage.setItem("profile_solebox", "off"); }
         if (payment_mode_solebox != '') { localStorage.setItem("payment_mode_solebox", payment_mode_solebox); } else { localStorage.setItem("payment_mode_solebox", "off"); }
         if (checkout_mode_solebox != '') { localStorage.setItem("checkout_mode_solebox", checkout_mode_solebox); } else { localStorage.setItem("checkout_mode_solebox", "off"); }
         if (!(isBlank(size_solebox))) { localStorage.setItem("size_solebox", size_solebox); } else { localStorage.setItem("size_solebox", "off"); }
@@ -489,8 +525,8 @@ function onUserLogged() {
     //GESTIONE PAGINA COURIR----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
     if (localStorage.getItem("email_pw_courir") != "off") {
-        var email = localStorage.getItem("email_pw_courir").split(':')[0]
-        var pw = localStorage.getItem("email_pw_courir").split(':')[1]
+        let email = localStorage.getItem("email_pw_courir").split(':')[0]
+        let pw = localStorage.getItem("email_pw_courir").split(':')[1]
         $("#email_courir").val(email);
         $("#pw_courir").val(pw);
     }
@@ -499,11 +535,11 @@ function onUserLogged() {
     if (localStorage.getItem("checkout_mode_courir") != "off") { $("#checkout_mode_courir").val(localStorage.getItem("checkout_mode_courir")); }
     //gestisco il click del bottone salva
     $("#btn_save_courir").click(function() {
-        var e = $("#email_courir").val();
-        var p = $("#pw_courir").val();
-        var size_courir = $("#size_courir").val();
-        var payment_mode_courir = $("#payment_mode_courir").val();
-        var checkout_mode_courir = $("#checkout_mode_courir").val();
+        let e = $("#email_courir").val();
+        let p = $("#pw_courir").val();
+        let size_courir = $("#size_courir").val();
+        let payment_mode_courir = $("#payment_mode_courir").val();
+        let checkout_mode_courir = $("#checkout_mode_courir").val();
 
         if (payment_mode_courir != '') { localStorage.setItem("payment_mode_courir", payment_mode_courir); } else { localStorage.setItem("payment_mode_courir", "off"); }
         if (checkout_mode_courir != '') { localStorage.setItem("checkout_mode_courir", checkout_mode_courir); } else { localStorage.setItem("checkout_mode_courir", "off"); }
@@ -514,23 +550,41 @@ function onUserLogged() {
 
     //GESTIONE PAGINA SNIPES----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileSnipes').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileSnipes').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_snipes") != "off") { $("#ProfileSnipes").val(localStorage.getItem("profile_snipes")); }
     if (localStorage.getItem("email_pw_snipes") != "off") {
-        var email = localStorage.getItem("email_pw_snipes").split(':')[0]
-        var pw = localStorage.getItem("email_pw_snipes").split(':')[1]
+        let email = localStorage.getItem("email_pw_snipes").split(':')[0]
+        let pw = localStorage.getItem("email_pw_snipes").split(':')[1]
         $("#email_snipes").val(email);
         $("#pw_snipes").val(pw);
     }
     if (localStorage.getItem("size_snipes") != "off") { $("#size_snipes").val(localStorage.getItem("size_snipes")); }
     if (localStorage.getItem("checkout_mode_snipes") != "off") { $("#checkout_mode_snipes").val(localStorage.getItem("checkout_mode_snipes")); }
+    if (localStorage.getItem("payment_mode_snipes") != "off") { $("#payment_mode_snipes").val(localStorage.getItem("payment_mode_snipes")); }
     if (localStorage.getItem("country_snipes") != "off") { $("#country_snipes").val(localStorage.getItem("country_snipes")); }
     //gestisco il click del bottone salva
     $("#btn_save_snipes").click(function() {
-        var e = $("#email_snipes").val();
-        var p = $("#pw_snipes").val();
-        var c = $("#country_snipes").val();
-        var size_snipes = $("#size_snipes").val();
-        var checkout_mode_snipes = $("#checkout_mode_snipes").val();
+        let e = $("#email_snipes").val();
+        let p = $("#pw_snipes").val();
+        let c = $("#country_snipes").val();
+        let size_snipes = $("#size_snipes").val();
+        let checkout_mode_snipes = $("#checkout_mode_snipes").val();
+        let profile_snipes = $("#ProfileSnipes").val();
+        let payment_mode_snipes = $("#payment_mode_snipes").val();
 
+        if (payment_mode_snipes != '') { localStorage.setItem("payment_mode_snipes", payment_mode_snipes); } else { localStorage.setItem("payment_mode_snipes", "off"); }
+        if (profile_snipes != '') { localStorage.setItem("profile_snipes", profile_snipes); } else { localStorage.setItem("profile_snipes", "off"); }
         if (checkout_mode_snipes != '') { localStorage.setItem("checkout_mode_snipes", checkout_mode_snipes); } else { localStorage.setItem("checkout_mode_snipes", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_snipes", e + ":" + p); } else { localStorage.setItem("email_pw_snipes", "off"); }
         if (!(isBlank(size_snipes))) { localStorage.setItem("size_snipes", size_snipes); } else { localStorage.setItem("size_snipes", "off"); }
@@ -540,19 +594,34 @@ function onUserLogged() {
 
     //GESTIONE PAGINA ONYGO----------------------------------------------
     //contollo se email e pw sono già presenti nello storage e in caso li inserisco nell' input
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileOnygo').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileOnygo').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_onygo") != "off") { $("#ProfileOnygo").val(localStorage.getItem("profile_onygo")); }
     if (localStorage.getItem("email_pw_onygo") != "off") {
-        var email = localStorage.getItem("email_pw_onygo").split(':')[0]
-        var pw = localStorage.getItem("email_pw_onygo").split(':')[1]
+        let email = localStorage.getItem("email_pw_onygo").split(':')[0]
+        let pw = localStorage.getItem("email_pw_onygo").split(':')[1]
         $("#email_onygo").val(email);
         $("#pw_onygo").val(pw);
     }
     if (localStorage.getItem("size_onygo") != "off") { $("#size_onygo").val(localStorage.getItem("size_onygo")); }
     //gestisco il click del bottone salva
     $("#btn_save_onygo").click(function() {
-        var e = $("#email_onygo").val();
-        var p = $("#pw_onygo").val();
-        var size_onygo = $("#size_onygo").val();
+        let e = $("#email_onygo").val();
+        let p = $("#pw_onygo").val();
+        let size_onygo = $("#size_onygo").val();
+        let profile_onygo = $("#ProfileOnygo").val();
 
+        if (profile_onygo != '') { localStorage.setItem("profile_onygo", profile_onygo); } else { localStorage.setItem("profile_onygo", "off"); }
         if (!(isBlank(size_onygo))) { localStorage.setItem("size_onygo", size_onygo); } else { localStorage.setItem("size_onygo", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_onygo", e + ":" + p); } else { localStorage.setItem("email_pw_onygo", "off"); }
     });
@@ -775,6 +844,11 @@ function onUserLogged() {
         let delay_asos = $("#delay_asos").val();
         if (delay_asos != '') { localStorage.setItem("delay_asos", delay_asos); } else { localStorage.setItem("delay_asos", "1000"); }
     });
+    //multicart
+    if (localStorage.getItem("multicart_asos") == "on") { $('#multicart_asos').prop('checked', true); }
+    $('#multicart_asos').click(function() {
+        if ($("#multicart_asos").is(':checked')) { localStorage.setItem("multicart_asos", "on"); } else { localStorage.setItem("multicart_asos", "off"); }
+    });
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA AWLAB----------------------------------------------
@@ -815,11 +889,15 @@ function onUserLogged() {
 
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_awlab", e + ":" + p); } else { localStorage.setItem("email_pw_awlab", "off"); }
     });
+    //multicart
+    if (localStorage.getItem("multicart_awlab") == "on") { $('#multicart_awlab').prop('checked', true); }
+    $('#multicart_awlab').click(function() {
+        if ($("#multicart_awlab").is(':checked')) { localStorage.setItem("multicart_awlab", "on"); } else { localStorage.setItem("multicart_awlab", "off"); }
+    });
     //---------------------------------------------------------------------
 
 
 }
-
 
 function saveLocalStorageToJson() {
     const storageData = JSON.parse(JSON.stringify(localStorage))
@@ -836,6 +914,31 @@ function saveLocalStorageToJson() {
 
 function shouldSaveKey(key) {
     return key != "license"
+}
+
+function saveLocalStorageToJsonProfile() {
+
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        for (let i = 0; i < profiles.length; i++) {
+            array_export_profile.push(profiles[i])
+        }
+    }
+
+    const storageData = JSON.parse(JSON.stringify(localStorage))
+    const filteredVariables = {}
+    for (key in storageData) {
+        if (shouldSaveKeyProfile(key)) {
+            filteredVariables[key] = storageData[key]
+        }
+    }
+    const localStorageJSON = JSON.stringify(filteredVariables)
+    download(localStorageJSON, 'info.json', 'application/json');
+}
+
+function shouldSaveKeyProfile(key) {
+    return array_export_profile.includes(key)
 }
 
 function download(content, fileName, contentType) {

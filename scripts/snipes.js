@@ -1,4 +1,4 @@
-debugger
+//debugger
 
 const site = "Snipes"
 
@@ -427,6 +427,7 @@ async function addButton() {
 
 async function sendText(text, color) {
     try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    checkPosition()
 }
 
 async function sendTime(time) {
@@ -464,7 +465,7 @@ async function checkTimer() {
             dummy = 2
             sendText("Session Ready", "green")
         } else {
-            localStorage.clear("timer_snipes")
+            localStorage.removeItem("timer_snipes")
             sendText("Session expired", "red")
             sendTime("")
             dummy = 0
@@ -479,7 +480,7 @@ async function checkTimer() {
                 sendTime(time)
                 dummy = 2
             } else {
-                localStorage.clear("timer_snipes")
+                localStorage.removeItem("timer_snipes")
                 sendText("Session expired", "red")
                 sendTime("")
                 dummy = 0
@@ -667,7 +668,7 @@ async function checkResLogin(response) {
         sendText("Logged in", "green")
         is_login = true
     } else {
-        if (res.includes("\"appId\"")) {
+        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
             sendText("Error logging in, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -715,7 +716,7 @@ async function checkResgetLogin(response) {
     if (status == 200 || status == 201) {
         return res
     } else {
-        if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
+        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
             sendText("Error logging in, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -797,7 +798,7 @@ async function checkResGetCart(response) {
             if (html_cart.length == 0)
                 sendText("Cart empty", "green")
         } else {
-            if (res.includes("\"appId\"") || res.includes("_pxAppId")) {
+            if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
                 sendText("Error getting cart, resolve captcha & retry", "red")
                 addButton()
             } else {
@@ -851,7 +852,7 @@ async function checkResClearCart(response) {
         if (status == 200 || status == 201) {
             sendText("Item removed", "green")
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error removing item..., resolve captcha & retry", "red")
                 addButton()
             } else {
@@ -1000,7 +1001,7 @@ async function checkResgetSizePid(response) {
             pidsize = res["product"]["id"]
             atcRfast()
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error getting product, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1076,23 +1077,25 @@ async function checkResAtc(response) {
             } else {
                 message = res["message"]
                 errorType = res["errorType"]
-                if (message == "La talla seleccionada ya no está disponible" || message == "Siamo spiacenti, la taglia selezionata non è più disponibile" || message.includes('Die gewünschte Menge') || message == 'De geselecteerde maat is helaas niet meer beschikbaar' || message == "La taille sélectionnée nest malheureusement plus disponible.") {
+                if (message == "undefined") {
+                    resInfoWebook(x, "checkResAtc_1")
+                    sendText("Error carting, open solver", "red")
+                } else if (message == "La talla seleccionada ya no está disponible" || message == "Siamo spiacenti, la taglia selezionata non è più disponibile" || message.includes('Die gewünschte Menge') || message == 'De geselecteerde maat is helaas niet meer beschikbaar' || message == "La taille sélectionnée nest malheureusement plus disponible.") {
                     sendText("Item out of stock", "red")
                 } else if (errorType == "productLimitation") {
                     sendText("Max quantity for this item", "red")
                 } else if (message == "Siamo spiacenti, l'articolo non può essere aggiunto al carrello") {
                     sendText("Item cannot be added to the cart", "red")
-                } else if (message == "undefined") {
-                    sendText("Error carting, open solver", "red")
                 } else {
                     sendText("Error carting", "red")
+                    resInfoWebook(x, "checkResAtc_2")
                 }
             }
         } else {
 
             errorMessage = res["errorMessage"]
 
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error carting, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1198,7 +1201,7 @@ async function checkResgetCheckout(response) {
         html.innerHTML = res
         gettingShipping()
     } else {
-        if (res.includes("\"appId\"")) {
+        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
             sendText("Error getting checkout, resolve captcha", "red")
             addButton()
             while (is_captcha_solved == false) {
@@ -1218,7 +1221,6 @@ async function gettingShipping() {
     sendText("Getting shipping info...", "blue")
     try {
         let rdbtn = html.querySelectorAll("[class='js-shipment f-native-radio-input']")[0]
-        address_id = rdbtn.getAttribute("data-id")
         snipes_store = rdbtn.getAttribute('data-snipes-store').replaceAll(" ", "+")
         post_office_number = rdbtn.getAttribute('data-post-office-number').replaceAll(" ", "+")
         pack_station_number = rdbtn.getAttribute('data-packstation-number').replaceAll(" ", "+")
@@ -1277,6 +1279,9 @@ async function gettingShipping() {
                         break
                     case "UltraFast":
                         SubmitPayment()
+                        break
+                    case "GodMode":
+                        PlaceOrder()
                         break
                     default:
                         SubmitShipping()
@@ -1340,7 +1345,7 @@ async function checkResSelectShippingMethod(response) {
             sendText("Selected shipping method", "green")
             ValidateShipping()
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error selecting shipping method..., resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1408,7 +1413,7 @@ async function checkResValidateShipping(response) {
             sendText("Validating address", "green")
             SubmitShipping()
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error validating address, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1475,9 +1480,18 @@ async function checkResSubmitShipping(response) {
 
         if (status == 200 || status == 201) {
             sendText("Submit shipping", "green")
-            SubmitPayment()
+            if (is_login == false)
+                SubmitPayment()
+            else {
+                if (dummy == 1) {
+                    await removeDummy()
+                    dummy = 2
+                } else {
+                    PlaceOrder()
+                }
+            }
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error submitting shipping, open solver", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1555,7 +1569,7 @@ async function checkResSubmitPayment(response) {
                     PlaceOrder()
                 }
             } else {
-                if (x.includes("\"appId\"")) {
+                if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                     sendText("Error submitting payment, resolve captcha", "red")
                     addButton()
                     while (is_captcha_solved == false) {
@@ -1574,7 +1588,7 @@ async function checkResSubmitPayment(response) {
             }
 
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error submitting payment, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1647,24 +1661,24 @@ async function checkResPlaceOrder(response) {
                 linkpp = res["continueUrl"]
                 if (linkpp != null) {
                     sendText("Checked out", "green")
-                    localStorage.clear("timer_snipes")
+                    localStorage.removeItem("timer_snipes")
                     dummy = 0
                     window.open(linkpp)
                     sendWebhooks(linkpp)
-                } else {
-                    if (errorMessage == "undefined" || errorMessage == undefined) {
-                        await sleep(1000)
-                        mainCart()
-                    } else {
-                        sendText(errorMessage, "red")
-                        errorWebhooks(errorMessage, "checkResPlaceOrder_1")
-                        await sleep(1000)
-                        mainCart()
-                    }
                 }
             } else {
                 if (res["redirectUrl"] == "/cart") {
                     sendText("Item out of stock", "red")
+                } else if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
+                    sendText("Error placing order, resolve captcha", "red")
+                    addButton()
+                    while (is_captcha_solved == false) {
+                        await sleep(250)
+                    }
+                    is_captcha_solved = false
+                    PlaceOrder()
+                } else if (res["missingPayment"] == true) {
+                    SubmitPayment()
                 } else if (errorMessage == "undefined" || errorMessage == undefined) {
                     await sleep(1000)
                     mainCart()
@@ -1679,7 +1693,7 @@ async function checkResPlaceOrder(response) {
             }
 
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error placing order, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1749,7 +1763,7 @@ async function checkResRemoveDummy(response) {
             localStorage.setItem("timer_snipes", Date.now())
             sendText("Session ready", "green")
         } else {
-            if (x.includes("\"appId\"")) {
+            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
                 sendText("Error removing dummy..., resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {

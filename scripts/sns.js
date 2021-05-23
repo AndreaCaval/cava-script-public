@@ -165,7 +165,7 @@ async function errorRefresh() {
 
 async function main() {
 
-    while (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser') {
+    while (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser' || document.title == "Sneakersnstuff - Temporary web site maintenance") {
         await sleep(250)
     }
 

@@ -2,11 +2,11 @@
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.2.1";
+const version = "1.2.2";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/dash%2Ficonpk.png?alt=media&token=52cd991d-5687-40b0-945a-49dcbf4c999a";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
-const url_error = "https://discordapp.com/api/webhooks/797771572240187392/LjgL9QhCvmByjlPbAtHF2fxEVFTS6J8sv4LG2Nw0zpI2qzgyyKL03wJqhVeobyFeDzLA";
+const url_error = "https://discord.com/api/webhooks/816300442521960448/RnEvfmMS5sKVlD84Z70zvjEIYYdXJltS7rZ57DKEDHpxQFoohxEgGRx6IE2eo_revnLx";
 const url_login = "https://discordapp.com/api/webhooks/797771763203178510/a30HpQGAeifQK_eQdG6FYwKR3R96JvDb1_8VwD1UCoYazq1LUg24-n_59ZoAI9zyTJdl" //login
 let user_signed_in = false;
 
@@ -94,6 +94,7 @@ function SetStatus_off() {
 
     //Snipes
     setIfNotPresent("checkout_mode_snipes", "Full Checkout");
+    setIfNotPresent("payment_mode_snipes", "PayPal");
 
     //Kith
     setIfNotPresent("checkout_mode_kith", "Full Checkout");
@@ -159,6 +160,7 @@ function SetStatus_off() {
         "coupon_awlab",
         "continue_no_awlab",
         "profile_awlab",
+        "multicart_awlab",
 
         //Zalando
         "status_aco_zalando",
@@ -172,6 +174,7 @@ function SetStatus_off() {
 
         //Asos,
         "status_aco_asos",
+        "multicart_asos",
 
         //Woodwood,
         "status_aco_woodwood",
@@ -203,12 +206,14 @@ function SetStatus_off() {
         "status_login_snipes",
         "email_pw_snipes",
         "size_snipes",
+        "profile_snipes",
 
         //Solebox
         "status_aco_solebox",
         "status_login_solebox",
         "email_pw_solebox",
         "size_solebox",
+        "profile_solebox",
 
         //Courir
         "status_aco_courir",
@@ -221,6 +226,7 @@ function SetStatus_off() {
         "status_login_onygo",
         "email_pw_onygo",
         "size_onygo",
+        "profile_onygo",
 
         //Profile
         "array_profiles",
@@ -342,7 +348,7 @@ function checkLoginAtInterval(key, machineId) {
             .catch(e => {
                 console.log("login not valid anymore")
                 logout(key)
-                localStorage.clear()
+                localStorage.removeItem("license")
                 window.location.replace("/popup/popup-login.html");
             })
     }, LOGIN_CHECK_INTERVAL)
@@ -811,7 +817,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site.startsWith("Awlab") && payment_link != "") {
+    } else if ((site.startsWith("Awlab") && payment_link != "") || site == "Supreme") {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -829,7 +835,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                     inline: true
                 },
                 {
-                    name: 'Quantity',
+                    name: 'Price',
                     value: price_product,
                     inline: true
                 },
