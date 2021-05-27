@@ -757,10 +757,24 @@ async function checkResgetSizePid(response) {
         let x = res
         res = JSON.parse(res)
         if (status == 200 || status == 201) {
-            pidsize = res["product"]["id"]
-            atcRfast()
+            if (x.includes("\"appId\"")) {
+                sendText("Error getting product, resolve captcha", "red")
+                addButton()
+                while (is_captcha_solved == false) {
+                    await sleep(250)
+                }
+                is_captcha_solved = false
+                atc()
+            } else {
+                try {
+                    pidsize = res["product"]["id"]
+                    atcRfast()
+                } catch (error) {
+                    resInfoWebook(x, "checkResgetSizePid")
+                }
+            }
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
+            if (x.includes("\"appId\"")) {
                 sendText("Error getting product, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {

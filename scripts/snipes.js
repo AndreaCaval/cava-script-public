@@ -240,19 +240,19 @@ function textBox() {
         dragElement(document.getElementById("CavaScripts"));
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function() {
+        btn_left.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function() {
+        btn_right.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_start_task = document.getElementById('btn_start_task')
-        btn_start_task.addEventListener("click", function() {
+        btn_start_task.addEventListener("click", function () {
             try {
 
                 let input = document.getElementById("input_sizepid").value
@@ -275,12 +275,12 @@ function textBox() {
         });
 
         let btn_start_checkout = document.getElementById('btn_start_checkout')
-        btn_start_checkout.addEventListener("click", function() {
+        btn_start_checkout.addEventListener("click", function () {
             getCheckout()
         });
 
         let btn_dummy = document.getElementById('btn_dummy')
-        btn_dummy.addEventListener("click", function() {
+        btn_dummy.addEventListener("click", function () {
             try {
 
                 let input = document.getElementById("input_sizepid_dummy").value
@@ -303,7 +303,7 @@ function textBox() {
         });
 
         let btn_clear_cart = document.getElementById('btn_clear_cart')
-        btn_clear_cart.addEventListener("click", function() {
+        btn_clear_cart.addEventListener("click", function () {
             getCart()
         });
 
@@ -382,7 +382,7 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) {}
+    } catch (error) { }
 }
 
 function updateValueDummy(e) {
@@ -404,7 +404,7 @@ async function addButton() {
                 '<br><br><div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solved" type="submit" value="SOLVED"></div><br><br>');
 
             let btn_solver = document.getElementById('btn_solver')
-            btn_solver.addEventListener("click", function() {
+            btn_solver.addEventListener("click", function () {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 captchasolver = window.open('https://' + country + '/view-account', 'captchasolver', params)
 
@@ -414,7 +414,7 @@ async function addButton() {
             });
 
             let btn_solved = document.getElementById('btn_solved')
-            btn_solved.addEventListener("click", function() {
+            btn_solved.addEventListener("click", function () {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
@@ -422,16 +422,16 @@ async function addButton() {
             checkPosition()
         }
 
-    } catch (error) {}
+    } catch (error) { }
 }
 
 async function sendText(text, color) {
-    try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusSnipes").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
     checkPosition()
 }
 
 async function sendTime(time) {
-    try { document.getElementById("timerSnipes").innerHTML = "<span >" + time + "</span>" } catch (error) {}
+    try { document.getElementById("timerSnipes").innerHTML = "<span >" + time + "</span>" } catch (error) { }
 }
 
 async function main() {
@@ -446,7 +446,7 @@ async function main() {
             if (resAtc["error"] == false) {
                 document.location = "https://" + country + "/cart"
             }
-        } catch (error) {}
+        } catch (error) { }
     }
 }
 
@@ -491,24 +491,24 @@ async function checkTimer() {
 
 async function CSRFGenerate() {
     await fetch(LINK_REQUEST[country]["generate_csrf"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResCSRFGenerate(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -531,7 +531,7 @@ async function checkResCSRFGenerate(response) {
                 errorWebhooks(x, "checkResCSRFGenerate")
             }
         }
-    } catch (error) {}
+    } catch (error) { }
 }
 
 function changeCountry() {
@@ -600,7 +600,7 @@ async function login() {
         if (link != "https://" + country + "/login") {
 
             await getLogin()
-            await res.then(function(result) {
+            await res.then(function (result) {
                 html_login.innerHTML = result
             })
             csrf_token = html_login.querySelectorAll("[name='csrf_token']")[0].value
@@ -637,22 +637,22 @@ async function login() {
 async function loginR(data_id, data_value, csrf_token) {
 
     await fetch("https://" + country + "/authentication?rurl=1&format=ajax", {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/login",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": data_id + "=" + data_value + "&dwfrm_profile_customer_email=" + email_login + "&dwfrm_profile_login_password=" + pw_login + "&csrf_token=" + csrf_token,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/login",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": data_id + "=" + data_value + "&dwfrm_profile_customer_email=" + email_login + "&dwfrm_profile_login_password=" + pw_login + "&csrf_token=" + csrf_token,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResLogin(response) })
         .catch((error) => {
             sendText("Error logging in", "orange")
@@ -686,22 +686,22 @@ async function checkResLogin(response) {
 async function getLogin() {
 
     await fetch("https://" + country + "/login", {
-            "headers": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1"
-            },
-            "referrer": "https://" + country + "/",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrer": "https://" + country + "/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { res = checkResgetLogin(response) })
         .catch((error) => {
             sendText("Error getting login", "orange")
@@ -736,25 +736,25 @@ async function getCart() {
 
     sendText("Getting cart", "blue")
     await fetch("https://" + country + "/cart", {
-            "headers": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResGetCart(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -816,24 +816,24 @@ async function clearCart(pid_cart, uuid_cart) {
 
     sendText("Removing item...", "blue")
     await fetch(LINK_REQUEST[country]["clear_cart"] + "pid=" + pid_cart + "&uuid=" + uuid_cart, {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/cart",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/cart",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResClearCart(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -966,22 +966,22 @@ async function getSizePid(req) {
     //     type = "9360"
 
     await fetch("https://" + country + "" + req + "&format=ajax", {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResgetSizePid(response) })
         .catch((error) => {
             sendText("Error getting size", "orange")
@@ -998,10 +998,24 @@ async function checkResgetSizePid(response) {
         let x = res
         res = JSON.parse(res)
         if (status == 200 || status == 201) {
-            pidsize = res["product"]["id"]
-            atcRfast()
+            if (x.includes("\"appId\"")) {
+                sendText("Error getting product, resolve captcha", "red")
+                addButton()
+                while (is_captcha_solved == false) {
+                    await sleep(250)
+                }
+                is_captcha_solved = false
+                atc()
+            } else {
+                try {
+                    pidsize = res["product"]["id"]
+                    atcRfast()
+                } catch (error) {
+                    resInfoWebook(x, "checkResgetSizePid")
+                }
+            }
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
+            if (x.includes("\"appId\"")) {
                 sendText("Error getting product, resolve captcha", "red")
                 addButton()
                 while (is_captcha_solved == false) {
@@ -1014,30 +1028,32 @@ async function checkResgetSizePid(response) {
                 sendText("Error getting product", "red")
             }
         }
-    } catch (error) {}
+    } catch (error) {
+        errorWebhooks(error, "checkResgetSizePid")
+        sendText("Error getting pid", "red")
+    }
 }
-
 
 async function atcRfast() {
 
     sendText("Trying atc fast...", "blue")
     await fetch(LINK_REQUEST[country]["add_product"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "pid=" + pidsize + "&options=&quantity=1",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "pid=" + pidsize + "&options=&quantity=1",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResAtc(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
@@ -1165,22 +1181,22 @@ async function getCheckout() {
 
     sendText("Starting checkout...", "blue")
     await fetch("https://" + country + "/checkout", {
-            "headers": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResgetCheckout(response) })
         .catch((error) => {
             sendText("Error getting checkout", "orange")
@@ -1254,7 +1270,7 @@ async function gettingShipping() {
                 if (size_product == "")
                     size_product = html.querySelectorAll("[class='t-checkout-attr-value']")[2].textContent
                 if (link.startsWith("https://" + country + "/cart"))
-                    try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
+                    try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) { }
                 else if (pidsize != "")
                     link_product = "https://" + country + "/p/cava-" + pidsize + ".html"
             } catch (error) {
@@ -1309,22 +1325,22 @@ async function SelectShippingMethod() {
 
     sendText("Selecting shipping method...", "blue")
     await fetch(LINK_REQUEST[country]["select_ship"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout?",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "methodID=home-delivery" + LINK_REQUEST[country]["home_delivery"] + "&shipmentUUID=" + shipmentUUID,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/checkout?",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "methodID=home-delivery" + LINK_REQUEST[country]["home_delivery"] + "&shipmentUUID=" + shipmentUUID,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResSelectShippingMethod(response) })
         .catch((error) => {
             sendText("Error selecting shipping method", "orange")
@@ -1375,24 +1391,24 @@ async function checkResSelectShippingMethod(response) {
 async function ValidateShipping() {
     sendText("Validating address...", "blue")
     await fetch(LINK_REQUEST[country]["validate_ship"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout?stage=shipping",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "street=" + street + "&houseNo=" + suite + "&postalCode=" + postal_code + "&city=" + city + "&country=" + country_code + "&csrf_token=" + csrf_token,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/checkout?stage=shipping",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "street=" + street + "&houseNo=" + suite + "&postalCode=" + postal_code + "&city=" + city + "&country=" + country_code + "&csrf_token=" + csrf_token,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResValidateShipping(response) })
         .catch((error) => {
             sendText("Error validating shipping", "orange")
@@ -1443,24 +1459,24 @@ async function checkResValidateShipping(response) {
 async function SubmitShipping() {
     sendText("Submitting ship...", "blue")
     await fetch(LINK_REQUEST[country]["submit_ship"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout?stage=shipping",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token, //&dwfrm_contact_subscribe=true
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/checkout?stage=shipping",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token, //&dwfrm_contact_subscribe=true
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResSubmitShipping(response) })
         .catch((error) => {
             sendText("Error submitting shipping", "orange")
@@ -1523,24 +1539,24 @@ async function checkResSubmitShipping(response) {
 async function SubmitPayment() {
     sendText("Submittin payment...", "blue")
     await fetch(LINK_REQUEST[country]["submit_payment"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout?stage=payment",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "dwfrm_billing_paymentMethod=Paypal&dwfrm_giftCard_cardNumber=&dwfrm_giftCard_pin=&csrf_token=" + csrf_token + "&csrf_token=" + csrf_token,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/checkout?stage=payment",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "dwfrm_billing_paymentMethod=Paypal&dwfrm_giftCard_cardNumber=&dwfrm_giftCard_pin=&csrf_token=" + csrf_token + "&csrf_token=" + csrf_token,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResSubmitPayment(response) })
         .catch((error) => {
             sendText("Error submitting payment", "orange")
@@ -1618,24 +1634,24 @@ async function checkResSubmitPayment(response) {
 async function PlaceOrder() {
     sendText("Placing order...", "blue")
     await fetch(LINK_REQUEST[country]["submit_order"], {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/checkout?stage=placeOrder",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/checkout?stage=placeOrder",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResPlaceOrder(response) })
         .catch((error) => {
             sendText("Error placing order", "orange")
@@ -1712,7 +1728,7 @@ async function checkResPlaceOrder(response) {
     } catch (error) {
         try {
             resInfoWebook(res, "trycheckResPlaceOrder")
-        } catch (error) {}
+        } catch (error) { }
 
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResPlaceOrder")
@@ -1725,22 +1741,22 @@ async function checkResPlaceOrder(response) {
 
 async function removeDummy() {
     fetch(LINK_REQUEST[country]["remove_dummy"] + "&pid=" + pidsize + "&uuid=" + uuid_dummy, {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://" + country + "/cart",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://" + country + "/cart",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResRemoveDummy(response) })
         .catch((error) => {
             sendText("Error removing dummy", "orange")
@@ -1798,45 +1814,45 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "country_snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "country_snipes" }, function (response) {
     country_snipes = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "email_pw_snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "email_pw_snipes" }, function (response) {
     var x = response.farewell
     email_login = x.split(':')[0]
     email = x.split(':')[0]
     pw_login = x.split(':')[1]
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_snipes" }, function (response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_login_snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_login_snipes" }, function (response) {
     status_login = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_snipes" }, function (response) {
     if (response.farewell != "off")
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "checkout_mode_snipes" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_snipes" }, function (response) {
     checkout_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         changeCountry()
         textBox()
         checkTimer()
-        chrome.runtime.sendMessage({ greeting: "status_aco_snipes" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_snipes" }, function (response) {
             if (response.farewell == 'on') {
                 main()
             }
         });
-        chrome.runtime.sendMessage({ greeting: "status_login_snipes" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_login_snipes" }, function (response) {
             if (response.farewell == 'on') {
                 checkLogin()
             } else

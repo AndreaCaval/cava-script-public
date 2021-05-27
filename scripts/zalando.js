@@ -123,19 +123,19 @@ function getRandomIntInclusive(min, max) {
 }
 
 async function setCount(i) {
-    try { document.getElementById('rCount').innerHTML = "Request count: " + i } catch (error) {}
+    try { document.getElementById('rCount').innerHTML = "Request count: " + i } catch (error) { }
 }
 
 async function setDelay() {
-    try { document.getElementById('rDelay').innerHTML = "Delay: " + delay + "ms" } catch (error) {}
+    try { document.getElementById('rDelay').innerHTML = "Delay: " + delay + "ms" } catch (error) { }
 }
 
 async function setCoupon(i) {
-    try { document.getElementById("nCount").innerHTML = "COUPON COUNT : " + i } catch (error) {}
+    try { document.getElementById("nCount").innerHTML = "COUPON COUNT : " + i } catch (error) { }
 }
 
 async function sendText(text, color) {
-    try { document.getElementById("statusZalando").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusZalando").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
 }
 
 function textBoxMain() {
@@ -161,14 +161,14 @@ function textBoxMain() {
         htmlCavaScripts()
 
         let btn_gen_coupon = document.getElementById('btn_gen_coupon')
-        btn_gen_coupon.addEventListener("click", function() {
+        btn_gen_coupon.addEventListener("click", function () {
             try { window.open("https://" + country + "/zalando-newsletter/") } catch (error) {
                 errorWebhook(error, "btn_gen_coupon")
             }
         });
 
         let btn_atc_fast = document.getElementById('btn_atc_fast')
-        btn_atc_fast.addEventListener("click", function() {
+        btn_atc_fast.addEventListener("click", function () {
             try { atcFast() } catch (error) {
                 errorWebhook(error, "btn_atc_fast")
             }
@@ -214,26 +214,26 @@ function htmlCavaScripts() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function() {
+        btn_left.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function() {
+        btn_right.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_clear_cart = document.getElementById('btn_clear_cart')
-        btn_clear_cart.addEventListener("click", function() {
+        btn_clear_cart.addEventListener("click", function () {
             try { mainClearCart() } catch (error) {
                 errorWebhook(error, "btn_clear_cart")
             }
         });
 
         let btn_gen_session = document.getElementById('btn_gen_session')
-        btn_gen_session.addEventListener("click", function() {
+        btn_gen_session.addEventListener("click", function () {
             try {
 
                 coupon_code = document.getElementById("input_coupon").value
@@ -241,14 +241,14 @@ function htmlCavaScripts() {
                 session = 1
                 atcR(sizepid)
 
-            } catch (error) {}
+            } catch (error) { }
         });
 
         document.getElementById("input_sizepid").addEventListener('input', updateValueDummy);
         if (localStorage.getItem("zalando_dummy") != null)
             document.getElementById("input_sizepid").value = localStorage.getItem("zalando_dummy")
 
-    } catch (error) {}
+    } catch (error) { }
 }
 async function checkPosition() {
     let positon_top = 0
@@ -258,7 +258,7 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) {}
+    } catch (error) { }
 }
 
 function dragElement(elmnt) {
@@ -339,8 +339,8 @@ function textBoxCouponGen() {
 
 
         let btnGenerateCoupon = document.getElementById('btnGenerateCoupon')
-        btnGenerateCoupon.addEventListener("click", function() {
-            try { genCoupon() } catch (error) {}
+        btnGenerateCoupon.addEventListener("click", function () {
+            try { genCoupon() } catch (error) { }
         });
 
         document.getElementById("catchall").addEventListener('input', updateValueCatchall);
@@ -393,24 +393,24 @@ async function getProductCart() {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
     await fetch("https://" + country + "/api/cart-gateway/carts", {
-            "headers": {
-                "accept": "application/json",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-xsrf-token": xsrf
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-xsrf-token": xsrf
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResStock(response) })
         .catch((error) => { console.log(error) });;
 }
@@ -423,8 +423,8 @@ async function checkResStock(response) {
         res = JSON.parse(res)
         if (status == 200 || status == 201 || status == 204) {
             cart_id = res["id"]
-            try { cart_size_instock = res["groups"][0]["articles"] } catch (error) {}
-            try { cart_size_oos = res["out_of_stock_articles"] } catch (error) {}
+            try { cart_size_instock = res["groups"][0]["articles"] } catch (error) { }
+            try { cart_size_oos = res["out_of_stock_articles"] } catch (error) { }
             if (cart_size_oos.length == 0 && cart_size_instock.length == 0) {
                 sendText("Cart empty", "green")
             } else {
@@ -452,24 +452,24 @@ async function clearCart(simplesku) {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
     await fetch("https://" + country + "/api/cart-gateway/carts/" + cart_id + "/items/" + simplesku, {
-            "headers": {
-                "accept": "application/json",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-xsrf-token": xsrf
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "DELETE",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-xsrf-token": xsrf
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "DELETE",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResCrearCart(response) })
         .catch((error) => { console.log(error) });;
 }
@@ -498,25 +498,25 @@ async function loginR() {
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
 
     await fetch("https://" + country + "/api/reef/login", {
-            "headers": {
-                "accept": "application/json",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-xsrf-token": xsrf,
-                "x-zalando-redirect-target": "http://" + country + "/myaccount/",
-                "x-zalando-render-page-uri": "/login?target=/myaccount/",
-                "x-zalando-request-uri": "/login?target=/myaccount/"
-            },
-            "referrer": link,
-            "referrerPolicy": "no-referrer-when-downgrade",
-            "body": "{\"username\":\"" + email + "\",\"password\":\"" + pw + "\",\"wnaMode\":\"shop\"}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-xsrf-token": xsrf,
+            "x-zalando-redirect-target": "http://" + country + "/myaccount/",
+            "x-zalando-render-page-uri": "/login?target=/myaccount/",
+            "x-zalando-request-uri": "/login?target=/myaccount/"
+        },
+        "referrer": link,
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": "{\"username\":\"" + email + "\",\"password\":\"" + pw + "\",\"wnaMode\":\"shop\"}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResLogin(response) })
         .catch((error) => { console.log(error) });;
 }
@@ -574,25 +574,25 @@ async function newsletterR(mail, i) {
 
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
     await fetch("https://" + country + "/api/newsletter-banner-fragment/subscribe-customer", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "dpr": "1",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "viewport-width": "1247",
-                "x-xsrf-token": xsrf,
-                "x-zalando-toggle-label": "THE_LABEL_IS_ENABLED"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"email\":\"" + mail + "\",\"gender\":\"MALE\",\"preferences\":[{\"key\":\"survey\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Sondaggi\",\"description\":\"In base ai tuoi acquisti precedenti e alla tue interazioni con i servizi e prodotti Zalando, potremmo chiederti di darci un'opinione cosí da poter apportare numerosi miglioramenti.\"}},{\"key\":\"recommendations\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Suggerimenti\",\"description\":\"Scopri brand e prodotti che potrebbero interessarti, selezionati in base ai brand che segui e ai tuoi acquisti precedenti. Riceverai questo tipo di avviso al massimo 2 volte a settimana.\"}},{\"key\":\"follow_brand\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Brand che segui\",\"description\":\"Ricevi un avviso quando un brand che segui lancia una nuova collezione.\"}},{\"key\":\"fashion_fix\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Novità e tendenze\",\"description\":\"Ricevi info fino a 3 volte a settimana su ultime tendenze, collezioni esclusive e must have di stagione, solo se rilevanti.\"}},{\"key\":\"offers_sales\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Offerte e promozioni\",\"description\":\"Aggiornamenti su offerte e sconti e codici sconto direttamente nella tua casella di posta elettronica. Riceverai questo tipo di avviso al massimo 3 volte a settimana.\"}},{\"key\":\"item_alerts\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Notifiche sugli articoli\",\"description\":\"Ricevi un avviso ogni volta che un prodotto della tua wish list o nel tuo carrello viene scontato. Ti manderemo al massimo un reminder al giorno riguardo prodotti dimenticati nel carrello.\"}},{\"key\":\"subscription_confirmations\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Notifiche sulla disponibilità di taglie\",\"description\":\"Ricevi un'email di notifica quando la tua taglia diventa di nuovo disponibile.\"}}]}",
-            "method": "PUT",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "dpr": "1",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "viewport-width": "1247",
+            "x-xsrf-token": xsrf,
+            "x-zalando-toggle-label": "THE_LABEL_IS_ENABLED"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"email\":\"" + mail + "\",\"gender\":\"MALE\",\"preferences\":[{\"key\":\"survey\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Sondaggi\",\"description\":\"In base ai tuoi acquisti precedenti e alla tue interazioni con i servizi e prodotti Zalando, potremmo chiederti di darci un'opinione cosí da poter apportare numerosi miglioramenti.\"}},{\"key\":\"recommendations\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Suggerimenti\",\"description\":\"Scopri brand e prodotti che potrebbero interessarti, selezionati in base ai brand che segui e ai tuoi acquisti precedenti. Riceverai questo tipo di avviso al massimo 2 volte a settimana.\"}},{\"key\":\"follow_brand\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Brand che segui\",\"description\":\"Ricevi un avviso quando un brand che segui lancia una nuova collezione.\"}},{\"key\":\"fashion_fix\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Novità e tendenze\",\"description\":\"Ricevi info fino a 3 volte a settimana su ultime tendenze, collezioni esclusive e must have di stagione, solo se rilevanti.\"}},{\"key\":\"offers_sales\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Offerte e promozioni\",\"description\":\"Aggiornamenti su offerte e sconti e codici sconto direttamente nella tua casella di posta elettronica. Riceverai questo tipo di avviso al massimo 3 volte a settimana.\"}},{\"key\":\"item_alerts\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Notifiche sugli articoli\",\"description\":\"Ricevi un avviso ogni volta che un prodotto della tua wish list o nel tuo carrello viene scontato. Ti manderemo al massimo un reminder al giorno riguardo prodotti dimenticati nel carrello.\"}},{\"key\":\"subscription_confirmations\",\"enabled\":true,\"translation\":{\"locale\":\"it-IT\",\"name\":\"Notifiche sulla disponibilità di taglie\",\"description\":\"Ricevi un'email di notifica quando la tua taglia diventa di nuovo disponibile.\"}}]}",
+        "method": "PUT",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => {
             if (response.status == 200 || response.status == 201) {
                 setCoupon(i + 1)
@@ -645,7 +645,7 @@ async function dropMode() {
                 xyz = 0
             }
             await getProduct()
-            await res.then(function(result) {
+            await res.then(function (result) {
                 html.innerHTML = result
                 try {
                     let s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
@@ -708,22 +708,22 @@ async function dropMode() {
 async function getProduct() {
 
     await fetch(link, {
-            "headers": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1"
-            },
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { res = response.text() })
         .catch((error) => { errorWebhook(error, "getProduct_fetch") });;
 }
@@ -775,24 +775,24 @@ async function atc() {
 async function atcR(id_prodotto) {
 
     await fetch("https://" + country + "/api/graphql/", {
-            "headers": {
-                "accept": "*//*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "dpr": "1",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
-                "x-xsrf-token": frsx,
-                "x-zalando-intent-context": "navigationTargetGroup=WOMEN"
-            },
-            "referrerPolicy": "no-referrer-when-downgrade",
-            "body": "[{\"id\":\"e7f9dfd05f6b992d05ec8d79803ce6a6bcfb0a10972d4d9731c6b94f6ec75033\",\"variables\":{\"addToCartInput\":{\"productId\":\"" + id_prodotto + "\",\"clientMutationId\":\"addToCartMutation\"}}}]",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*//*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "dpr": "1",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+            "x-xsrf-token": frsx,
+            "x-zalando-intent-context": "navigationTargetGroup=WOMEN"
+        },
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": "[{\"id\":\"e7f9dfd05f6b992d05ec8d79803ce6a6bcfb0a10972d4d9731c6b94f6ec75033\",\"variables\":{\"addToCartInput\":{\"productId\":\"" + id_prodotto + "\",\"clientMutationId\":\"addToCartMutation\"}}}]",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkAtcRes(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -841,24 +841,24 @@ async function atcRDrop(id_prodotto) {
 
     sendText("Carting...", "yellow")
     await fetch("https://" + country + "/api/graphql/", {
-            "headers": {
-                "accept": "*//*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "dpr": "1",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
-                "x-xsrf-token": frsx,
-                "x-zalando-intent-context": "navigationTargetGroup=WOMEN"
-            },
-            "referrerPolicy": "no-referrer-when-downgrade",
-            "body": "[{\"id\":\"e7f9dfd05f6b992d05ec8d79803ce6a6bcfb0a10972d4d9731c6b94f6ec75033\",\"variables\":{\"addToCartInput\":{\"productId\":\"" + id_prodotto + "\",\"clientMutationId\":\"addToCartMutation\"}}}]",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*//*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "dpr": "1",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+            "x-xsrf-token": frsx,
+            "x-zalando-intent-context": "navigationTargetGroup=WOMEN"
+        },
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": "[{\"id\":\"e7f9dfd05f6b992d05ec8d79803ce6a6bcfb0a10972d4d9731c6b94f6ec75033\",\"variables\":{\"addToCartInput\":{\"productId\":\"" + id_prodotto + "\",\"clientMutationId\":\"addToCartMutation\"}}}]",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResAtcDrop(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -957,21 +957,21 @@ async function checkStockGetCheckout() {
 async function getCheckout() {
 
     await fetch("https://" + country + "/checkout/confirm", {
-            "headers": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "none",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1"
-            },
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "same-origin"
-        })
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "same-origin"
+    })
         .then(response => { checkResGetCheckout(response) })
         .catch((error) => {
             errorWebhook(error, "getCheckout_fetch")
@@ -1040,27 +1040,27 @@ async function defaultAddress() {
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
     sendText("Submitting ship...", "yellow")
     await fetch("https://" + country + "/api/checkout/address/" + id_address + "/default", {
-            "headers": {
-                "accept": "application/json",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-xsrf-token": xsrf,
-                "x-zalando-checkout-app": "web",
-                "x-zalando-footer-mode": "desktop",
-                "x-zalando-header-mode": "desktop"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"isDefaultShipping\":true}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-xsrf-token": xsrf,
+            "x-zalando-checkout-app": "web",
+            "x-zalando-footer-mode": "desktop",
+            "x-zalando-header-mode": "desktop"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"isDefaultShipping\":true}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResdefaultAddress(response) })
         .catch((error) => { errorWebhook(error, "defaultAddress") });;
 }
@@ -1085,26 +1085,26 @@ async function checkResdefaultAddress(response) {
 async function nextstep() {
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
     await fetch("https://" + country + "/api/checkout/next-step", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-xsrf-token": xsrf,
-                "x-zalando-checkout-app": "web",
-                "x-zalando-footer-mode": "desktop",
-                "x-zalando-header-mode": "desktop"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-xsrf-token": xsrf,
+            "x-zalando-checkout-app": "web",
+            "x-zalando-footer-mode": "desktop",
+            "x-zalando-header-mode": "desktop"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResnextstep(response) })
         .catch((error) => { errorWebhook(error, "selectPayment") });;
 }
@@ -1159,6 +1159,140 @@ async function mainPayment() {
     document.location = 'https://' + country + '/checkout/confirm'
 }
 
+async function mainPaymentFast(url) {
+    sendText("Submitting payment...", "yellow")
+    selection1(url)
+}
+
+
+async function selection1(url) {
+
+    await fetch(url, {
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
+        .then(response => { checkResselection1(response) })
+        .catch((error) => { errorWebhook(error, "selection1") });;
+}
+async function checkResselection1(response) {
+    try {
+
+        let status = response.status
+        if (status > 300 || status < 399) {
+            selection2()
+        } else if (status == 200 || status == 201) {
+            selection2()
+        } else {
+            sendText("Error payment", "red")
+            paymentcomplete()
+        }
+
+    } catch (error) {
+        sendText("Error payment", "red")
+        errorWebhook(error, "checkResselection1")
+    }
+}
+async function selection2() {
+    await fetch("https://checkout.payment.zalando.com/selection", {
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
+        .then(response => { checkResselection2(response) })
+        .catch((error) => { errorWebhook(error, "selection2") });;
+}
+async function checkResselection2(response) {
+    try {
+
+        let status = response.status
+        if (status > 300 || status < 399) {
+            paymentcomplete()
+        } else if (status == 200 || status == 201) {
+            paymentcomplete()
+        } else {
+            sendText("Error payment", "red")
+            paymentcomplete()
+        }
+
+    } catch (error) {
+        sendText("Error payment", "red")
+        errorWebhook(error, "checkResselection2")
+    }
+}
+async function paymentcomplete() {
+    await fetch("https://" + country + "/checkout/payment-complete", {
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
+        .then(response => { checkRespaymentcomplete(response) })
+        .catch((error) => { errorWebhook(error, "paymentcomplete") });;
+}
+async function checkRespaymentcomplete(response) {
+    try {
+
+        let status = response.status
+        if (status > 300 || status < 399) {
+            if (response.url == "/cart?error=checkout.error.general")
+                sendText("Error payment complete", "red")
+            else if (response.url == "/checkout/confirm") {
+                sendText("payment complete", "lightgreen")
+                getCheckout()
+            } else
+                nextstep()
+        } else if (status == 200 || status == 201) {
+            sendText("payment complete", "lightgreen")
+        } else {
+            sendText("Error payment complete", "red")
+            errorWebhook(x, "checkRespaymentSelection_1")
+        }
+
+    } catch (error) {
+        sendText("Error payment complete", "red")
+        errorWebhook(error, "checkRespaymentSelection_2")
+    }
+}
 
 async function mainCheckout() {
     if (ckmode == "Fast") {
@@ -1220,25 +1354,25 @@ async function checkoutBuyNow(etag, checkoutid) {
     xsrf = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
     sendText("Placing order...", "yellow")
     await fetch("https://" + country + "/api/checkout/buy-now", {
-            "headers": {
-                "accept": "application/json",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-xsrf-token": xsrf,
-                "x-zalando-checkout-app": "web",
-                "x-zalando-footer-mode": "desktop",
-                "x-zalando-header-mode": "desktop"
-            },
-            "referrer": "https://" + country + "/checkout/confirm",
-            "referrerPolicy": "no-referrer-when-downgrade",
-            "body": '{\"checkoutId\":  \"' + checkoutid + '\",\"eTag\":' + etag + '}',
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/json",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-xsrf-token": xsrf,
+            "x-zalando-checkout-app": "web",
+            "x-zalando-footer-mode": "desktop",
+            "x-zalando-header-mode": "desktop"
+        },
+        "referrer": "https://" + country + "/checkout/confirm",
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": '{\"checkoutId\":  \"' + checkoutid + '\",\"eTag\":' + etag + '}',
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkRescheckoutBuyNow(response) })
         .catch((error) => { errorWebhook(error, "checkoutBuyNow_fetch") });;
 }
@@ -1261,8 +1395,10 @@ async function checkRescheckoutBuyNow(response) {
                 open('https://' + country + '/checkout/success')
             } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error" || url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
                 location.reload()
-            } else if (url.startsWith("https://checkout.payment.zalando.com/") || url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/checkoutnow?")) {
-                payment1(url)
+            } else if (url.startsWith("https://checkout.payment.zalando.com/")) {
+                mainPaymentFast(url)
+            } else if (url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/checkoutnow?")) {
+                open(url)
             } else {
                 errorWebhook(x, "checkRescheckoutBuyNow_1")
                 location.reload()
@@ -1299,7 +1435,7 @@ async function foundData() {
             }
         } else {
             size_product = document.getElementsByClassName('z-text z-text-block z-text-body z-text-black')[6].textContent;
-            try { size_product = size_product.split(':')[1] } catch (error) {}
+            try { size_product = size_product.split(':')[1] } catch (error) { }
         }
 
         if (hasNumber(size_product))
@@ -1324,40 +1460,40 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "status_aco_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_zalando" }, function (response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_zalando" }, function (response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "drop_mode_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "drop_mode_zalando" }, function (response) {
     drop_mode = response.farewell;
 });
 
-chrome.runtime.sendMessage({ greeting: "cart_mode_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "cart_mode_zalando" }, function (response) {
     cart_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "delay_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_zalando" }, function (response) {
     delay = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "checkout_mode_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_zalando" }, function (response) {
     ckmode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "email_pw_zalando" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "email_pw_zalando" }, function (response) {
     let x = response.farewell
     email = x.split(':')[0]
     pw = x.split(':')[1]
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "status_aco_zalando" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_zalando" }, function (response) {
             if (response.farewell == 'on') {
                 main();
             } else {
