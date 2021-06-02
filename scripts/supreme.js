@@ -164,11 +164,11 @@ async function sendText(text, color) {
 }
 
 async function main() {
-    if (link == "https://www.supremenewyork.com/checkout" && checkout_mode != "ATC Only")
+    if (link.startsWith("https://www.supremenewyork.com/checkout") && checkout_mode != "ATC Only" && document.getElementsByClassName("tab tab-payment selected")[0] != undefined)
         mainCheckout()
     else if (link.includes("shop") && checkout_mode != "CK Only" && document.getElementById("style") != null)
         mainAtc()
-    else if (link.startsWith("https://www.supremenewyork.com/checkout/"))
+    else if (link.startsWith("https://www.supremenewyork.com/checkout") && document.getElementsByClassName("tab tab-confirmation selected")[0] != undefined)
         mainSuccess()
 
 }

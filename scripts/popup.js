@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.2'
+const version = 'Cava-Scripts 1.2.3'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
@@ -754,6 +754,7 @@ function onUserLogged() {
         }
     }
     if (localStorage.getItem("profile_lvr") != "off") { $("#ProfileLvr").val(localStorage.getItem("profile_lvr")); }
+    if (localStorage.getItem("payment_mode_lvr") != "off") { $("#payment_mode_lvr").val(localStorage.getItem("payment_mode_lvr")); }
     if (localStorage.getItem("mode_lvr") != "off") { $("#mode_lvr").val(localStorage.getItem("mode_lvr")); }
     if (localStorage.getItem("size_lvr") != "off") { $("#size_lvr").val(localStorage.getItem("size_lvr")); }
     //gestisco il click del bottone salva
@@ -761,7 +762,8 @@ function onUserLogged() {
         let size_lvr = $("#size_lvr").val();
         let mode_lvr = $("#mode_lvr").val();
         let profile_lvr = $("#ProfileLvr").val();
-
+        let payment_mode_lvr = $("#payment_mode_lvr").val();
+        if (payment_mode_lvr != '') { localStorage.setItem("payment_mode_lvr", payment_mode_lvr); } else { localStorage.setItem("payment_mode_lvr", "off"); }
         if (profile_lvr != '') { localStorage.setItem("profile_lvr", profile_lvr); } else { localStorage.setItem("profile_lvr", "off"); }
         if (mode_lvr != '') { localStorage.setItem("mode_lvr", mode_lvr); } else { localStorage.setItem("mode_lvr", "off"); }
         if (!(isBlank(size_lvr))) { localStorage.setItem("size_lvr", size_lvr); } else { localStorage.setItem("size_lvr", "off"); }

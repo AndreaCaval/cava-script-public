@@ -1,8 +1,8 @@
-//debugger
+debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.2.2";
+const version = "1.2.3";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/dash%2Ficonpk.png?alt=media&token=52cd991d-5687-40b0-945a-49dcbf4c999a";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -101,12 +101,19 @@ function SetStatus_off() {
 
     //Lvr
     setIfNotPresent("mode_lvr", "Browser");
+    setIfNotPresent("payment_mode_lvr", "PayPal");
 
     //Awlab
     setIfNotPresent("checkout_mode_awlab", "Full Checkout");
     setIfNotPresent("payment_mode_awlab", "PayPal");
     setIfNotPresent("guest_mode_awlab", "on");
     setIfNotPresent("continue_yes_awlab", "on");
+
+    //Offspring
+    setIfNotPresent("checkout_mode_office", "Full Checkout");
+    setIfNotPresent("payment_mode_office", "PayPal");
+    setIfNotPresent("guest_mode_office", "on");
+    setIfNotPresent("delay_office", 1000)
 
     //Offspring
     setIfNotPresent("checkout_mode_offspring", "Full Checkout");
@@ -152,6 +159,14 @@ function SetStatus_off() {
         "email_pw_offspring",
         "size_offspring",
         "profile_offspring",
+
+        //Office
+        "status_aco_office",
+        "status_login_office",
+        "account_mode_office",
+        "email_pw_office",
+        "size_office",
+        "profile_office",
 
         //Awlab
         "status_aco_awlab",

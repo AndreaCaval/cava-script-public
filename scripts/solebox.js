@@ -30,9 +30,6 @@ let pid = "";
 let pidsize = "";
 let size = "";
 
-let dummy = 0
-let uuid_dummy = ""
-
 let html = document.createElement('html')
 let address_id = "";
 let address_type = "";
@@ -106,7 +103,6 @@ function textBox() {
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fleft.png?alt=media&token=ae01ab54-0f26-47ac-9fdf-8774188499bd" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fright.png?alt=media&token=887cb8d7-4399-43ff-a197-96afe8626dc6" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
-            '<p style="float:left" id="statusSolebox">Status solebox</p><p style="float:right" id="timerSnipes"></p> <br style="clear:both">' +
             '<div class="box"><label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
             '<input class="btn_cava" style="margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"></div> <br><br>' +
             '<div class="box"><input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"></div> <br><br>' +
@@ -129,7 +125,6 @@ function textBox() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
-
 
         let btn_start_task = document.getElementById('btn_start_task')
         btn_start_task.addEventListener("click", function() {
@@ -232,10 +227,6 @@ async function checkPosition() {
     } catch (error) {}
 }
 
-function updateValueDummy(e) {
-    localStorage.setItem("solebox_dummy", e.target.value)
-}
-
 function updateValuePid(e) {
     localStorage.setItem("solebox_pid", e.target.value)
 }
@@ -264,15 +255,27 @@ async function addButton() {
                 is_captcha_solved = true
             });
 
+            checkPosition()
         }
-
-        checkPosition()
     } catch (error) {}
 }
 
 async function sendText(text, color) {
     try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
-    checkPosition()
+}
+
+function checkCaptcha(res) {
+
+    if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) return true
+    else return false
+}
+async function resolveCaptcha() {
+    sendText("Error, resolve captcha", "red")
+    addButton()
+    while (is_captcha_solved == false) {
+        await sleep(250)
+    }
+    is_captcha_solved = false
 }
 
 async function main() {
@@ -292,7 +295,6 @@ async function main() {
         } catch (error) {}
     }
 }
-
 
 async function checkLogin() {
 
@@ -424,25 +426,35 @@ async function loginR(data_id, data_value, csrf_token) {
 }
 
 async function checkResLogin(response) {
+    try {
 
-    let status = response.status
-    let res = await response.text()
-    if (status == 200 || status == 201) {
-        sendText("Logged in", "green")
-        is_login = true
-    } else {
-        if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
+        if (response.url.includes("PX")) {
             sendText("Error logging in, resolve captcha", "red")
-            addButton()
-            while (is_captcha_solved == false) {
-                await sleep(250)
-            }
-            is_captcha_solved = false
+            await resolveCaptcha()
             login()
         } else {
-            errorWebhooks(res, "checkResLogin")
-            sendText("Error logging in", "red")
+
+            let status = response.status
+            let res = await response.text()
+
+            if (status == 200 || status == 201) {
+                sendText("Logged in", "green")
+                is_login = true
+            } else {
+                if (checkCaptcha(res)) {
+                    sendText("Error logging in, resolve captcha", "red")
+                    await resolveCaptcha()
+                    login()
+                } else {
+                    errorWebhooks(res, "checkResLogin")
+                    sendText("Error logging in", "red")
+                }
+            }
         }
+
+    } catch (error) {
+        errorWebhooks(error, "trycheckResLogin")
+        sendText("Error logging in", "red")
     }
 }
 
@@ -476,28 +488,32 @@ async function getLogin() {
 async function checkResgetLogin(response) {
     try {
 
-        let status = response.status
-        let res = await response.text()
-        if (status == 200 || status == 201) {
-            return res
+        if (response.url.includes("PX")) {
+            sendText("Error logging in, resolve captcha", "red")
+            await resolveCaptcha()
+            login()
         } else {
-            if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
-                sendText("Error logging in, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                login()
+
+            let status = response.status
+            let res = await response.text()
+
+            if (status == 200 || status == 201) {
+                return res
             } else {
-                errorWebhooks(res, "checkResgetLogin")
-                sendText("Error logging in", "red")
+                if (checkCaptcha(res)) {
+                    sendText("Error logging in, resolve captcha", "red")
+                    await resolveCaptcha()
+                    login()
+                } else {
+                    errorWebhooks(res, "checkResgetLogin")
+                    sendText("Error logging in", "red")
+                }
             }
         }
 
     } catch (error) {
-        errorWebhooks(error, "main")
-        sendText("Error loading page", "red")
+        errorWebhooks(error, "trycheckResgetLogin")
+        sendText("Error logging in", "red")
     }
 }
 
@@ -536,36 +552,44 @@ async function getCart() {
 async function checkResGetCart(response) {
     try {
 
-        let status = response.status
-        let res = await response.text()
-        let html_cart = document.createElement("html")
-        if (status == 200 || status == 201) {
-            sendText("Getting cart", "green")
-            html_cart.innerHTML = res.replaceAll("&quot;", "")
-            html_cart = html_cart.querySelectorAll('[class="b-cart-products-list js-cart-line-items"]')[0]
-            html_cart = html_cart.querySelectorAll('[class="b-cart-item-wrapper js-cart-item-wrapper"]')
-            html_cart.forEach(element => {
-                pid_cart = element.getAttribute("data-gtm")
-                if (!isNumeric(pid_cart)) {
-                    pid_cart = pid_cart.replace(/\D/g, '-');
-                    pid_cart = pid_cart.split('-')
-                    pid_cart.forEach(elemen => {
-                        if (elemen.length == 16)
-                            pid_cart = elemen
-                    });
-                }
-                uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper l-col-6"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
-                clearCart(pid_cart, uuid_cart)
-            });
-            if (html_cart.length == 0)
-                sendText("Cart empty", "green")
+        if (response.url.includes("PX")) {
+            sendText("Error getting cart, resolve captcha", "red")
+            await resolveCaptcha()
+            getCart()
         } else {
-            if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) {
-                sendText("Error getting cart, resolve captcha & retry", "red")
-                addButton()
+
+            let status = response.status
+            let res = await response.text()
+            let html_cart = document.createElement("html")
+            if (status == 200 || status == 201) {
+                sendText("Getting cart", "green")
+                html_cart.innerHTML = res.replaceAll("&quot;", "")
+                html_cart = html_cart.querySelectorAll('[class="b-cart-products-list js-cart-line-items"]')[0]
+                html_cart = html_cart.querySelectorAll('[class="b-cart-item-wrapper js-cart-item-wrapper"]')
+                html_cart.forEach(element => {
+                    pid_cart = element.getAttribute("data-gtm")
+                    if (!isNumeric(pid_cart)) {
+                        pid_cart = pid_cart.replace(/\D/g, '-');
+                        pid_cart = pid_cart.split('-')
+                        pid_cart.forEach(elemen => {
+                            if (elemen.length == 16)
+                                pid_cart = elemen
+                        });
+                    }
+                    uuid_cart = element.querySelectorAll('[class="js-line-item-footer b-line-item-footer"]')[0].querySelectorAll('[class="b-edit-remove-wrapper h-hide-lg h-hide-xl"]')[0].querySelectorAll('[class="b-cart-btn-wrapper l-col-6"]')[0].querySelectorAll('a')[0].getAttribute("data-id")
+                    clearCart(pid_cart, uuid_cart)
+                });
+                if (html_cart.length == 0)
+                    sendText("Cart empty", "green")
             } else {
-                errorWebhooks(res, "checkResGetCart")
-                sendText("Error getting cart", "red")
+                if (checkCaptcha(res)) {
+                    sendText("Error getting cart, resolve captcha", "red")
+                    await resolveCaptcha()
+                    getCart()
+                } else {
+                    errorWebhooks(res, "checkResGetCart")
+                    sendText("Error getting cart", "red")
+                }
             }
         }
 
@@ -608,32 +632,36 @@ async function clearCart(pid_cart, uuid_cart) {
 async function checkResClearCart(response) {
     try {
 
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-
-        if (status == 200 || status == 201) {
-            sendText("Item removed", "green")
+        if (response.url.includes("PX")) {
+            sendText("Error removing item, resolve captcha", "red")
+            await resolveCaptcha()
+            getCart()
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error removing item..., resolve captcha & retry", "red")
-                addButton()
+
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+
+            if (status == 200 || status == 201) {
+                sendText("Item removed", "green")
             } else {
-                resInfoWebook(x, "checkResClearCart")
-                sendText("Error removing item...", "red")
+                if (checkCaptcha(x)) {
+                    sendText("Error removing item, resolve captcha", "red")
+                    await resolveCaptcha()
+                    getCart()
+                } else {
+                    sendText("Error removing item...", "red")
+                    if (res.errorMessage != "Unable to remove item from the cart. Please try again! If the issue continues please contact customer service.")
+                        resInfoWebook(x, "checkResClearCart")
+                }
             }
         }
 
     } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResClearCart")
-        } catch (error) {}
-
+        sendText("Error removing item...", "red")
         if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResClearCart")
-
-        sendText("Error removing item...", "red")
     }
 }
 
@@ -750,43 +778,44 @@ async function getSizePid(size_r) {
 }
 
 async function checkResgetSizePid(response) {
-
     try {
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        if (status == 200 || status == 201) {
-            if (x.includes("\"appId\"")) {
-                sendText("Error getting product, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                atc()
-            } else {
-                try {
-                    pidsize = res["product"]["id"]
-                    atcRfast()
-                } catch (error) {
-                    resInfoWebook(x, "checkResgetSizePid")
-                }
-            }
+
+        if (response.url.includes("PX")) {
+            sendText("Error getting product, resolve captcha", "red")
+            await resolveCaptcha()
+            getCart()
         } else {
-            if (x.includes("\"appId\"")) {
-                sendText("Error getting product, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
+
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+            if (status == 200 || status == 201) {
+
+                if (checkCaptcha(x)) {
+                    sendText("Error getting product, resolve captcha", "red")
+                    await resolveCaptcha()
+                    atc()
+                } else {
+                    try {
+                        pidsize = res["product"]["id"]
+                        atcRfast()
+                    } catch (error) {
+                        resInfoWebook(x, "checkResgetSizePid")
+                    }
                 }
-                is_captcha_solved = false
-                atc()
             } else {
-                errorWebhooks(x, "checkResgetSizePid")
-                sendText("Error getting product", "red")
+                if (checkCaptcha(x)) {
+                    sendText("Error getting product, resolve captcha", "red")
+                    await resolveCaptcha()
+                    atc()
+                } else {
+                    errorWebhooks(x, "checkResgetSizePid")
+                    sendText("Error getting product", "red")
+                }
             }
         }
+
     } catch (error) {
         errorWebhooks(error, "checkResgetSizePid")
         sendText("Error getting pid", "red")
@@ -824,54 +853,51 @@ async function atcRfast() {
 async function checkResAtc(response) {
     try {
 
-        sendText("Carting...", "blue")
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        let error = res["error"]
-        let message = res["message"]
-        let errorMessage = res["errorMessage"]
+        if (response.url.includes("PX")) {
+            sendText("Error carting, resolve captcha", "red")
+            await resolveCaptcha()
+            atcRfast()
+        } else {
 
-        if (status == 200 || status == 201) {
-            if (error == false) {
-                sendText("Carted", "green")
-                if (dummy == 2) {
-                    name_product = res["gtm"]["name"]
-                    size_product = res["gtm"]["variant"]
-                    price_product = res["gtm"]["price"] + '€'
-                    img_product = ""
-                    PlaceOrder()
-                } else {
-                    if (dummy == 1)
-                        uuid_dummy = res["pliUUID"]
+            sendText("Carting...", "blue")
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+            let error = res["error"]
+            let message = res["message"]
+            let errorMessage = res["errorMessage"]
+
+            if (status == 200 || status == 201) {
+                if (error == false) {
+                    sendText("Carted", "green")
                     mainCart()
+                } else {
+                    if (checkCaptcha(x)) {
+                        sendText("Error carting, resolve captcha", "red")
+                        await resolveCaptcha()
+                        atcRfast()
+                    } else if (message == "The selected item is not available any more." || message == "Der gewünschte Artikel ist leider nicht mehr verfügbar.") {
+                        sendText("Item out of stock", "red")
+                    } else {
+                        resInfoWebook(x, "checkResAtc_1")
+                        sendText("Error carting", "red")
+                    }
                 }
             } else {
-                if (message == "The selected item is not available any more." || message == "Der gewünschte Artikel ist leider nicht mehr verfügbar.") {
-                    sendText("Item out of stock", "red")
+                if (checkCaptcha(x)) {
+                    sendText("Error carting, resolve captcha", "red")
+                    await resolveCaptcha()
+                    atcRfast()
+                } else if (errorMessage == "Too many requests") {
+                    sendText("Too many requests", "red")
+                } else if (errorMessage != "undefined" && errorMessage != undefined) {
+                    errorWebhooks(errorMessage, "checkResAtc_2")
+                    sendText(errorMessage, "red")
                 } else {
-                    resInfoWebook(x, "checkResAtc_1")
+                    resInfoWebook(x, "checkResAtc_3")
                     sendText("Error carting", "red")
                 }
-            }
-        } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error carting, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                atcRfast()
-            } else if (errorMessage == "Too many requests") {
-                sendText("Too many requests", "red")
-            } else if (errorMessage != "undefined" && errorMessage != undefined) {
-                errorWebhooks(errorMessage, "checkResAtc_2")
-                sendText(errorMessage, "red")
-            } else {
-                resInfoWebook(x, "checkResAtc_3")
-                sendText("Error carting", "red")
             }
         }
 
@@ -882,13 +908,8 @@ async function checkResAtc(response) {
 
         if (error == "SyntaxError: Unexpected token < in JSON at position 1" || error == "SyntaxError: Unexpected token < in JSON at position 0") {
             sendText("Error carting, resolve captcha", "red")
-            addButton()
-            while (is_captcha_solved == false) {
-                await sleep(250)
-            }
-            is_captcha_solved = false
+            await resolveCaptcha()
             atcRfast()
-
         } else if (error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "trycheckResAtc")
 
@@ -900,7 +921,7 @@ async function checkResAtc(response) {
 async function mainCart() {
 
     if (checkout_mode != "ATC Only") {
-        while (is_login == false && status_login == "on") {
+        while (is_login == false) {
             await sleep(250)
         }
 
@@ -960,31 +981,34 @@ async function getCheckout() {
 async function checkResgetCheckout(response) {
     try {
 
-        let status = response.status
-        let res = await response.text()
-        if (response.url == "https://www.solebox.com/" + country + "/cart") {
-            is_cart = true
-            sendText("Item out of stock/ Item not available", "red")
-        } else if (status == 200 || status == 201) {
-            html.innerHTML = res
-            gettingShipping()
+        if (response.url.includes("PX")) {
+            sendText("Error getting checkout, resolve captcha", "red")
+            await resolveCaptcha()
+            mainCart()
         } else {
-            if (res.includes("\"appId\"")) {
-                sendText("Error getting checkout, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                mainCart()
+
+            let status = response.status
+            let res = await response.text()
+            if (response.url == "https://www.solebox.com/" + country + "/cart") {
+                is_cart = true
+                sendText("Item out of stock/ Item not available", "red")
+            } else if (status == 200 || status == 201) {
+                html.innerHTML = res
+                gettingShipping()
             } else {
-                errorWebhooks(res, "checkResgetCheckout")
-                sendText("Error getting checkout", "red")
+                if (checkCaptcha(res)) {
+                    sendText("Error getting checkout, resolve captcha", "red")
+                    await resolveCaptcha()
+                    mainCart()
+                } else {
+                    errorWebhooks(res, "checkResgetCheckout")
+                    sendText("Error getting checkout", "red")
+                }
             }
         }
 
     } catch (error) {
-        errorWebhooks(error, "checkResgetCheckout")
+        errorWebhooks(error, "trycheckResgetCheckout")
         sendText("Error getting checkout", "red")
     }
 }
@@ -1091,31 +1115,34 @@ async function ShippingRates() {
 }
 
 async function checkResShippingRates(response) {
-
     try {
 
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-
-        if (status == 200 || status == 201) {
-            sendText("Shipping rates", "green")
-            SubmitShipping()
+        if (response.url.includes("PX")) {
+            sendText("Error getting shipping rates, resolve captcha", "red")
+            await resolveCaptcha()
+            ShippingRates()
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error getting shipping rates, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                ShippingRates()
-            } else if (x == '{"errorMessage":"Too many requests"}') {
-                sendText("Too many requests", "red")
+
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+
+            if (status == 200 || status == 201) {
+                sendText("Shipping rates", "green")
+                SubmitShipping()
+
             } else {
-                resInfoWebook(x, "checkResShippingRates")
-                sendText("Error getting shipping rates", "red")
+                if (checkCaptcha(x)) {
+                    sendText("Error getting shipping rates, resolve captcha", "red")
+                    await resolveCaptcha()
+                    ShippingRates()
+                } else if (x == '{"errorMessage":"Too many requests"}') {
+                    sendText("Too many requests", "red")
+                } else {
+                    resInfoWebook(x, "checkResShippingRates")
+                    sendText("Error getting shipping rates", "red")
+                }
             }
         }
 
@@ -1160,34 +1187,43 @@ async function SubmitShipping() {
 }
 
 async function checkResSubmitShipping(response) {
-
     try {
 
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-
-        if (status == 200 || status == 201) {
-            sendText("Submit shipping", "green")
-            if (is_login == false)
-                SubmitPayment()
-            else
-                PlaceOrder()
-        } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error submitting shipping, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
+        if (response.url.includes("PX")) {
+            sendText("Error submitting shipping, resolve captcha", "red")
+            await resolveCaptcha()
+            if (is_login == true)
                 SubmitShipping()
-            } else if (x == '{"errorMessage":"Too many requests"}') {
-                sendText("Too many requests", "red")
+            else
+                SubmitShippingGuest()
+        } else {
+
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+
+            if (status == 200 || status == 201) {
+                sendText("Submit shipping", "green")
+                if (is_login == false)
+                    SubmitPayment()
+                else {
+                    PlaceOrder()
+                }
             } else {
-                resInfoWebook(x, "checkResSubmitShipping")
-                sendText("Error submitting shipping", "red")
+                if (checkCaptcha(x)) {
+                    sendText("Error submitting shipping, resolve captcha", "red")
+                    await resolveCaptcha()
+                    if (is_login == true)
+                        SubmitShipping()
+                    else
+                        SubmitShippingGuest()
+                } else if (x == '{"errorMessage":"Too many requests"}') {
+                    sendText("Too many requests", "red")
+                } else {
+                    resInfoWebook(x, "checkResSubmitShipping")
+                    sendText("Error submitting shipping", "red")
+                }
             }
         }
 
@@ -1232,57 +1268,48 @@ async function SubmitPayment() {
 }
 
 async function checkResSubmitPayment(response) {
-
     try {
 
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        let error = res["error"]
+        if (response.url.includes("PX")) {
+            sendText("Error submitting payment, resolve captcha", "red")
+            await resolveCaptcha()
+            SubmitPayment()
+        } else {
 
-        if (status == 200 || status == 201) {
-            if (error == false) {
-                sendText("Submit payment", "green")
-                if (dummy == 1) {
-                    await sleep(500)
-                    sendText("Session ready", "green")
-                        // await removeDummy()
-                    dummy = 2
-                } else {
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+            let error = res["error"]
+
+            if (status == 200 || status == 201) {
+                if (error == false) {
+                    sendText("Submit payment", "green")
                     PlaceOrder()
-                }
-            } else {
-                if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                    sendText("Error submitting payment, resolve captcha", "red")
-                    addButton()
-                    while (is_captcha_solved == false) {
-                        await sleep(250)
-                    }
-                    is_captcha_solved = false
-                    SubmitPayment()
-                } else if (x == '{"errorMessage":"Too many requests"}') {
-                    sendText("Too many requests", "red")
-                } else if (res["redirectUrl"] == "/" + country + "/cart") {
-                    sendText("Item out of stock", "red")
                 } else {
-                    resInfoWebook(x, "checkResSubmitPayment_1")
+                    if (checkCaptcha(x)) {
+                        sendText("Error submitting payment, resolve captcha", "red")
+                        await resolveCaptcha()
+                        SubmitPayment()
+                    } else if (x == '{"errorMessage":"Too many requests"}') {
+                        sendText("Too many requests", "red")
+                    } else if (res["redirectUrl"] == "/" + country + "/cart") {
+                        sendText("Item out of stock", "red")
+                    } else {
+                        resInfoWebook(x, "checkResSubmitPayment_1")
+                        sendText("Error submitting payment", "red")
+                    }
+                }
+
+            } else {
+                if (checkCaptcha(x)) {
+                    sendText("Error submitting payment, resolve captcha", "red")
+                    await resolveCaptcha()
+                    SubmitPayment()
+                } else {
+                    resInfoWebook(x, "checkResSubmitPayment_2")
                     sendText("Error submitting payment", "red")
                 }
-            }
-
-        } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error submitting payment, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                SubmitPayment()
-            } else {
-                resInfoWebook(x, "checkResSubmitPayment_2")
-                sendText("Error submitting payment", "red")
             }
         }
 
@@ -1329,62 +1356,60 @@ async function PlaceOrder() {
 }
 
 async function checkResPlaceOrder(response) {
-
     try {
 
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        let error = res["error"]
-        let linkpp = ""
-        let errorMessage = ""
-
-        if (status == 200 || status == 201) {
-            if (error == false) {
-                linkpp = res["continueUrl"]
-                if (linkpp != null) {
-                    sendText("Checked out", "green")
-                    window.open(linkpp)
-                    sendWebhooks(linkpp)
-                }
-            } else {
-                if (res["redirectUrl"] == "/" + country + "/cart") {
-                    sendText("Item out of stock", "red")
-                } else if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                    sendText("Error placing order, resolve captcha", "red")
-                    addButton()
-                    while (is_captcha_solved == false) {
-                        await sleep(250)
-                    }
-                    is_captcha_solved = false
-                    PlaceOrder()
-                } else if (res["missingPayment"] == true) {
-                    SubmitPayment()
-                } else {
-                    errorMessage = res['errorMessage']
-                    resInfoWebook(x, "checkResPlaceOrder_2")
-                    if (errorMessage == "undefined" || errorMessage == undefined) {
-                        sendText(errorMessage, "red")
-                    } else {
-                        sendText(errorMessage, "red")
-                        errorWebhooks(errorMessage, "checkResPlaceOrder_2")
-                    }
-                }
-            }
-
+        if (response.url.includes("PX")) {
+            sendText("Error placing order, resolve captcha", "red")
+            await resolveCaptcha()
+            PlaceOrder()
         } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error placing order, resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
+
+            let status = response.status
+            let res = await response.text()
+            let x = res
+            res = JSON.parse(res)
+            let error = res["error"]
+            let linkpp = ""
+            let errorMessage = ""
+
+            if (status == 200 || status == 201) {
+                if (error == false) {
+                    linkpp = res["continueUrl"]
+                    if (linkpp != null) {
+                        sendText("Checked out", "green")
+                        window.open(linkpp)
+                        sendWebhooks(linkpp)
+                    }
+                } else {
+                    if (res["redirectUrl"] == "/" + country + "/cart") {
+                        sendText("Item out of stock", "red")
+                    } else if (checkCaptcha(x)) {
+                        sendText("Error placing order, resolve captcha", "red")
+                        await resolveCaptcha()
+                        PlaceOrder()
+                    } else if (res["missingPayment"] == true) {
+                        SubmitPayment()
+                    } else {
+                        errorMessage = res['errorMessage']
+                        resInfoWebook(x, "checkResPlaceOrder_2")
+                        if (errorMessage == "undefined" || errorMessage == undefined) {
+                            sendText(errorMessage, "red")
+                        } else {
+                            sendText(errorMessage, "red")
+                            errorWebhooks(errorMessage, "checkResPlaceOrder_2")
+                        }
+                    }
                 }
-                is_captcha_solved = false
-                PlaceOrder()
+
             } else {
-                resInfoWebook(x, "checkResPlaceOrder_3")
-                sendText("Error placing order", "red")
+                if (checkCaptcha(x)) {
+                    sendText("Error placing order, resolve captcha", "red")
+                    await resolveCaptcha()
+                    PlaceOrder()
+                } else {
+                    resInfoWebook(x, "checkResPlaceOrder_3")
+                    sendText("Error placing order", "red")
+                }
             }
         }
 
@@ -1397,73 +1422,6 @@ async function checkResPlaceOrder(response) {
             errorWebhooks(error, "trycheckResPlaceOrder")
 
         sendText("Error placing order", "red")
-    }
-}
-
-async function removeDummy() {
-    await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/Cart-RemoveProductLineItem?format=ajax&pid=" + pidsize + "&uuid=" + uuid_dummy, {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://www.solebox.com/" + country + "/cart",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
-        .then(response => { checkResRemoveDummy(response) })
-        .catch((error) => {
-            sendText("Error removing dummy", "orange")
-            if (error != "TypeError: Failed to fetch")
-                errorWebhooks(error, "checkResRemoveDummy fetch")
-        });;
-}
-
-async function checkResRemoveDummy(response) {
-    try {
-
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-
-        if (status == 200 || status == 201) {
-            sendText("Dummy removed", "green")
-            await sleep(500)
-            sendText("Session ready", "green")
-        } else {
-            if (x.includes("\"appId\"") || x.includes("_pxAppId") || x.includes("\"PX-ABR\"")) {
-                sendText("Error removing dummy..., resolve captcha", "red")
-                addButton()
-                while (is_captcha_solved == false) {
-                    await sleep(250)
-                }
-                is_captcha_solved = false
-                removeDummy()
-            } else {
-                resInfoWebook(x, "checkResRemoveDummy")
-                sendText("Error removing dummy...", "red")
-            }
-        }
-
-    } catch (error) {
-        try {
-            resInfoWebook(res, "trycheckResRemoveDummy")
-        } catch (error) {}
-
-        if (error != "SyntaxError: Unexpected end of JSON input")
-            errorWebhooks(error, "trycheckResRemoveDummy")
-
-        sendText("Error removing dummy...", "red")
     }
 }
 
