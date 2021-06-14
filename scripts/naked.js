@@ -29,18 +29,15 @@ let html = document.createElement('html');
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
     return n
 }
-
 function hasNumber(myString) {
     return /\d/.test(myString);
 }
-
 function arreyMixer(array) {
 
     var currentIndex = array.length,
@@ -55,7 +52,6 @@ function arreyMixer(array) {
     }
     return array;
 }
-
 function textBox() {
     let color_aco = "";
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
@@ -77,13 +73,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function() {
+        btn_left.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function() {
+        btn_right.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -92,7 +88,6 @@ function textBox() {
             errorWebhooks(error, "textBox")
     }
 }
-
 function dragElement(elmnt) {
     var pos1 = 0,
         pos2 = 0,
@@ -148,13 +143,11 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) {}
+    } catch (error) { }
 }
-
 async function sendText(text, color) {
-    try { document.getElementById("statusNaked").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusNaked").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
 }
-
 async function errorRefresh() {
     if (delay != "0") {
         sendText("Sleep " + delay + "ms...", "blue")
@@ -182,7 +175,6 @@ async function main() {
             list_input.forEach(element => {
                 if (element.id == "recaptcha-token") {
                     captcha_token = element.value
-                    console.log(captcha_token)
                 }
             });
 
@@ -197,7 +189,6 @@ async function main() {
         sendText("Error getting size", "red")
     }
 }
-
 async function mainAtcBrowser() {
     try {
         let cart = 0
@@ -206,12 +197,14 @@ async function mainAtcBrowser() {
                 do {
                     n = getRandomIntInclusive(0, sizes.length - 1)
                 } while (sizes[n].getAttribute("class") == "dropdown-item disabled")
+                size_product = sizes[n].textContent.replaceAll("\n", "")
                 sizes[n].click()
             } else {
                 if (size_range.includes('-')) {
                     for (let index = 0; index < sizes.length; index++) {
                         if (sizes[index].getAttribute("class") != "dropdown-item disabled" && parseFloat(sizes[index].textContent.replaceAll('\n', '')) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes[index].textContent.replaceAll('\n', '')) <= parseFloat(size_range.split('-')[1])) {
                             sizes[index].click()
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             cart = 1
                             break
                         }
@@ -221,6 +214,7 @@ async function mainAtcBrowser() {
                         console.log(sizes[index].textContent.replaceAll('\n', ''))
                         if (sizes[index].getAttribute("class") != "dropdown-item disabled" && parseFloat(sizes[index].textContent.replaceAll('\n', '')) == parseFloat(size_range)) {
                             sizes[index].click()
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             cart = 1
                             break
                         }
@@ -238,9 +232,11 @@ async function mainAtcBrowser() {
             for (let index = 0; index < 10; index++) {
                 await sleep(200)
                 if (document.getElementsByClassName("modal modal-sidebar modal-sidebar-right show")[0] != undefined) {
-                    name_product = document.getElementsByClassName('mc-item-brand')[0].textContent.replaceAll("\n", '') + ' | ' + document.getElementsByClassName('mc-item-name')[0].textContent.replaceAll("\n", '')
-                    size_product = document.getElementsByClassName('mc-item-size')[0].textContent.replaceAll("\n", "")
-                    price_product = document.getElementsByClassName('sub-total')[0].textContent.replaceAll("\n", "")
+                    // name_product = document.getElementsByClassName('mc-item-brand')[0].textContent.replaceAll("\n", '') + ' | ' + document.getElementsByClassName('mc-item-name')[0].textContent.replaceAll("\n", '')
+                    // size_product = document.getElementsByClassName('mc-item-size')[0].textContent.replaceAll("\n", "")
+                    // price_product = document.getElementsByClassName('sub-total')[0].textContent.replaceAll("\n", "")
+                    name_product = document.getElementsByClassName("product-property")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("product-property product-name")[0].textContent.replaceAll("\n", "")
+                    price_product = document.getElementsByClassName("price__sales")[0].textContent.replaceAll("\n", "")
                     sendWebhooks()
                     document.location = "https://www.nakedcph.com/" + country + "/cart/view"
                     break
@@ -260,7 +256,6 @@ async function mainAtcBrowser() {
         errorRefresh()
     }
 }
-
 async function mainAtcFast() {
     try {
 
@@ -270,12 +265,14 @@ async function mainAtcFast() {
                 do {
                     n = getRandomIntInclusive(0, sizes.length - 1)
                 } while (sizes[n].getAttribute("class") == "dropdown-item disabled")
+                size_product = sizes[n].textContent.replaceAll("\n", "")
                 variant_id = sizes[n].getAttribute('data-value')
             } else {
                 if (size_range.includes('-')) {
                     for (let index = 0; index < sizes.length; index++) {
                         if (sizes[index].getAttribute("class") != "dropdown-item disabled" && parseFloat(sizes[index].textContent.replaceAll('\n', '')) >= parseFloat(size_range.split('-')[0]) && parseFloat(sizes[index].textContent.replaceAll('\n', '')) <= parseFloat(size_range.split('-')[1])) {
                             variant_id = sizes[index].getAttribute('data-value')
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             break
                         }
                     }
@@ -284,6 +281,7 @@ async function mainAtcFast() {
                         console.log(sizes[index].textContent.replaceAll('\n', ''))
                         if (sizes[index].getAttribute("class") != "dropdown-item disabled" && parseFloat(sizes[index].textContent.replaceAll('\n', '')) == parseFloat(size_range)) {
                             variant_id = sizes[index].getAttribute('data-value')
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             break
                         }
                     }
@@ -310,33 +308,30 @@ async function mainAtcFast() {
         errorRefresh()
     }
 }
-
-
 async function atcR() {
 
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.nakedcph.com/" + country + "/cart/add", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-anticsrftoken": "2c6dba8398f04cbdb669e2b2b97f7d87",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "_AntiCsrfToken=" + _AntiCsrfToken + "&g-recaptcha-response=" + captcha_token + "&id=" + variant_id + "&partial=ajax-cart",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-anticsrftoken": "2c6dba8398f04cbdb669e2b2b97f7d87",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "_AntiCsrfToken=" + _AntiCsrfToken + "&g-recaptcha-response=" + captcha_token + "&id=" + variant_id + "&partial=ajax-cart",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkRes(response) })
         .catch((error) => { console.log(error) });;
 }
-
 async function checkRes(response) {
     try {
 
@@ -345,9 +340,11 @@ async function checkRes(response) {
 
         if (status == 200 || status == 201) {
             html.innerHTML = res
-            name_product = html.getElementsByClassName('cart-item__brand')[0].textContent.replaceAll("\n", '') + ' | ' + html.getElementsByClassName('cart-item__name')[0].textContent.replaceAll("\n", '')
-            size_product = html.getElementsByClassName('cart-item__size')[0].textContent.replaceAll("\n", "")
-            price_product = html.getElementsByClassName('cart-item__price')[0].textContent.replaceAll("\n", "")
+            // name_product = html.getElementsByClassName('cart-item__brand')[0].textContent.replaceAll("\n", '') + ' | ' + html.getElementsByClassName('cart-item__name')[0].textContent.replaceAll("\n", '')
+            // size_product = html.getElementsByClassName('cart-item__size')[0].textContent.replaceAll("\n", "")
+            // price_product = html.getElementsByClassName('cart-item__price')[0].textContent.replaceAll("\n", "")
+            name_product = document.getElementsByClassName("product-property")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("product-property product-name")[0].textContent.replaceAll("\n", "")
+            price_product = document.getElementsByClassName("price__sales")[0].textContent.replaceAll("\n", "")
             sendWebhooks()
             document.location = "https://www.nakedcph.com/" + country + "/cart/view"
         } else {
@@ -358,9 +355,11 @@ async function checkRes(response) {
             await sleep(5000)
             if (document.getElementsByClassName("mc-item-brand")[0] != undefined) {
                 try {
-                    name_product = document.getElementsByClassName("mc-item-brand")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("mc-item-name")[0].textContent.replaceAll("\n", "")
-                    size_product = document.getElementsByClassName("mc-item-size")[0].textContent.replaceAll("\n", "")
-                    price_product = document.getElementsByClassName("price-container")[0].textContent.replaceAll("\n", "")
+                    // name_product = document.getElementsByClassName("mc-item-brand")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("mc-item-name")[0].textContent.replaceAll("\n", "")
+                    // size_product = document.getElementsByClassName("mc-item-size")[0].textContent.replaceAll("\n", "")
+                    // price_product = document.getElementsByClassName("price-container")[0].textContent.replaceAll("\n", "")
+                    name_product = document.getElementsByClassName("product-property")[0].textContent.replaceAll("\n", "") + " | " + document.getElementsByClassName("product-property product-name")[0].textContent.replaceAll("\n", "")
+                    price_product = document.getElementsByClassName("price__sales")[0].textContent.replaceAll("\n", "")
                     sendWebhooks()
                     document.location = "https://www.nakedcph.com/" + country + "/cart/view"
                 } catch (error) {
@@ -387,26 +386,26 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay_naked" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_naked" }, function (response) {
     delay = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_naked" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_naked" }, function (response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_naked" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_naked" }, function (response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "mode_naked" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "mode_naked" }, function (response) {
     mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "status_aco_naked" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_naked" }, function (response) {
             if (response.farewell == 'on') {
                 main();
             }

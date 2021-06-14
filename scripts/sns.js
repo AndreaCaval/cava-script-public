@@ -76,13 +76,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function() {
+        btn_left.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function() {
+        btn_right.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -149,10 +149,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) {}
+    } catch (error) { }
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusSns").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusSns").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
 }
 
 async function errorRefresh() {
@@ -186,6 +186,7 @@ async function mainAtcBrowser() {
         if (sizes.length != 0) {
             if (size_range == "random") {
                 n = getRandomIntInclusive(0, sizes.length - 1)
+                size_product = sizes[n].textContent.replaceAll("\n", "")
                 sizes[n].click()
                 cart = 1
             } else {
@@ -198,6 +199,7 @@ async function mainAtcBrowser() {
                         size = parseFloat(size["converted-size-size-eu"])
                         if (size >= size_1 && size <= size_2) {
                             sizes[index].click()
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             cart = 1
                             break
                         }
@@ -206,6 +208,7 @@ async function mainAtcBrowser() {
                     for (let index = 0; index < sizes.length; index++) {
                         size = sizes[index].getAttribute("data-size-types")
                         size = JSON.parse(size)
+                        size_product = sizes[index].textContent.replaceAll("\n", "")
                         if (size["converted-size-size-eu"] == size_range) {
                             sizes[index].click()
                             cart = 1
@@ -225,13 +228,15 @@ async function mainAtcBrowser() {
             for (let index = 0; index < 10; index++) {
                 await sleep(200)
                 if (document.getElementsByClassName("modal slide-right show in")[0] != undefined) {
-                    let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
-                    let jj = JSON.parse(x)
-                    let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-                    let jjj = JSON.parse(y)
-                    name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
-                    size_product = jjj["converted-size-size-eu"]
-                    price_product = jj["price"]
+                    // let x = document.getElementsByClassName("cart-items")[0].querySelectorAll('[class="cart-item"]')[0].getAttribute("data-gtm-list-product")
+                    // let jj = JSON.parse(x)
+                    // let y = document.getElementsByClassName("cart-items")[0].getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+                    // let jjj = JSON.parse(y)
+                    // name_product = jj["brand"] + " | " + jj["name"] + " | " + jj["id"]
+                    // size_product = jjj["converted-size-size-eu"]
+                    // price_product = jj["price"]
+                    name_product = document.getElementsByClassName("product-view__title")[0].textContent.replaceAll("\n", " ")
+                    price_product = document.getElementsByClassName("price__current")[0].textContent.replaceAll("\n", " ")
                     sendWebhooks()
                     document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
                     break
@@ -258,6 +263,7 @@ async function mainAtcFast() {
         if (sizes.length != 0) {
             if (size_range == "random") {
                 n = getRandomIntInclusive(0, sizes.length - 1)
+                size_product = sizes[n].textContent.replaceAll("\n", "")
                 variant_id = sizes[n].getAttribute("for").split('-')[1]
             } else {
                 if (size_range.includes('-')) {
@@ -268,6 +274,7 @@ async function mainAtcFast() {
                         size = JSON.parse(size)
                         size = parseFloat(size["converted-size-size-eu"])
                         if (size >= size_1 && size <= size_2) {
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             variant_id = sizes[index].getAttribute("for").split('-')[1]
                             break
                         }
@@ -277,6 +284,7 @@ async function mainAtcFast() {
                         size = sizes[index].getAttribute("data-size-types")
                         size = JSON.parse(size)
                         if (size["converted-size-size-eu"] == size_range) {
+                            size_product = sizes[index].textContent.replaceAll("\n", "")
                             variant_id = sizes[index].getAttribute("for").split('-')[1]
                             break
                         }
@@ -305,22 +313,22 @@ async function atcR() {
 
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.sneakersnstuff.com/" + country + "/cart/add", {
-            "headers": {
-                "accept": "application/json, text/plain, */*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "no-referrer-when-downgrade",
-            "body": "did=" + product_id + "&id=" + variant_id + "&partial=mini-cart",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "content-type": "application/x-www-form-urlencoded",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": "did=" + product_id + "&id=" + variant_id + "&partial=mini-cart",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkRes(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
@@ -330,26 +338,30 @@ async function atcR() {
 }
 
 async function checkRes(response) {
-
     try {
+
         let status = response.status
         let res = await response.text()
 
         if (status == 200 || status == 201) {
             html.innerHTML = res
-            let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-            let j = JSON.parse(cart_size)
-            let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
-            let j_1 = JSON.parse(cart_1)
-            name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
-            price_product = j_1["price"]
-            size_product = j["converted-size-size-eu"]
+            // let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+            // let j = JSON.parse(cart_size)
+            // let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
+            // let j_1 = JSON.parse(cart_1)
+            // name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
+            // price_product = j_1["price"]
+            // size_product = j["converted-size-size-eu"]
+
+            name_product = document.getElementsByClassName("product-view__title")[0].textContent.replaceAll("\n", " ")
+            price_product = document.getElementsByClassName("price__current")[0].textContent.replaceAll("\n", " ")
             sendWebhooks()
             document.location = "https://www.sneakersnstuff.com/" + country + "/cart/view"
         } else {
             sendText("Error carting / Item reserved", "red")
             errorRefresh()
         }
+
     } catch (error) {
         sendText("Error carting", "red")
         errorWebhooks(error, "checkRes")
@@ -368,26 +380,26 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay_sns" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "delay_sns" }, function (response) {
     delay = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function (response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_sns" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_sns" }, function (response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "mode_sns" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "mode_sns" }, function (response) {
     mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function (response) {
             if (response.farewell == 'on') {
                 main();
             }
