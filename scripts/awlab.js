@@ -51,6 +51,8 @@ let pw_login = ""
 let payment_mode = ""
 let checkout_mode = ""
 let mode = ""
+let multicart = ""
+let carted = 0
 
 let profile = []
 
@@ -355,13 +357,20 @@ async function getSizepidInstock(pids) {
 async function mainAtc() {
     try {
 
-        if (size_range == "random") {
-            let n = getRandomIntInclusive(0, sizepid_instock.length - 1)
-            sizepid = sizepid_instock[n]
-        }
+        if (multicart == "on") {
+            sizepid_instock.forEach(element => {
+                sizepid = element
+                atcR()
+            });
+        } else {
+            if (size_range == "random") {
+                let n = getRandomIntInclusive(0, sizepid_instock.length - 1)
+                sizepid = sizepid_instock[n]
+            }
 
-        if (sizepid != "")
-            atcR()
+            if (sizepid != "")
+                atcR()
+        }
 
     } catch (error) { errorWebhook(error, "mainAtc") }
 }
@@ -401,8 +410,15 @@ async function checkResAtc(response) {
 
         if (status == 200 || status == 201) {
             sendText("Carted", "green")
-            setDataProduct()
-            mainCheckout()
+            if (multicart == "on") {
+                if (carted == sizepid_instock.length) {
+                    setDataProduct()
+                    mainCheckout()
+                }
+            } else {
+                setDataProduct()
+                mainCheckout()
+            }
         } else { sendText("Error carting", "red") }
 
     } catch (error) { errorWebhook(error, "checkResAtc") }
@@ -569,6 +585,10 @@ chrome.runtime.sendMessage({ greeting: "email_pw_awlab" }, function(response) {
     var x = response.farewell
     email_login = x.split(':')[0]
     pw_login = x.split(':')[1]
+});
+
+chrome.runtime.sendMessage({ greeting: "multicart_awlab" }, function(response) {
+    multicart = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "payment_mode_awlab" }, function(response) {

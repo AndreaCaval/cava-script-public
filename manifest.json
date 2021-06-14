@@ -31,10 +31,16 @@
         "persistent": true
     },
     "content_scripts": [{
-            "matches": ["https://www.supremenewyork.com/*"],
+            "matches": ["https://www.office.co.uk/*"],
+            "js": ["scripts/office.js"],
+            "all_frames": false
+        }, {
+            "matches": ["http://*/*", "https://*/*"],
+            "include_globs": ["https://*.supremenewyork.com/*"],
             "js": ["scripts/supreme.js"],
             "all_frames": true
-        }, {
+        },
+        {
             "matches": ["https://www.offspring.co.uk/*"],
             "js": ["scripts/offspring.js"],
             "all_frames": true

@@ -1,4 +1,4 @@
-debugger
+//debugger
 
 const site = "Supreme"
 
@@ -9,6 +9,7 @@ let csrf_token = ""
 
 let size_range = "random"
 
+let status_aco_instore = ""
 let status_aco = ""
 let status_login = ""
 
@@ -27,10 +28,11 @@ let link_product = ""
 let name_product = '';
 let size_product = '';
 let price_product = "";
-let img_product = "https://assets.supremenewyork.com/"
+let img_product = ""
 
 let order_number = ""
 let order_email = ""
+let insore_location = ""
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -67,6 +69,10 @@ function textBox() {
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
         var btn1 = document.getElementById("top_notice")
+
+        if (!link.includes("www"))
+            btn1 = document.getElementsByClassName("header")[0]
+
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
             '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
             '.btn_cava:active {position:relative;top:1px;} p{font-weight:bold}' +
@@ -83,13 +89,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function() {
+        btn_left.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function() {
+        btn_right.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -157,10 +163,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) {}
+    } catch (error) { }
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusSupreme").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusSupreme").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
 }
 
 async function main() {
@@ -170,7 +176,14 @@ async function main() {
         mainAtc()
     else if (link.startsWith("https://www.supremenewyork.com/checkout") && document.getElementsByClassName("tab tab-confirmation selected")[0] != undefined)
         mainSuccess()
-
+    else if( status_aco_instore == "on"){
+        if (link.includes("step-1"))
+            instoreStep1()
+        else if (link.includes("step-2"))
+            instoreStep2()
+        else if (link.includes("step-3"))
+            instoreStep3()
+    }
 }
 
 async function mainAtc() {
@@ -189,7 +202,7 @@ async function mainAtc() {
                 sizes.forEach(element => {
                     if (element.textContent == size_range) {
                         document.getElementById("size").value = element.getAttribute("value")
-                            // size = element.getAttribute("value")
+                        // size = element.getAttribute("value")
                     }
                 });
             }
@@ -212,14 +225,12 @@ async function mainAtc() {
     } catch (error) { errorWebhook(error, "mainAtc2") }
 }
 
-async function atcR() {}
-
 async function mainCheckout() {
     try {
 
         if (profile != "") {
             sendText("trying fill data...", "blue")
-                // if (document.getElementById("order_billing_name").value == "")
+            // if (document.getElementById("order_billing_name").value == "")
             document.getElementById("order_billing_name").value = profile["FirstName"] + " " + profile["LastName"]
             document.getElementById("order_email").value = profile["Email"]
             document.getElementById("order_tel").value = profile["Telephone"]
@@ -299,8 +310,53 @@ function ga_track(a, orderid, sku, pname, colorsize, price1, quantity) {
     }
 }
 
+async function instoreStep1() {
+    try {
+
+        document.getElementsByName("first-name")[0].value = profile["FirstName"]
+        document.getElementsByName("last-name")[0].value = profile["LastName"]
+        document.getElementsByName("email")[0].value = profile["Email"]
+        document.getElementsByName("phone")[0].value = profile["Telephone"]
+        document.getElementsByClassName("el-radio__original")[0].click()
+        document.getElementsByClassName("el-button continue-btn  el-button--danger").click()
+
+    } catch (error) { errorWebhook(error, "instoreStep1") }
+}
+
+async function instoreStep2() {
+    try {
+
+        document.getElementsByName("address-1")[0].value = profile["AddressOne"]
+        document.getElementsByName("address-2")[0].value = profile["AddressTwo"]
+        document.getElementsByName("zipcode")[0].value = profile["Zip"]
+        document.getElementsByName("city")[0].value = profile["City"]
+        document.getElementsByName("state")[0].value = profile["State"]
+        document.getElementsByName("country")[0].value = profile["Country"]
+
+        document.querySelectorAll("iframe")[0].contentWindow.document.getElementsByName("number")[0].value = profile["CardNumber"]
+        document.getElementsByName("credit-card-expiry")[0].value = profile["MMYY"]
+        document.querySelectorAll("iframe")[1].contentWindow.document.getElementsByName("securityCode")[0].value = profile["CVV"]
+
+        document.getElementsByClassName("el-button full-width wrap el-button--danger").click()
+
+    } catch (error) { errorWebhook(error, "instoreStep2") }
+}
+
+async function instoreStep3() {
+    try {
+
+        insore_location = link.split('/')[2].split('.')[0]
+        sendWebhooksInstore()
+
+    } catch (error) { errorWebhook(error, "instoreStep3") }
+}
+
 async function sendWebhooks() {
     chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + order_email + "&-&" + order_number })
+}
+
+async function sendWebhooksInstore() {
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + insore_location + "&-&" + order_number })
 }
 
 async function errorWebhook(error, position) {
@@ -311,7 +367,7 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "size_supreme" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_supreme" }, function (response) {
     if (response.farewell != "off")
         switch (response.farewell.toLowerCase()) {
             case "s":
@@ -336,30 +392,34 @@ chrome.runtime.sendMessage({ greeting: "size_supreme" }, function(response) {
 
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function (response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "payment_mode_supreme" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_supreme_instore" }, function (response) {
+    status_aco_instore = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "payment_mode_supreme" }, function (response) {
     payment_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "checkout_mode_supreme" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_supreme" }, function (response) {
     checkout_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "profile_supreme" }, function(response) {
-    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
+chrome.runtime.sendMessage({ greeting: "profile_supreme" }, function (response) {
+    chrome.runtime.sendMessage({ greeting: response.farewell }, function (response) {
         try {
             profile = JSON.parse(response.farewell)
-        } catch (error) {}
+        } catch (error) { }
     });
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function (response) {
             if (response.farewell == 'on') {
                 main()
             }

@@ -1441,9 +1441,12 @@ async function foundData() {
         if (hasNumber(size_product))
             size_product = size_product.replace(/[^\d,.-]/g, '')
 
-        email = document.querySelectorAll('[aria-live="polite"]')[0].textContent;
-        n = email.split(" ").splice(-1)
-        email = n[n.length - 1]
+        emails = document.querySelectorAll('[aria-live="polite"]')[0].textContent;
+        emails = emails.split(" ")
+        emails.forEach(element => {
+            if (element.includes('@'))
+                email = element
+        });
 
         sendWebhooks()
 

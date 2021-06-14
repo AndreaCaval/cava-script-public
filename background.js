@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.2.3";
+const version = "1.2.4";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/dash%2Ficonpk.png?alt=media&token=52cd991d-5687-40b0-945a-49dcbf4c999a";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -109,7 +109,7 @@ function SetStatus_off() {
     setIfNotPresent("guest_mode_awlab", "on");
     setIfNotPresent("continue_yes_awlab", "on");
 
-    //Offspring
+    //Office
     setIfNotPresent("checkout_mode_office", "Full Checkout");
     setIfNotPresent("payment_mode_office", "PayPal");
     setIfNotPresent("guest_mode_office", "on");
@@ -505,13 +505,13 @@ async function sendWebhookCheckout(x) {
     if (site.startsWith("Zalando")) {
         email = x[7]
     }
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab")) {
+    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Offspring" || site == "Office" || site == "Supreme") {
         try {
             email = x[7]
             payment_link = x[8]
         } catch (error) {}
     }
-    sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
+    //sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
     sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
 
@@ -562,7 +562,24 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || site == "Offspring" || site == "Footdistrict") {
+    } else if (site == "Supreme" && name_product == "") {
+
+        myEmbed = {
+            title: ":fire: Pokèmon caught! :fire:",
+            description: "Supreme Signups",
+            color: ("65280"),
+            fields: [{
+                name: 'Location',
+                value: payment_link,
+                inline: true
+            }],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -673,7 +690,30 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || site == "Offspring" || site == "Footdistrict") {
+    } else if (site == "Supreme" && name_product == "") {
+
+        myEmbed = {
+            title: ":fire: Pokèmon caught! :fire:",
+            description: "Supreme Signups",
+            color: ("65280"),
+            fields: [{
+                    name: 'Location',
+                    value: payment_link,
+                    inline: true
+                },
+                {
+                    name: 'Discord Name',
+                    value: userData.discordTag,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -759,7 +799,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo") {
+    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site == "Offspring" && payment_link != "") || (site == "Office" && payment_link != "")) {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -792,6 +832,23 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                     inline: false
                 }
             ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+
+    } else if (site == "Supreme" && name_product == "") {
+
+        myEmbed = {
+            title: ":fire: Pokèmon caught! :fire:",
+            description: "Supreme Signups",
+            color: ("65280"),
+            fields: [{
+                name: 'Location',
+                value: payment_link,
+                inline: true
+            }],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
                 icon_url: icon,
@@ -871,7 +928,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Offspring" || site == "Footdistrict") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",

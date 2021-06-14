@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.3'
+const version = 'Cava-Scripts 1.2.4'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
@@ -135,6 +135,8 @@ function onUserLogged() {
     if (localStorage.getItem("status_aco_courir") == "on") { $('#Status_aco_courir').prop('checked', true); }
     //Supreme
     if (localStorage.getItem("status_aco_supreme") == "on") { $('#Status_aco_supreme').prop('checked', true); }
+    //Office
+    if (localStorage.getItem("status_aco_office") == "on") { $('#Status_aco_office').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Zalando
@@ -204,6 +206,10 @@ function onUserLogged() {
     //Supreme
     $('#Status_aco_supreme').click(function() {
         if ($("#Status_aco_supreme").is(':checked')) { localStorage.setItem("status_aco_supreme", "on"); } else { localStorage.setItem("status_aco_supreme", "off"); }
+    });
+    //Office
+    $('#Status_aco_office').click(function() {
+        if ($("#Status_aco_office").is(':checked')) { localStorage.setItem("status_aco_office", "on"); } else { localStorage.setItem("status_aco_office", "off"); }
     });
     //---------------------------------------------------------------------
 
@@ -828,14 +834,68 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA OFFSPRING----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileOffspring').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileOffspring').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_offspring") != "off") { $("#ProfileOffspring").val(localStorage.getItem("profile_offspring")); }
+    if (localStorage.getItem("payment_mode_offspring") != "off") { $("#payment_mode_offspring").val(localStorage.getItem("payment_mode_offspring")); }
+    if (localStorage.getItem("checkout_mode_offspring") != "off") { $("#checkout_mode_offspring").val(localStorage.getItem("checkout_mode_offspring")); }
     if (localStorage.getItem("size_offspring") != "off") { $("#size_offspring").val(localStorage.getItem("size_offspring")); }
     $("#delay_offspring").val(localStorage.getItem("delay_offspring"));
     //gestisco il click del bottone salva
     $("#btn_save_offspring").click(function() {
         let size_offspring = $("#size_offspring").val();
         let delay_offspring = $("#delay_offspring").val();
+        let payment_mode_offspring = $("#payment_mode_offspring").val();
+        let checkout_mode_offspring = $("#checkout_mode_offspring").val();
+        let profile_offspring = $("#ProfileOffspring").val();
+        if (profile_offspring != '') { localStorage.setItem("profile_offspring", profile_offspring); } else { localStorage.setItem("profile_offspring", "off"); }
+        if (payment_mode_offspring != '') { localStorage.setItem("payment_mode_offspring", payment_mode_offspring); } else { localStorage.setItem("payment_mode_offspring", "off"); }
+        if (checkout_mode_offspring != '') { localStorage.setItem("checkout_mode_offspring", checkout_mode_offspring); } else { localStorage.setItem("checkout_mode_offspring", "off"); }
         if (delay_offspring != '') { localStorage.setItem("delay_offspring", delay_offspring); } else { localStorage.setItem("delay_offspring", "1000"); }
         if (!(isBlank(size_offspring))) { localStorage.setItem("size_offspring", size_offspring); } else { localStorage.setItem("size_offspring", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA OFFICE----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileOffice').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileOffice').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_office") != "off") { $("#ProfileOffice").val(localStorage.getItem("profile_office")); }
+    if (localStorage.getItem("payment_mode_office") != "off") { $("#payment_mode_office").val(localStorage.getItem("payment_mode_office")); }
+    if (localStorage.getItem("checkout_mode_office") != "off") { $("#checkout_mode_office").val(localStorage.getItem("checkout_mode_office")); }
+    if (localStorage.getItem("size_office") != "off") { $("#size_office").val(localStorage.getItem("size_office")); }
+    $("#delay_office").val(localStorage.getItem("delay_office"));
+    //gestisco il click del bottone salva
+    $("#btn_save_office").click(function() {
+        let size_office = $("#size_office").val();
+        let delay_office = $("#delay_office").val();
+        let payment_mode_office = $("#payment_mode_office").val();
+        let checkout_mode_office = $("#checkout_mode_office").val();
+        let profile_office = $("#ProfileOffice").val();
+        if (profile_office != '') { localStorage.setItem("profile_office", profile_office); } else { localStorage.setItem("profile_office", "off"); }
+        if (payment_mode_office != '') { localStorage.setItem("payment_mode_office", payment_mode_office); } else { localStorage.setItem("payment_mode_office", "off"); }
+        if (checkout_mode_office != '') { localStorage.setItem("checkout_mode_office", checkout_mode_office); } else { localStorage.setItem("checkout_mode_office", "off"); }
+        if (delay_office != '') { localStorage.setItem("delay_office", delay_office); } else { localStorage.setItem("delay_office", "1000"); }
+        if (!(isBlank(size_office))) { localStorage.setItem("size_office", size_office); } else { localStorage.setItem("size_office", "off"); }
     });
     //---------------------------------------------------------------------
 
