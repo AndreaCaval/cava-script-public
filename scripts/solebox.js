@@ -98,6 +98,7 @@ function textBox() {
             '#CavaScriptsheader {padding: 10px;cursor: move;z-index: 10;background-color: #2196F3;color: #fff;border-radius: 10px;text-align: center;}' +
             '.box {width: 100%;background: #ffffff;color: #000;text-align: center;display: inline-block;box-shadow: #A3A3A3 3px 3px 6px -1px;border-radius: 10px;padding: 5px;}</style>' +
             '<div id="CavaScripts"><div id="CavaScriptsheader"><input type="image" id="btn_left" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fleft.png?alt=media&token=ae01ab54-0f26-47ac-9fdf-8774188499bd" style="width: 10px; margin-right: 40px;margin-bottom: -3px;">Click here to move<input type="image" id="btn_right" src="https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/box%2Fright.png?alt=media&token=887cb8d7-4399-43ff-a197-96afe8626dc6" style="width: 10px;margin-left: 40px;margin-bottom: -3px;"></div>' +
+            '<p style="float:left" id="statusSolebox">Status solebox</p>' +
             '<div class="box"><label>Sizepid  or  Load Link: </label> <br> <input style="color:black; type=text; width:100%; min-width:250px;" id="input_sizepid" placeholder="es: 0190061200000002"> <br>' +
             '<input class="btn_cava" style="margin-top:5px;" id="btn_start_task" type="submit" value="START TASK"></div> <br><br>' +
             '<div class="box"><input class="btn_cava" style="margin-right:10px;" id="btn_start_checkout" type="submit" value="START CHECKOUT"></div> <br><br>' +
