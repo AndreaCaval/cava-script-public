@@ -13,6 +13,8 @@ let name_product = '';
 let size_product = '';
 let price_product = "£";
 let img_product = ""
+let email = ""
+let linkpp = ""
 
 let main_pid = ""
 let id_product = "";
@@ -228,8 +230,8 @@ async function mainAtcBrowser() {
             name_product = document.getElementsByClassName("product__name")[0].textContent + " " + document.getElementsByClassName("product__variant")[0].textContent
             price_product = document.getElementsByClassName("price__price js-price")[0].textContent.replace(/\s/g, '').replaceAll('\n', '')
             img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
-            document.getElementsByClassName("btn btn-fluid product__actions-cart js-add-to-bag-btn")[0].click()
             size_product = size
+            document.getElementsByClassName("btn btn-fluid product__actions-cart js-add-to-bag-btn")[0].click()            
 
             for (let index = 0; index < 10; index++) {
                 await sleep(200)

@@ -255,10 +255,6 @@ async function addButton() {
 async function sendText(text, color) {
     try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
 }
-async function sendTime(time) {
-    try { document.getElementById("timerSolebox").innerHTML = "<span >" + time + "</span>" } catch (error) { }
-}
-
 function checkCaptcha(res) {
 
     if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) return true
@@ -1366,7 +1362,6 @@ async function checkResPlaceOrder(response) {
             errorWebhooks(error, "trycheckResPlaceOrder")
     }
 }
-
 async function sendWebhooks(linkpp) {
     chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
@@ -1410,7 +1405,6 @@ chrome.runtime.sendMessage({ greeting: "checkout_mode_solebox" }, function (resp
 chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
         textBox()
-        checkTimer()
         chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function (response) {
             if (response.farewell == 'on') {
                 main();
