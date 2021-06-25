@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.2.4";
+const version = "1.2.5";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/dash%2Ficonpk.png?alt=media&token=52cd991d-5687-40b0-945a-49dcbf4c999a";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -109,6 +109,12 @@ function SetStatus_off() {
     setIfNotPresent("guest_mode_awlab", "on");
     setIfNotPresent("continue_yes_awlab", "on");
 
+    //Here
+    setIfNotPresent("checkout_mode_here", "Full Checkout");
+    setIfNotPresent("payment_mode_here", "Credit Card");
+    setIfNotPresent("guest_mode_here", "on");
+    setIfNotPresent("continue_yes_here", "on");
+
     //Office
     setIfNotPresent("checkout_mode_office", "Full Checkout");
     setIfNotPresent("payment_mode_office", "PayPal");
@@ -137,6 +143,7 @@ function SetStatus_off() {
 
         //Supreme
         "status_aco_supreme",
+        "status_aco_supreme_instore",
         "size_supreme",
         "profile_supreme",
 
@@ -176,6 +183,15 @@ function SetStatus_off() {
         "continue_no_awlab",
         "profile_awlab",
         "multicart_awlab",
+
+        //Here
+        "status_aco_here",
+        "status_login_here",
+        "email_pw_here",
+        "coupon_here",
+        "continue_no_here",
+        "profile_here",
+        "multicart_here",
 
         //Zalando
         "status_aco_zalando",
@@ -235,6 +251,7 @@ function SetStatus_off() {
         "status_login_courir",
         "email_pw_courir",
         "size_courir",
+        "profile_courir",
 
         //Onygo
         "status_aco_onygo",
@@ -505,7 +522,7 @@ async function sendWebhookCheckout(x) {
     if (site.startsWith("Zalando")) {
         email = x[7]
     }
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Offspring" || site == "Office" || site == "Supreme") {
+    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Supreme") {
         try {
             email = x[7]
             payment_link = x[8]
@@ -579,7 +596,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -644,7 +661,6 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
     }
 
     request.send(JSON.stringify(params));
-
 }
 
 async function sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product, email, payment_link) {
@@ -713,7 +729,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -787,7 +803,6 @@ async function sendWebhook_private(name_product, link_product, img_product, site
     }
 
     request.send(JSON.stringify(params));
-
 }
 
 async function sendWebhook_personal(name_product, link_product, img_product, site, size_product, price_product, email, payment_link) {
@@ -799,7 +814,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site == "Offspring" && payment_link != "") || (site == "Office" && payment_link != "")) {
+    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo") {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -889,7 +904,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if ((site.startsWith("Awlab") && payment_link != "") || site == "Supreme") {
+    } else if ((site.startsWith("Awlab") && payment_link != "") || (site == "Here" && payment_link != "") || site == "Supreme") {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -928,7 +943,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -992,9 +1007,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
         embeds: [myEmbed]
     }
 
-
     request.send(JSON.stringify(params));
-
 }
 
 async function sendWebhookError(x) {

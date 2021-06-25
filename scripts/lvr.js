@@ -10,6 +10,7 @@ let size_range = "random"
 let status_aco = "";
 
 let mode = ""
+let payment_mode = ""
 
 let name_product = "";
 let price_product = "";
@@ -187,14 +188,14 @@ async function sendText(text, color) {
 }
 
 async function main() {
-    if (link.startsWith("https://www.luisaviaroma.com/" + country + "/p")) {
+    if (link.includes("/p/")) {
         mainAtc()
     } else if (link.startsWith("https://www.luisaviaroma.com/") && document.body.textContent.includes("__BODY_MODEL__ ")) {
         mainAtc()
     } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx") && link.endsWith("#checkout")) {
         mainCheckout()
     } else if (link.startsWith("https://www.luisaviaroma.com/myarea/sendagift/checkout/")) {
-        await sleep(250)
+        await sleep(500)
         try { document.querySelector('[for="PABPAB"]').scrollIntoView() } catch (error) {}
     } else if (link == "https://www.luisaviaroma.com/myarea/thanksBuy.aspx?") {
         // mainSuccess()
@@ -561,7 +562,7 @@ async function checkResgiftAccetta(response) {
 
         if (status == 200 || status == 201) {
             if (res.Error == "None")
-                sendText("Success", "green")
+                sendText("Gift success, check email", "green")
             else
                 sendText(res.Error)
         } else {
@@ -688,9 +689,11 @@ async function getData() {
         x = JSON.parse(x)
 
         email = x["UserInfo"]["Id"]
-        account_FirstName = x["UserInfo"]["FirstName"]
-        account_LastName = x["UserInfo"]["LastName"]
-
+            // account_FirstName = x["UserInfo"]["FirstName"]
+            // account_LastName = x["UserInfo"]["LastName"]
+            // email = profile["Email"]
+        account_FirstName = profile["FirstName"]
+        account_LastName = profile["LastName"]
         FirstName = profile["FirstName"]
         LastName = profile["LastName"]
         phone = profile["Telephone"]
@@ -748,9 +751,9 @@ async function confirmloggeduserandcreateorder() {
             },
             "referrer": link,
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"PAB\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"PAB\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":[{\"Type\":6,\"Code\":\"BEAUTY30\"},{\"Type\":6,\"Code\":\"SALEPRAU10\"},{\"Type\":6,\"Code\":\"SALEPRAU20\"},{\"Type\":6,\"Code\":\"SALEPRAU30\"},{\"Type\":6,\"Code\":\"SALEPRAU40\"},{\"Type\":6,\"Code\":\"SALEPRAU50\"}],\"Rows\":[{\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":" + SizeId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"ComColorId\":" + ComColorId + ",\"Quantity\":1,\"CustomizedAttributes\":[]}],\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
+            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":[{\"Type\":6,\"Code\":\"BEAUTY30\"},{\"Type\":6,\"Code\":\"SALEPRAU10\"},{\"Type\":6,\"Code\":\"SALEPRAU20\"},{\"Type\":6,\"Code\":\"SALEPRAU30\"},{\"Type\":6,\"Code\":\"SALEPRAU40\"},{\"Type\":6,\"Code\":\"SALEPRAU50\"}],\"Rows\":[{\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":" + SizeId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"ComColorId\":" + ComColorId + ",\"Quantity\":1,\"CustomizedAttributes\":[]}],\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
             "method": "POST",
-            "mode": "cors",
+            "mode": "no-cors",
             "credentials": "include"
         })
         .then(response => { checkResCk(response) })
@@ -781,7 +784,7 @@ async function confirmloggeduserandcreateorderEU() {
             },
             "referrer": link,
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"PAB\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":null},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"PAB\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":[{\"Type\":6,\"Code\":\"BEAUTY30\"},{\"Type\":6,\"Code\":\"SALEPRAU10\"},{\"Type\":6,\"Code\":\"SALEPRAU20\"},{\"Type\":6,\"Code\":\"SALEPRAU30\"},{\"Type\":6,\"Code\":\"SALEPRAU40\"},{\"Type\":6,\"Code\":\"SALEPRAU50\"}],\"Rows\":[{\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":" + SizeId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"ComColorId\":" + ComColorId + ",\"Quantity\":1,\"CustomizedAttributes\":[]}],\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":null,\"SalesTaxes\":0}}",
+            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":null},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":[{\"Type\":6,\"Code\":\"BEAUTY30\"},{\"Type\":6,\"Code\":\"SALEPRAU10\"},{\"Type\":6,\"Code\":\"SALEPRAU20\"},{\"Type\":6,\"Code\":\"SALEPRAU30\"},{\"Type\":6,\"Code\":\"SALEPRAU40\"},{\"Type\":6,\"Code\":\"SALEPRAU50\"}],\"Rows\":[{\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":" + SizeId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"ComColorId\":" + ComColorId + ",\"Quantity\":1,\"CustomizedAttributes\":[]}],\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":null,\"SalesTaxes\":0}}",
             "method": "POST",
             "mode": "cors",
             "credentials": "include"
@@ -799,7 +802,11 @@ async function checkResCk(response) {
     let status = response.status
     if (status == 200 || staus == 201) {
         sendText("Checked out", "green")
-        document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
+        if (payment_mode == "PPA") {
+            document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
+        } else {
+            document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
+        }
     } else {
         sendText("Error checking out...", "red")
     }
@@ -829,6 +836,17 @@ chrome.runtime.sendMessage({ greeting: "size_lvr" }, function(response) {
 
 chrome.runtime.sendMessage({ greeting: "mode_lvr" }, function(response) {
     mode = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "payment_mode_lvr" }, function(response) {
+    switch (response.farewell) {
+        case "PayPal":
+            payment_mode = "PPA"
+            break
+        case "Bank Transfer":
+            payment_mode = "PAB"
+            break
+    }
 });
 
 chrome.runtime.sendMessage({ greeting: "profile_lvr" }, function(response) {

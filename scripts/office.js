@@ -9,12 +9,10 @@ let delay = ""
 
 let link = document.location.href
 let link_product = link
-let name_product = '';
-let size_product = '';
-let price_product = "£";
+let name_product = ''
+let size_product = ''
+let price_product = "£"
 let img_product = ""
-let email = ""
-let linkpp = ""
 
 let main_pid = ""
 let id_product = "";
@@ -181,13 +179,17 @@ async function getCsrfToken() {
 
 async function getMainPid() {
     try {
-        let scripts = document.querySelectorAll("script")
-        scripts.forEach(element => {
-            if (element.textContent.includes("window.dataLayer = [{"))
-                eval(element.textContent)
-        });
-        main_pid = window.dataLayer[0]["productId"]
-    } catch (error) { }
+        main_pid = document.getElementById("productCodeId").value
+    } catch (error) {
+        try {
+            let scripts = document.querySelectorAll("script")
+            scripts.forEach(element => {
+                if (element.textContent.includes("window.dataLayer = [{"))
+                    eval(element.textContent)
+            });
+            main_pid = window.dataLayer[0]["productId"]
+        } catch (error) { }
+    }
 }
 
 async function mainAtcBrowser() {
@@ -258,142 +260,13 @@ async function mainAtcBrowser() {
     }
 }
 
-
-
-async function mainAtcFast() {
-    try {
-
-        sizes = document.getElementsByClassName("product__sizes-select js-size-select-list")[0].getElementsByClassName("product__sizes-option");
-        if (sizes.length != 0) {
-            if (size_range == "random") {
-                n = getRandomIntInclusive(0, sizes.length - 1)
-                size = parseFloat(sizes[n].getAttribute('data-name'))
-                size_product = sizes[n].getAttribute('data-value')
-                id_product = main_pid + "" + size_product
-            } else {
-                if (size_range.includes('-')) {
-                    size_1 = parseFloat(size_range.split('-')[0])
-                    size_2 = parseFloat(size_range.split('-')[1])
-                    sizes = Array.prototype.slice.call(sizes)
-                    sizes = arreyMixer(sizes)
-                    for (let index = 0; index < sizes.length; index++) {
-                        size = parseFloat(sizes[index].getAttribute('data-name'))
-                        if (size >= size_1 && size <= size_2) {
-                            id_product = main_pid + "" + sizes[index].getAttribute('data-value')
-                            break
-                        }
-                    }
-                    if (id_product == "") {
-                        sendText("Selected sizes not available", "purple")
-                    }
-                } else {
-                    for (let index = 0; index < sizes.length; index++) {
-                        size = parseFloat(sizes[index].getAttribute('data-name'))
-                        if (parseFloat(size) == parseFloat(size_range)) {
-                            id_product = main_pid + "" + sizes[index].getAttribute('data-value')
-                            break
-                        }
-
-                    }
-                    if (id_product == "") {
-                        sendText("Selected size not available", "purple")
-                    }
-                }
-            }
-
-            if (id_product != "")
-                await atcR()
-
-        } else {
-            sendText("Item out of stock", "purple")
-        }
-    } catch (error) {
-        sendText("Error adding to cart", "red")
-        errorWebhook(error, "mainAtc")
-    }
-}
-
-async function atcR() {
-
-    sendText("Trying atc...", "blue")
-    await fetch("https://www.office.co.uk/view/basket/add", {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "csrftoken": csrftoken,
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "productCode=" + id_product + "&wishlist=false",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
-        .then(response => { checkRes(response) })
-        .catch((error) => {
-            sendText("Error adding to cart", "orange")
-            if (error != "TypeError: Failed to fetch")
-                errorWebhook(error, "atcR")
-        });;
-}
-
-async function checkRes(response) {
-    try {
-
-        let status = response.status
-        let res = await response.text()
-        let x = res
-        res = JSON.parse(res)
-        let statusCode = ""
-
-        if (status == 200 || status == 201) {
-            statusCode = res["statusCode"]
-            if (statusCode == "success") {
-                sendText("Carted", "green")
-                name_product = main_pid
-                size_product = size
-                price_product = res["cartStatus"][0]["itemPrice"] + '£'
-                img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
-                mainCheckout()
-            } else {
-                resInfoWebook(x, "checkRes")
-                if (statusCode == "failedcaptcha") {
-                    sendText("Error captcha / Out of stock", "red")
-                } else if (statusCode == "outofstock") {
-                    sendText("Size out of stock", "red")
-                } else if (statusCode == "toomanyrequests") {
-                    sendText("Too many requests", "red")
-                } else {
-                    sendText(statusCode, "red")
-                    resInfoWebook(x, "checkRes_1")
-                }
-            }
-        } else {
-            resInfoWebook(x, "checkRes_2")
-            sendText("Error carting / Oos", "red")
-            errorWebhook(error, "checkRes_1")
-        }
-
-    } catch (error) {
-        sendText("Error carting", "red")
-        errorWebhook(error, "checkRes_2")
-    }
-}
-
 async function mainCheckout() {
     await sendWebhooks()
-    document.location = "https://www.offspring.co.uk/checkout/singlePageCheckout"
+    document.location = "https://www.office.co.uk/checkout/singlePageCheckout"
 }
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhook(error, position) {

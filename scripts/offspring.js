@@ -187,13 +187,17 @@ async function getCsrfToken() {
 
 async function getMainPid() {
     try {
-        let scripts = document.querySelectorAll("script")
-        scripts.forEach(element => {
-            if (element.textContent.includes("window.dataLayer = [{"))
-                eval(element.textContent)
-        });
-        main_pid = window.dataLayer[0]["productId"]
-    } catch (error) {}
+        main_pid = document.getElementById("productCodeId").value
+    } catch (error) {
+        try {
+            let scripts = document.querySelectorAll("script")
+            scripts.forEach(element => {
+                if (element.textContent.includes("window.dataLayer = [{"))
+                    eval(element.textContent)
+            });
+            main_pid = window.dataLayer[0]["productId"]
+        } catch (error) { }
+    }
 }
 
 async function mainAtcBrowser() {

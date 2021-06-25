@@ -56,7 +56,7 @@ function textBox() {
     let color_aco = "";
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
     try {
-        var btn1 = document.getElementsByClassName("navbar")[0]
+        var btn1 = document.getElementsByClassName("site-header")[0]
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
             '.btn_cava:hover {background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);background-color:#e4685d;}' +
             '.btn_cava:active {position:relative;top:1px;} p{font-weight:bold}' +

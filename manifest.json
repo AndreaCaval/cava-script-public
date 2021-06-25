@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Cava-Scripts",
     "description": "botterboycava",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "icons": {
         "128": "icons/iconpk.png"
     },
@@ -31,6 +31,10 @@
         "persistent": true
     },
     "content_scripts": [{
+            "matches": ["https://www.here-store.com/*"],
+            "js": ["scripts/here.js"],
+            "all_frames": false
+        },{
             "matches": ["https://www.office.co.uk/*"],
             "js": ["scripts/office.js"],
             "all_frames": false
@@ -103,11 +107,6 @@
         {
             "matches": ["https://www.basket4ballers.com/en/*", "https://www.basket4ballers.com/fr/*"],
             "js": ["scripts/b4b.js"],
-            "all_frames": false
-        },
-        {
-            "matches": ["https://www.kickz.com/*"],
-            "js": ["scripts/kickz.js"],
             "all_frames": false
         },
         {
