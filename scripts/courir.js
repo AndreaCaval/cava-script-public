@@ -214,7 +214,7 @@ async function sendText(text, color) {
 }
 
 async function main() {
-    if (link.startsWith("https://www.courir.com/" + country + "/p/")) {
+    if (link.includes("/p/")) {
         mainAtc()
     } else if (link.includes("shipping") && checkout_mode == "Full Checkout") {
         mainShipBrowser()
@@ -368,7 +368,7 @@ async function checkResAtc(response) {
                 img_product = document.querySelector('[itemprop="image"]').src
                 sendWebhooks()
             } catch (error) { }
-            document.location = "https://www.courir.com/" + country + "/shipping"
+            document.location = "https://www.courir." + country1 + "/" + country + "/shipping"
         } else {
             errorWebhooks(res, "checkResgetSizePid")
             sendText("Error carting", "red")
