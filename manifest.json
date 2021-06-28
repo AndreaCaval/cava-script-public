@@ -34,7 +34,14 @@
             "matches": ["https://www.here-store.com/*"],
             "js": ["scripts/here.js"],
             "all_frames": false
-        },{
+        },
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "include_globs": ["https://www.courir.*/*"],
+            "js": ["scripts/courir.js"],
+            "all_frames": true
+        },
+        {
             "matches": ["https://www.office.co.uk/*"],
             "js": ["scripts/office.js"],
             "all_frames": false

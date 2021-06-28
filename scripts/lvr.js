@@ -28,16 +28,6 @@ let html = document.createElement('html');
 let lang = ""
 
 let email = "";
-let account_FirstName = ""
-let account_LastName = ""
-let FirstName = "";
-let LastName = "";
-let phone = "";
-let address = "";
-let country_code = "";
-let zipcode = "";
-let city = "";
-let state = "";
 
 let ShippingAgent = ""
 let TypeService = ""
@@ -50,13 +40,18 @@ let SizeTypeId = "";
 let ItemId = "";
 let SeasonId = "";
 let ComColorId = "";
+
 let CartId = "";
 
-let profile = ""
 let Token = ""
 let ItemCode = ""
 let EncodedVendorColorId = ""
 let SizeTypeID = ""
+
+let Promos = ""
+let Rows = ""
+let TotalToPay = ""
+let profile = []
 
 
 function sleep(ms) {
@@ -110,13 +105,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function() {
+        btn_left.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function() {
+        btn_right.addEventListener("click", function () {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -181,10 +176,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) {}
+    } catch (error) { }
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusLvr").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
+    try { document.getElementById("statusLvr").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
 }
 
 async function main() {
@@ -192,11 +187,11 @@ async function main() {
         mainAtc()
     } else if (link.startsWith("https://www.luisaviaroma.com/") && document.body.textContent.includes("__BODY_MODEL__ ")) {
         mainAtc()
-    } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx") && link.endsWith("#checkout")) {
+    } else if (link.startsWith("https://www.luisaviaroma.com/myarea/myCart.aspx") && link.endsWith("#checkout") && mode == "Browser") {
         mainCheckout()
-    } else if (link.startsWith("https://www.luisaviaroma.com/myarea/sendagift/checkout/")) {
+    } else if (link.startsWith("https://www.luisaviaroma.com/myarea/sendagift/checkout/") && mode == "Gift") {
         await sleep(500)
-        try { document.querySelector('[for="PABPAB"]').scrollIntoView() } catch (error) {}
+        try { document.querySelector('[for="PABPAB"]').scrollIntoView() } catch (error) { }
     } else if (link == "https://www.luisaviaroma.com/myarea/thanksBuy.aspx?") {
         // mainSuccess()
     }
@@ -478,26 +473,26 @@ async function mainGift() {
 async function giftRichiesta() {
 
     await fetch("https://www.luisaviaroma.com/myarea/api/sendagift/generate", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "content-type": "application/json",
-                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-lvr-requested-with": "sendagift/generate",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"ItemCode\":\"" + ItemCode + "\",\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\",\"RecipientName\":\"" + profile.CardOwnerName + "\",\"RecipientEMail\":\"" + profile.Email + "\",\"SenderMessage\":\"bruno è bellissimo\"}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "content-type": "application/json",
+            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-lvr-requested-with": "sendagift/generate",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"IsMobile\":false,\"ItemCode\":\"" + ItemCode + "\",\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\",\"RecipientName\":\"" + profile.CardOwnerName + "\",\"RecipientEMail\":\"" + profile.Email + "\",\"SenderMessage\":\"bruno è bellissimo\"}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResgiftRichiesta(response) })
         .catch((error) => {
             sendText("Error gift richiesta", "orange")
@@ -527,26 +522,26 @@ async function checkResgiftRichiesta(response) {
 }
 async function giftAccetta() {
     await fetch("https://www.luisaviaroma.com/myarea/api/sendagift/accept", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "content-type": "application/json",
-                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-lvr-requested-with": "sendagift/accept",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"Token\":\"" + Token + "\",\"SizeTypeID\":\"" + SizeTypeId + "\",\"SizeID\":\"" + SizeId + "\",\"EMail\":\"" + profile.Email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"RecipientMessage\":\"grazie lo so\",\"SubscribeNewsLetter\":false,\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\"}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        }).then(response => { checkResgiftAccetta(response) })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "content-type": "application/json",
+            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-lvr-requested-with": "sendagift/accept",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"IsMobile\":false,\"Token\":\"" + Token + "\",\"SizeTypeID\":\"" + SizeTypeId + "\",\"SizeID\":\"" + SizeId + "\",\"EMail\":\"" + profile.Email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"RecipientMessage\":\"grazie lo so\",\"SubscribeNewsLetter\":false,\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\"}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    }).then(response => { checkResgiftAccetta(response) })
         .catch((error) => {
             sendText("Error gift accetta", "orange")
             if (error != "TypeError: Failed to fetch")
@@ -573,27 +568,28 @@ async function checkResgiftAccetta(response) {
 
 
 async function atcRFast() {
+
     await fetch("https://www.luisaviaroma.com/myarea/bag/add", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-lvr-requested-with": "bag/add",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":\"" + SizeId + "\",\"Quantity\":1}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        }).then(response => { checkRes(response) })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "content-type": "application/json",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-lvr-requested-with": "bag/add",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"IsMobile\":false,\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":\"" + SizeId + "\",\"Quantity\":1}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    }).then(response => { checkRes(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
             if (error != "TypeError: Failed to fetch")
@@ -626,25 +622,25 @@ async function getCheckout() {
 
     sendText("Getting checkout...", "blue")
     await fetch("https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=", {
-            "headers": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResgetCheckout(response) })
         .catch((error) => {
             sendText("Error getting checkout", "orange")
@@ -689,19 +685,9 @@ async function getData() {
         x = JSON.parse(x)
 
         email = x["UserInfo"]["Id"]
-            // account_FirstName = x["UserInfo"]["FirstName"]
-            // account_LastName = x["UserInfo"]["LastName"]
-            // email = profile["Email"]
-        account_FirstName = profile["FirstName"]
-        account_LastName = profile["LastName"]
-        FirstName = profile["FirstName"]
-        LastName = profile["LastName"]
-        phone = profile["Telephone"]
-        address = profile["AddressOne"]
-        country_code = profile["Country"]
-        zipcode = profile["Zip"]
-        city = profile["City"]
-        state = profile["State"]
+        // account_FirstName = x["UserInfo"]["FirstName"]
+        // account_LastName = x["UserInfo"]["LastName"]
+        let state = profile["State"]
         if (state == "")
             state = null
 
@@ -709,14 +695,10 @@ async function getData() {
         TypeService = x["SelectedShippingAgent"]["TypeService"]
         ShipCost = parseInt(x["SelectedShippingAgent"]["ShipCost"].replace(/[^\d,.-]/g, ''))
 
-        CollectionId = x["OrderInfo"]["Rows"][0]["CollectionId"]
-        VendorColorId = x["OrderInfo"]["Rows"][0]["VendorColorId"]
-        SizeId = x["OrderInfo"]["Rows"][0]["SizeId"]
-        SizeTypeId = x["OrderInfo"]["Rows"][0]["SizeTypeId"]
-        ItemId = x["OrderInfo"]["Rows"][0]["ItemId"]
-        SeasonId = x["OrderInfo"]["Rows"][0]["SeasonId"]
-        ComColorId = x["OrderInfo"]["Rows"][0]["ComColorId"]
         CartId = x["OrderInfo"]["CartId"]
+        TotalToPay = x.OrderInfo.TotalToPay
+        Promos = JSON.stringify(x.OrderInfo.Promos)
+        Rows = JSON.stringify(x.OrderInfo.Rows)
 
         lang = document.documentElement.getAttribute("xml:lang").toUpperCase()
 
@@ -726,7 +708,7 @@ async function getData() {
             confirmloggeduserandcreateorder()
 
     } catch (error) {
-        if (error != "TypeError: Cannot read property 'getElementsByClassName' of null")
+        if (error != "TypeError: Cannot read property 'getElementsByClassName' of null" && error != "SyntaxError: Unexpected end of JSON input")
             errorWebhooks(error, "getData")
     }
 
@@ -736,26 +718,26 @@ async function confirmloggeduserandcreateorder() {
 
     sendText("Checking out...", "blue")
     await fetch("https://www.luisaviaroma.com/myarea/bag/confirmloggeduserandcreateorder", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "content-type": "application/json",
-                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":\"" + state + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":[{\"Type\":6,\"Code\":\"BEAUTY30\"},{\"Type\":6,\"Code\":\"SALEPRAU10\"},{\"Type\":6,\"Code\":\"SALEPRAU20\"},{\"Type\":6,\"Code\":\"SALEPRAU30\"},{\"Type\":6,\"Code\":\"SALEPRAU40\"},{\"Type\":6,\"Code\":\"SALEPRAU50\"}],\"Rows\":[{\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":" + SizeId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"ComColorId\":" + ComColorId + ",\"Quantity\":1,\"CustomizedAttributes\":[]}],\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
-            "method": "POST",
-            "mode": "no-cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "content-type": "application/json",
+            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":" + Promos + ",\"Rows\":" + Rows + ",\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResCk(response) })
         .catch((error) => {
             sendText("Error checking out", "orange")
@@ -769,26 +751,26 @@ async function confirmloggeduserandcreateorderEU() {
 
     sendText("Checking out...", "blue")
     await fetch("https://www.luisaviaroma.com/myarea/bag/confirmloggeduserandcreateorder", {
-            "headers": {
-                "accept": "*/*",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "max-age=0",
-                "content-type": "application/json",
-                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": link,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":null},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + account_FirstName + "\",\"LastName\":\"" + account_LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + FirstName + "\",\"LastName\":\"" + LastName + "\",\"Phone\":\"" + phone + "\",\"CountryId\":\"" + country_code + "\",\"Address\":\"" + address + "\",\"ZipCode\":\"" + zipcode + "\",\"City\":\"" + city + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":[{\"Type\":6,\"Code\":\"BEAUTY30\"},{\"Type\":6,\"Code\":\"SALEPRAU10\"},{\"Type\":6,\"Code\":\"SALEPRAU20\"},{\"Type\":6,\"Code\":\"SALEPRAU30\"},{\"Type\":6,\"Code\":\"SALEPRAU40\"},{\"Type\":6,\"Code\":\"SALEPRAU50\"}],\"Rows\":[{\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":" + SizeId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"ComColorId\":" + ComColorId + ",\"Quantity\":1,\"CustomizedAttributes\":[]}],\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":null,\"SalesTaxes\":0}}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+            "cache-control": "max-age=0",
+            "content-type": "application/json",
+            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": link,
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":" + Promos + ",\"Rows\":" + Rows + ",\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    })
         .then(response => { checkResCk(response) })
         .catch((error) => {
             sendText("Error checking out", "orange")
@@ -802,11 +784,11 @@ async function checkResCk(response) {
     let status = response.status
     if (status == 200 || staus == 201) {
         sendText("Checked out", "green")
-        if (payment_mode == "PPA") {
-            document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
-        } else {
-            document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
-        }
+        price_product = TotalToPay
+        console.log(price_product)
+        sendWebhooks2()
+        document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
+
     } else {
         sendText("Error checking out...", "red")
     }
@@ -814,7 +796,11 @@ async function checkResCk(response) {
 
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&atc" })
+}
+
+async function sendWebhooks2() {
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product.toString() + "&-&full" })
 }
 
 async function errorWebhooks(error, position) {
@@ -825,20 +811,20 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function (response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_lvr" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "size_lvr" }, function (response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "mode_lvr" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "mode_lvr" }, function (response) {
     mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "payment_mode_lvr" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "payment_mode_lvr" }, function (response) {
     switch (response.farewell) {
         case "PayPal":
             payment_mode = "PPA"
@@ -849,17 +835,17 @@ chrome.runtime.sendMessage({ greeting: "payment_mode_lvr" }, function(response) 
     }
 });
 
-chrome.runtime.sendMessage({ greeting: "profile_lvr" }, function(response) {
-    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
+chrome.runtime.sendMessage({ greeting: "profile_lvr" }, function (response) {
+    chrome.runtime.sendMessage({ greeting: response.farewell }, function (response) {
         try {
             profile = JSON.parse(response.farewell)
-        } catch (error) {}
+        } catch (error) { }
     });
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function(response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function (response) {
             if (response.farewell == 'on') {
                 main();
             }

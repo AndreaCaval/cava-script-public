@@ -34,7 +34,7 @@ function checkData() {
             })
             .catch(e => {
                 console.log(e)
-                    // await logout(license)
+                // await logout(license)
                 window.location.replace("/popup/popup-login.html")
                 removeKeyValue("license")
             })
@@ -273,7 +273,7 @@ SetStatus_off();
 checkData()
 
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    function (request, sender, sendResponse) {
         try {
 
             //sendWebhookCheckout
@@ -291,7 +291,7 @@ chrome.runtime.onMessage.addListener(
                     case "authLog": //auth
                         sendResponse({ farewell: user_signed_in ? "on" : "off" })
                         break
-                        //auth
+                    //auth
                     case "login":
                         const license = request.license
                         const machineId = getMachineId()
@@ -323,7 +323,7 @@ chrome.runtime.onMessage.addListener(
                 }
             }
 
-        } catch (error) {}
+        } catch (error) { }
     });
 
 /**
@@ -351,7 +351,7 @@ async function login(key, machineId) {
         throw Error("Invalid credentials")
     }
     const jsonResponse = await response.json()
-        // check che identificatore della macchina sia corretto
+    // check che identificatore della macchina sia corretto
     if (jsonResponse.metadata.isEmpty || jsonResponse.metadata.hwid == null) {
         await updateMachineId(key, machineId)
         return jsonResponse
@@ -470,25 +470,25 @@ function loginWebhook(isLoginSuccessful) {
         title: "Login",
         color: color,
         fields: [{
-                name: 'Email',
-                value: isLoginSuccessful ? userData.discordEmail : "none",
-                inline: true
-            },
-            {
-                name: 'Discord id',
-                value: isLoginSuccessful ? userData.discordId : "none",
-                inline: true
-            },
-            {
-                name: 'Discord tag',
-                value: isLoginSuccessful ? userData.discordTag : "none",
-                inline: true
-            },
-            {
-                name: 'Key',
-                value: localStorage.getItem("license"),
-                inline: true
-            }
+            name: 'Email',
+            value: isLoginSuccessful ? userData.discordEmail : "none",
+            inline: true
+        },
+        {
+            name: 'Discord id',
+            value: isLoginSuccessful ? userData.discordId : "none",
+            inline: true
+        },
+        {
+            name: 'Discord tag',
+            value: isLoginSuccessful ? userData.discordTag : "none",
+            inline: true
+        },
+        {
+            name: 'Key',
+            value: localStorage.getItem("license"),
+            inline: true
+        }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -519,14 +519,14 @@ async function sendWebhookCheckout(x) {
     let price_product = x[6]
     let email = ""
     let payment_link = ""
-    if (site.startsWith("Zalando")) {
+    if (site.startsWith("Zalando") || site == "Lvr" || site.startsWith("Courir")) {
         email = x[7]
     }
     if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Supreme") {
         try {
             email = x[7]
             payment_link = x[8]
-        } catch (error) {}
+        } catch (error) { }
     }
     sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
     sendWebhook_private(name_product, link_product, img_product, site, size_product, price_product, email, payment_link)
@@ -538,7 +538,7 @@ async function checkoutSound() {
     try {
         var audio = new Audio('checkout_sound.mp3');
         audio.play();
-    } catch (error) {}
+    } catch (error) { }
 }
 
 async function sendWebhook_public(name_product, link_product, img_product, site, size_product, price_product, email, payment_link) {
@@ -550,7 +550,22 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site.startsWith("Zalando")) {
+    if (site.startsWith("Courir") && email != "") {
+        myEmbed = {
+            title: ":fire: Pokèmon caught! :fire:",
+            color: ("65280"),
+            fields: [{
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+    } else if (site.startsWith("Zalando")) {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -558,20 +573,20 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Quantity',
-                    value: price_product,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Quantity',
+                value: price_product,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -596,7 +611,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -604,20 +619,20 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             thumbnail: { url: img_product },
             color: ("15715328"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -634,20 +649,20 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -672,7 +687,27 @@ async function sendWebhook_private(name_product, link_product, img_product, site
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site.startsWith("Zalando")) {
+    if (site.startsWith("Courir") && email != "") {
+        myEmbed = {
+            title: ":fire: Pokèmon caught! :fire:",
+            color: ("65280"),
+            fields: [{
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: userData.discordTag,
+                inline: true
+            }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+    } else if (site.startsWith("Zalando")) {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -680,25 +715,25 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Quantity',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Discord Name',
-                    value: userData.discordTag,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Quantity',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: userData.discordTag,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -713,15 +748,15 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             description: "Supreme Signups",
             color: ("65280"),
             fields: [{
-                    name: 'Location',
-                    value: payment_link,
-                    inline: true
-                },
-                {
-                    name: 'Discord Name',
-                    value: userData.discordTag,
-                    inline: true
-                }
+                name: 'Location',
+                value: payment_link,
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: userData.discordTag,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -729,7 +764,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -737,25 +772,25 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             thumbnail: { url: img_product },
             color: ("15715328"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Discord Name',
-                    value: userData.discordTag,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: userData.discordTag,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -771,25 +806,25 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Discord Name',
-                    value: userData.discordTag,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Discord Name',
+                value: userData.discordTag,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -814,7 +849,27 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let myEmbed = {}
 
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo") {
+    if (site.startsWith("Courir") && email != "") {
+        myEmbed = {
+            title: ":fire: Pokèmon caught! :fire:",
+            color: ("65280"),
+            fields: [{
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Order Number',
+                value: email,
+                inline: true
+            }
+            ],
+            footer: {
+                text: 'Cava-Scripts ' + version + ' | ' + String(time),
+                icon_url: icon,
+            },
+        }
+    } else if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo") {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -822,30 +877,30 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Email',
-                    value: "||" + email + "||",
-                    inline: false
-                },
-                {
-                    name: 'Checkout link',
-                    value: '[ Click here to check out ](' + payment_link + ')',
-                    inline: false
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Email',
+                value: "||" + email + "||",
+                inline: false
+            },
+            {
+                name: 'Checkout link',
+                value: '[ Click here to check out ](' + payment_link + ')',
+                inline: false
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -878,25 +933,25 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Quantity',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Email',
-                    value: '||' + email + '||',
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Quantity',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Email',
+                value: '||' + email + '||',
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -912,30 +967,30 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                },
-                {
-                    name: 'Email',
-                    value: '||' + email + '||',
-                    inline: true
-                },
-                {
-                    name: 'Order Number',
-                    value: '||' + payment_link + '||',
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            },
+            {
+                name: 'Email',
+                value: '||' + email + '||',
+                inline: true
+            },
+            {
+                name: 'Order Number',
+                value: '||' + payment_link + '||',
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -943,7 +998,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Sns" || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || site == "Lvr" || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -951,20 +1006,20 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             thumbnail: { url: img_product },
             color: ("15715328"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -981,20 +1036,20 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             thumbnail: { url: img_product },
             color: ("65280"),
             fields: [{
-                    name: 'Site',
-                    value: site,
-                    inline: true
-                },
-                {
-                    name: 'Size',
-                    value: size_product,
-                    inline: true
-                },
-                {
-                    name: 'Price',
-                    value: price_product,
-                    inline: true
-                }
+                name: 'Site',
+                value: site,
+                inline: true
+            },
+            {
+                name: 'Size',
+                value: size_product,
+                inline: true
+            },
+            {
+                name: 'Price',
+                value: price_product,
+                inline: true
+            }
             ],
             footer: {
                 text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -1033,20 +1088,20 @@ async function errorWebhook(site, message, position) {
         title: site + " Error",
         color: ("16744192"),
         fields: [{
-                name: 'Message',
-                value: '```' + message + '```',
-                inline: true
-            },
-            {
-                name: 'Position',
-                value: position,
-                inline: true
-            },
-            {
-                name: 'Discord',
-                value: userData.discordTag,
-                inline: true
-            }
+            name: 'Message',
+            value: '```' + message + '```',
+            inline: true
+        },
+        {
+            name: 'Position',
+            value: position,
+            inline: true
+        },
+        {
+            name: 'Discord',
+            value: userData.discordTag,
+            inline: true
+        }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
@@ -1086,20 +1141,20 @@ async function infoWebook(site, message, position) {
         title: site + " Info",
         color: ("0"),
         fields: [{
-                name: 'Message',
-                value: '```' + message + '```',
-                inline: true
-            },
-            {
-                name: 'Position',
-                value: position,
-                inline: true
-            },
-            {
-                name: 'Discord',
-                value: userData.discordTag,
-                inline: true
-            }
+            name: 'Message',
+            value: '```' + message + '```',
+            inline: true
+        },
+        {
+            name: 'Position',
+            value: position,
+            inline: true
+        },
+        {
+            name: 'Discord',
+            value: userData.discordTag,
+            inline: true
+        }
         ],
         footer: {
             text: 'Cava-Scripts ' + version + ' | ' + String(time),
