@@ -91,9 +91,7 @@ function hasNumber(myString) {
 }
 function textBox() {
     let color_aco = "";
-    let color_login = ""
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
-    if (status_login == "off") { color_login = "red" } else { color_login = "green" }
     try {
         var btn1 = document.getElementsByClassName("top-banner")[0]
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
@@ -440,8 +438,9 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay" }, function (response) {
-    delay = response.farewell
+chrome.runtime.sendMessage({ greeting: "size_courir" }, function (response) {
+    if (response.farewell != "off" && hasNumber(response.farewell))
+        size_range = response.farewell
 });
 chrome.runtime.sendMessage({ greeting: "status_aco_courir" }, function (response) {
     status_aco = response.farewell
