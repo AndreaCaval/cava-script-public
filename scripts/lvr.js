@@ -10,7 +10,7 @@ let size_range = "random"
 let status_aco = "";
 
 let mode = ""
-let payment_mode = ""
+let payment_mode = "PPA"
 
 let name_product = "";
 let price_product = "";
@@ -25,9 +25,14 @@ let size = "";
 let n = 0;
 let product_id = link.split('/')[5];
 let html = document.createElement('html');
+let htmlgift = document.createElement('html');
 let lang = ""
 
 let email = "";
+let firstname = ""
+let lastname = ""
+let state = ""
+let pp = ""
 
 let ShippingAgent = ""
 let TypeService = ""
@@ -39,14 +44,12 @@ let SizeId = "";
 let SizeTypeId = "";
 let ItemId = "";
 let SeasonId = "";
-let ComColorId = "";
 
 let CartId = "";
 
 let Token = ""
 let ItemCode = ""
 let EncodedVendorColorId = ""
-let SizeTypeID = ""
 
 let Promos = ""
 let Rows = ""
@@ -105,13 +108,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -176,10 +179,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusLvr").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusLvr").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function main() {
@@ -191,7 +194,7 @@ async function main() {
         mainCheckout()
     } else if (link.startsWith("https://www.luisaviaroma.com/myarea/sendagift/checkout/") && mode == "Gift") {
         await sleep(500)
-        try { document.querySelector('[for="PABPAB"]').scrollIntoView() } catch (error) { }
+        try { document.querySelector('[for="PABPAB"]').scrollIntoView() } catch (error) {}
     } else if (link == "https://www.luisaviaroma.com/myarea/thanksBuy.aspx?") {
         // mainSuccess()
     }
@@ -274,103 +277,86 @@ async function mainBrowserAtc() {
     }
 }
 
+async function mainAtcFast() {
+
+    let x = ""
+    let scripts = document.querySelectorAll("script")
+    scripts.forEach(element => {
+        if (element.textContent.includes("__BODY_MODEL__ "))
+            eval(element.textContent)
+    });
+    x = window.__BODY_MODEL__
+    name_product = x.DescriptionText
+    price_product = x.Detail.FinalPrice
+    ItemCode = x.ItemCode
+    ItemId = x.ItemParameters.ItemId
+    SeasonId = x.ItemParameters.SeasonId
+    CollectionId = x.ItemParameters.CollectionId
+    VendorColorId = x.ItemParameters.VendorColorId
+
+    x.AvailabilityByColor.forEach(element => {
+        if (element.VendorColorId == VendorColorId)
+            sizes = element.SizeAvailability
+    });
+
+    EncodedVendorColorId = sizes[0].EncodedVendorColorId
+    sizes = arreyMixer(sizes)
+
+    if (size_range == "random") {
+        n = getRandomIntInclusive(0, sizes.length - 1)
+        size = sizes[n].SelectedDescription
+        SizeId = sizes[n].SizeOrd
+        SizeTypeId = sizes[n].SizeTypeId
+    } else {
+        if (size_range.includes('-')) {
+            size_1 = parseFloat(size_range.split('-')[0])
+            size_2 = parseFloat(size_range.split('-')[1])
+
+            for (let index = 0; index < sizes.length; index++) {
+                size2 = parseFloat(sizes[index].SelectedDescription)
+                if (size2 >= size_1 && size2 <= size_2) {
+                    size = sizes[index].SelectedDescription
+                    SizeId = sizes[index].SizeOrd
+                    SizeTypeId = sizes[index].SizeTypeId
+                }
+            }
+            if (SizeId == "") {
+                sendText("Selected sizes not available", "purple")
+            }
+        } else {
+            for (let index = 0; index < sizes.length; index++) {
+                size2 = parseFloat(sizes[index].SelectedDescription)
+                if (parseFloat(size_range) == size2) {
+                    size = sizes[index].SelectedDescription
+                    SizeId = sizes[index].SizeOrd
+                    SizeTypeId = sizes[index].SizeTypeId
+                }
+            }
+            if (SizeId == "") {
+                sendText("Selected size not available", "purple")
+            }
+        }
+    }
+}
+
 async function mainFast() {
     try {
         if (document.querySelector("[data-id='ItemPage-SelectsContainer']") == undefined) {
             sendText("Item out of stock", "red")
         } else {
             sendText("Trying atc fast...", "blue")
-            let size_instock = []
-            let x = ""
-            let y = ""
-            let scripts = document.querySelectorAll("script")
-            scripts.forEach(element => {
-                if (element.textContent.includes("__BODY_MODEL__ "))
-                    eval(element.textContent)
-            });
-            x = window.__BODY_MODEL__
-
-            ItemId = x["ItemParameters"]["ItemId"]
-            SeasonId = x["ItemParameters"]["SeasonId"]
-            CollectionId = x["ItemParameters"]["CollectionId"]
-            VendorColorId = x["ItemParameters"]["VendorColorId"]
-
-            sizes = x["Availability"]
-            let selectSize = document.querySelector("[data-id = 'ItemPage-SelectSize']")
-            if (selectSize.getElementsByClassName("_1607_GmTdI zq1tU3hfyW")[0] == undefined) {
-                document.getElementsByClassName("_1607_GmTdI")[1].click()
-                y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
-                y = Array.prototype.slice.call(y)
-                y.forEach(element => {
-                    size_instock.push(parseFloat(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent))
-                });
-                document.getElementsByClassName("_1607_GmTdI")[1].click()
-            } else {
-                size_instock.push(parseFloat(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent))
-            }
-            size_instock = Array.prototype.slice.call(size_instock)
-            size_instock = arreyMixer(size_instock)
-            if (size_range == "random") {
-                let n = 0
-                for (let index = 0; index < sizes.length + 1; index++) {
-                    if (index == sizes.length) { return }
-                    if (size_instock.includes(parseFloat(sizes[index]["SizeValue"]))) {
-                        n = index
-                        break
-                    }
-                }
-                size = sizes[n]["SelectedDescription"]
-                SizeId = sizes[n]["SizeOrd"]
-                SizeTypeId = sizes[n]["SizeTypeId"]
-            } else {
-                if (size_range.includes('-')) {
-                    size_1 = parseFloat(size_range.split('-')[0])
-                    size_2 = parseFloat(size_range.split('-')[1])
-                    sizes = Array.prototype.slice.call(sizes)
-                    sizes = arreyMixer(sizes)
-                    for (let index = 0; index < sizes.length; index++) {
-                        element = sizes[index]
-                        size = parseFloat(element["SelectedDescription"])
-                        if (size_instock.includes(size)) {
-                            if (size >= size_1 && size <= size_2) {
-                                SizeId = element["SizeOrd"]
-                                SizeTypeId = element["SizeTypeId"]
-                                break
-                            }
-                        }
-                    }
-                    if (SizeId == "") {
-                        sendText("Selected sizes not available", "purple")
-                    }
-                } else {
-                    for (let index = 0; index < sizes.length; index++) {
-                        element = sizes[index]
-                        size = parseFloat(element["SelectedDescription"])
-                        if (size_instock.includes(size)) {
-                            if (parseFloat(size) == parseFloat(size_range)) {
-                                SizeId = element["SizeOrd"]
-                                SizeTypeId = element["SizeTypeId"]
-                                break
-                            }
-                        }
-                    }
-                    if (SizeId == "") {
-                        sendText("Selected sizes not available", "purple")
-                    }
-                }
-            }
+            mainAtcFast()
 
             if (SizeId != "") {
-                name_product = x["DescriptionText"]
                 size_product = size
-                price_product = x["Detail"]["FinalPrice"]
+                sendText("Adding to cart size " + size_product + "...", "blue")
                 atcRFast()
             }
         }
 
     } catch (error) {
         errorWebhooks(error, "mainFast")
-        sendText("Item out of stock", "red")
+        sendText("Error, Item out of stock", "red")
     }
 }
 
@@ -381,118 +367,48 @@ async function mainGift() {
             sendText("Item out of stock", "red")
         } else {
             sendText("Trying atc fast...", "blue")
-            let size_instock = []
-            let x = ""
-            let y = ""
-            let scripts = document.querySelectorAll("script")
-            scripts.forEach(element => {
-                if (element.textContent.includes("__BODY_MODEL__ "))
-                    eval(element.textContent)
-            });
-            x = window.__BODY_MODEL__
-            ItemCode = x["ItemCode"]
-            EncodedVendorColorId = x.Availability[0].ColorAvailability[0].EncodedVendorColorId
-            sizes = x["Availability"]
-            let selectSize = document.querySelector("[data-id = 'ItemPage-SelectSize']")
-            if (selectSize.getElementsByClassName("_1607_GmTdI zq1tU3hfyW")[0] == undefined) {
-                document.getElementsByClassName("_1607_GmTdI")[1].click()
-                y = document.getElementsByClassName("_3kJMeU2j7k _3Im5jx7ea-")
-                y = Array.prototype.slice.call(y)
-                y.forEach(element => {
-                    size_instock.push(parseFloat(element.getElementsByClassName("_2zrkbeeIRB _1ekN_Aa-0x")[0].textContent))
-                });
-                document.getElementsByClassName("_1607_GmTdI")[1].click()
-            } else {
-                size_instock.push(parseFloat(document.querySelector("[data-id = 'ItemPage-SelectSize']").getElementsByClassName("_1607_GmTdI")[0].textContent))
-            }
-            size_instock = Array.prototype.slice.call(size_instock)
-            size_instock = arreyMixer(size_instock)
-            if (size_range == "random") {
-                let n = 0
-                for (let index = 0; index < sizes.length + 1; index++) {
-                    if (index == sizes.length) { return }
-                    if (size_instock.includes(parseFloat(sizes[index]["SizeValue"]))) {
-                        n = index
-                        break
-                    }
-                }
-                size = sizes[n]["SelectedDescription"]
-                SizeId = sizes[n]["SizeOrd"]
-                SizeTypeId = sizes[n]["SizeTypeId"]
-            } else {
-                if (size_range.includes('-')) {
-                    size_1 = parseFloat(size_range.split('-')[0])
-                    size_2 = parseFloat(size_range.split('-')[1])
-                    sizes = Array.prototype.slice.call(sizes)
-                    sizes = arreyMixer(sizes)
-                    for (let index = 0; index < sizes.length; index++) {
-                        element = sizes[index]
-                        size = parseFloat(element["SelectedDescription"])
-                        if (size_instock.includes(size)) {
-                            if (size >= size_1 && size <= size_2) {
-                                SizeId = element["SizeOrd"]
-                                SizeTypeId = element["SizeTypeId"]
-                                break
-                            }
-                        }
-                    }
-                    if (SizeId == "") {
-                        sendText("Selected sizes not available", "purple")
-                    }
-                } else {
-                    for (let index = 0; index < sizes.length; index++) {
-                        element = sizes[index]
-                        size = parseFloat(element["SelectedDescription"])
-                        if (size_instock.includes(size)) {
-                            if (parseFloat(size) == parseFloat(size_range)) {
-                                SizeId = element["SizeOrd"]
-                                SizeTypeId = element["SizeTypeId"]
-                                break
-                            }
-                        }
-                    }
-                    if (SizeId == "") {
-                        sendText("Selected sizes not available", "purple")
-                    }
-                }
-            }
+            mainAtcFast()
 
             if (SizeId != "") {
-                name_product = x["DescriptionText"]
                 size_product = size
-                price_product = x["Detail"]["FinalPrice"]
+                sendText("Adding to cart size " + size_product + "...", "blue")
                 giftRichiesta()
             }
         }
 
     } catch (error) {
         errorWebhooks(error, "mainGift")
-        sendText("Item out of stock", "red")
+        sendText("Error, Item out of stock", "red")
     }
 }
 async function giftRichiesta() {
 
     await fetch("https://www.luisaviaroma.com/myarea/api/sendagift/generate", {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "content-type": "application/json",
-            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-lvr-requested-with": "sendagift/generate",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"IsMobile\":false,\"ItemCode\":\"" + ItemCode + "\",\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\",\"RecipientName\":\"" + profile.CardOwnerName + "\",\"RecipientEMail\":\"" + profile.Email + "\",\"SenderMessage\":\"bruno è bellissimo\"}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "sendagift/generate",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false," +
+                "\"ItemCode\":\"" + ItemCode +
+                "\",\"EncodedVendorColorId\":\"" + EncodedVendorColorId +
+                "\",\"RecipientName\":\"" + profile.FirstName + " " + profile.LastName +
+                "\",\"RecipientEMail\":\"" + profile.Email +
+                "\",\"SenderMessage\":\"bruno è bellissimo\"}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgiftRichiesta(response) })
         .catch((error) => {
             sendText("Error gift richiesta", "orange")
@@ -522,26 +438,40 @@ async function checkResgiftRichiesta(response) {
 }
 async function giftAccetta() {
     await fetch("https://www.luisaviaroma.com/myarea/api/sendagift/accept", {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "content-type": "application/json",
-            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-lvr-requested-with": "sendagift/accept",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"IsMobile\":false,\"Token\":\"" + Token + "\",\"SizeTypeID\":\"" + SizeTypeId + "\",\"SizeID\":\"" + SizeId + "\",\"EMail\":\"" + profile.Email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"RecipientMessage\":\"grazie lo so\",\"SubscribeNewsLetter\":false,\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\"}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    }).then(response => { checkResgiftAccetta(response) })
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "sendagift/accept",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false," +
+                "\"Token\":\"" + Token +
+                "\",\"SizeTypeID\":\"" + SizeTypeId +
+                "\",\"SizeID\":\"" + SizeId +
+                "\",\"EMail\":\"" + profile.Email +
+                "\",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"RecipientMessage\":\"grazie lo so\"," +
+                "\"SubscribeNewsLetter\":false," +
+                "\"EncodedVendorColorId\":\"" + EncodedVendorColorId + "\"}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        }).then(response => { checkResgiftAccetta(response) })
         .catch((error) => {
             sendText("Error gift accetta", "orange")
             if (error != "TypeError: Failed to fetch")
@@ -556,9 +486,12 @@ async function checkResgiftAccetta(response) {
         let res = await response.json()
 
         if (status == 200 || status == 201) {
-            if (res.Error == "None")
-                sendText("Gift success, check email", "green")
-            else
+            if (res.Error == "None") {
+                sendText("Gift success", "green")
+                    // getaddresses()
+                getGiftCheckout()
+                    // document.location = "https://www.luisaviaroma.com/myarea/sendagift/checkout/" + Token
+            } else
                 sendText(res.Error)
         } else {
             sendText("Error checkResgiftAccetta", "red")
@@ -566,37 +499,261 @@ async function checkResgiftAccetta(response) {
     } catch (error) { errorWebhooks(error, "checkResgiftAccetta") }
 }
 
+async function getGiftCheckout() {
+
+    sendText("Getting checkout...", "blue")
+    await fetch("https://www.luisaviaroma.com/myarea/sendagift/checkout/" + Token, {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResgetGiftCheckout(response) })
+        .catch((error) => {
+            sendText("Error getting checkout", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "checkResgetGiftCheckout fetch")
+
+        });;
+}
+async function checkResgetGiftCheckout(response) {
+
+    let status = response.status
+    let res = await response.text()
+    if (status == 200 || status == 201) {
+        sendText("Getting gift checkout ", "green")
+        htmlgift.innerHTML = res
+        getGiftData()
+    } else {
+        sendText("Error getting gift checkout ", "red")
+    }
+}
+async function getGiftData() {
+
+    try {
+        let x = ""
+        let scripts = htmlgift.querySelectorAll("script")
+        scripts.forEach(element => {
+            if (element.textContent.includes("__SENDAGIFT_MODEL__"))
+                x = element.textContent.replace("window.__SENDAGIFT_MODEL__ = ", "")
+        });
+
+        len = x.length;
+        x = x.substr(0, len - 1);
+        x = JSON.parse(x)
+
+        // len = x.length;
+        // x = x + "\":\"\"}}]}}"
+        // x = JSON.parse(x)
+
+        email = x.UserInfo.Id
+        firstname = x.UserInfo.FirstName
+        lastname = x.UserInfo.FirstName
+        pp = x.UserInfo.PayPalBillingAgreementAccepted
+
+        ShippingAgent = x.SelectedShippingAgent.ShippingAgent
+        TypeService = x.SelectedShippingAgent.TypeService
+        ShipCost = parseInt(x.SelectedShippingAgent.ShipCost.replace(/[^\d,.-]/g, ''))
+
+        CartId = x.OrderInfo.CartId
+        TotalToPay = x.OrderInfo.TotalToPay
+        Promos = JSON.stringify(x.OrderInfo.Promos)
+        Rows = JSON.stringify(x.OrderInfo.Rows)
+
+        lang = document.documentElement.getAttribute("xml:lang").toUpperCase()
+
+        getaddresses()
+
+        // if (state == null)
+        //     sendagiftconfirmloggeduserandcreateorder()
+        // else
+        //     sendagiftconfirmloggeduserandcreateorder()
+
+    } catch (error) {
+        console.log(error)
+        if (error != "TypeError: Cannot read property 'getElementsByClassName' of null" && error != "SyntaxError: Unexpected end of JSON input")
+            errorWebhooks(error, "getData")
+    }
+
+}
+async function getaddresses() {
+
+    sendText("get address...", "blue")
+    await fetch("https://www.luisaviaroma.com/myarea/usersession/getaddresses", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"93\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"93\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"RewardId\":1}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResgetaddresses(response) })
+        .catch((error) => {
+            sendText("Error getaddresses", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "getaddresses")
+        });;
+}
+async function checkResgetaddresses(response) {
+
+    try {
+        let status = response.status
+        let text = await response.json()
+        if (status == 200 || status == 201) {
+            id_address = text.Addresses[0].AddressID
+            if (mode == "Gift") {
+                sendagiftconfirmloggeduserandcreateorder()
+            } else {
+                if (state == null)
+                    confirmloggeduserandcreateorderEU()
+                else
+                    confirmloggeduserandcreateorder()
+            }
+        } else {
+            sendText("Error getting address ", "red")
+        }
+    } catch (error) { errorWebhooks(error, "checkResgetaddresses") }
+}
+async function sendagiftconfirmloggeduserandcreateorder() {
+
+    sendText("checking out...", "blue")
+    await fetch("https://www.luisaviaroma.com/myarea/bag/sendagiftconfirmloggeduserandcreateorder", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"93\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"93\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "checkout/sendagiftconfirmloggeduserandcreateorder",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.luisaviaroma.com/myarea/sendagift/checkout/" + Token,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email +
+                "\",\"FirstName\":\"" + firstname +
+                "\",\"LastName\":\"" + lastname +
+                "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":null,\"LastName\":null,\"Phone\":null,\"CountryId\":null,\"Address\":null,\"ZipCode\":null,\"City\":null,\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":" +
+                "{\"AddressID\":" + id_address +
+                ",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService +
+                "\",\"Payload\":{\"Token\":\"" + Token +
+                "\",\"ItemCode\":\"" + ItemCode +
+                "\",\"VendorColorId\":\"" + VendorColorId +
+                "\",\"SizeKey\":\"" + SizeTypeId + "|" + SizeId +
+                "\",\"PromoCode\":null,\"CreditCode\":null},\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email +
+                "\",\"FirstName\":\"" + firstname +
+                "\",\"LastName\":\"" + lastname +
+                "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":null,\"LastName\":null,\"Phone\":null,\"CountryId\":null,\"Address\":null,\"ZipCode\":null,\"City\":null,\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":" +
+                "{\"AddressID\":" + id_address +
+                ",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"Payload\":{\"Token\":\"" + Token +
+                "\",\"ItemCode\":\"" + ItemCode +
+                "\",\"VendorColorId\":\"" + VendorColorId +
+                "\",\"SizeKey\":\"" + SizeTypeId + "|" + SizeId +
+                "\",\"PromoCode\":null,\"CreditCode\":null},\"ShippingTypeService\":\"" + TypeService +
+                "\",\"PaymentCode\":\"" + payment_mode +
+                "\",\"AcceptPayPalBillingAgreement\":" + pp + ",\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":" + Promos +
+                ",\"Rows\":" + Rows +
+                ",\"IsGuest\":false,\"CartId\":0,\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang +
+                "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost +
+                "\",\"ShippingAgent\":\"" + "" +
+                "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResCk(response) })
+        .catch((error) => {
+            sendText("Error checking out", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhooks(error, "sendagiftconfirmloggeduserandcreateorder fetch")
+
+        });;
+}
+
 
 async function atcRFast() {
 
     await fetch("https://www.luisaviaroma.com/myarea/bag/add", {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "content-type": "application/json",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-lvr-requested-with": "bag/add",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"IsMobile\":false,\"SeasonId\":\"" + SeasonId + "\",\"CollectionId\":\"" + CollectionId + "\",\"ItemId\":" + ItemId + ",\"VendorColorId\":\"" + VendorColorId + "\",\"SizeTypeId\":\"" + SizeTypeId + "\",\"SizeId\":\"" + SizeId + "\",\"Quantity\":1}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    }).then(response => { checkRes(response) })
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "bag/add",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false," +
+                "\"SeasonId\":\"" + SeasonId +
+                "\",\"CollectionId\":\"" + CollectionId +
+                "\",\"ItemId\":" + ItemId +
+                ",\"VendorColorId\":\"" + VendorColorId +
+                "\",\"SizeTypeId\":\"" + SizeTypeId +
+                "\",\"SizeId\":\"" + SizeId +
+                "\",\"Quantity\":1}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        }).then(response => { checkRes(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhooks(error, "atcRFast")
         });;
 }
-
 async function checkRes(response) {
 
     try {
@@ -622,25 +779,25 @@ async function getCheckout() {
 
     sendText("Getting checkout...", "blue")
     await fetch("https://www.luisaviaroma.com/myarea/myCart.aspx?season=&gender=&__s=", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetCheckout(response) })
         .catch((error) => {
             sendText("Error getting checkout", "orange")
@@ -649,7 +806,6 @@ async function getCheckout() {
 
         });;
 }
-
 async function checkResgetCheckout(response) {
 
     let status = response.status
@@ -684,28 +840,27 @@ async function getData() {
         x = x.substr(0, len - 1);
         x = JSON.parse(x)
 
-        email = x["UserInfo"]["Id"]
-        // account_FirstName = x["UserInfo"]["FirstName"]
-        // account_LastName = x["UserInfo"]["LastName"]
-        let state = profile["State"]
+        email = x.UserInfo.Id
+        firstname = x.UserInfo.FirstName
+        lastname = x.UserInfo.LastName
+        pp = x.UserInfo.PayPalBillingAgreementAccepted
+
+        state = profile["State"]
         if (state == "")
             state = null
 
-        ShippingAgent = x["SelectedShippingAgent"]["ShippingAgent"]
-        TypeService = x["SelectedShippingAgent"]["TypeService"]
-        ShipCost = parseInt(x["SelectedShippingAgent"]["ShipCost"].replace(/[^\d,.-]/g, ''))
+        ShippingAgent = x.SelectedShippingAgent.ShippingAgent
+        TypeService = x.SelectedShippingAgent.TypeService
+        ShipCost = parseInt(x.SelectedShippingAgent.ShipCost.replace(/[^\d,.-]/g, ''))
 
-        CartId = x["OrderInfo"]["CartId"]
+        CartId = x.OrderInfo.CartId
         TotalToPay = x.OrderInfo.TotalToPay
         Promos = JSON.stringify(x.OrderInfo.Promos)
         Rows = JSON.stringify(x.OrderInfo.Rows)
 
         lang = document.documentElement.getAttribute("xml:lang").toUpperCase()
 
-        if (state == null)
-            confirmloggeduserandcreateorderEU()
-        else
-            confirmloggeduserandcreateorder()
+        getaddresses()
 
     } catch (error) {
         if (error != "TypeError: Cannot read property 'getElementsByClassName' of null" && error != "SyntaxError: Unexpected end of JSON input")
@@ -718,26 +873,87 @@ async function confirmloggeduserandcreateorder() {
 
     sendText("Checking out...", "blue")
     await fetch("https://www.luisaviaroma.com/myarea/bag/confirmloggeduserandcreateorder", {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "content-type": "application/json",
-            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"" + profile.State + "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":" + Promos + ",\"Rows\":" + Rows + ",\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email +
+                "\",\"FirstName\":\"" + firstname +
+                "\",\"LastName\":\"" + lastname +
+                "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"}," +
+                "\"ShipAddress\":{\"AddressID\":" + id_address +
+                ",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null}," +
+                "\"BillAddress\":{\"AddressID\":" + id_address +
+                ",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null}," +
+                "\"PaymentCode\":\"" + payment_mode +
+                "\",\"ShippingTypeService\":\"" + TypeService +
+                "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\"," +
+                "\"Account\":{\"Email\":\"" + email +
+                "\",\"FirstName\":\"" + firstname +
+                "\",\"LastName\":\"" + lastname +
+                "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"}," +
+                "\"ShipAddress\":{\"AddressID\":" + id_address +
+                ",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"AddressID\":" + id_address +
+                ",\"FirstName\":\"" + profile.FirstName +
+                "\",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"" + profile.State +
+                "\",\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null}," +
+                "\"ShippingTypeService\":\"" + TypeService +
+                "\",\"PaymentCode\":\"" + payment_mode +
+                "\",\"AcceptPayPalBillingAgreement\":" + pp + ",\"CreditCard\":null,\"PromoPaymentCode\":null," +
+                "\"Promos\":" + Promos +
+                ",\"Rows\":" + Rows +
+                ",\"IsGuest\":false,\"CartId\":" + CartId +
+                ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\"," +
+                "\"Language\":\"" + lang +
+                "\",\"Mobile\":false," +
+                "\"ShippingCost\":\"" + ShipCost +
+                "\",\"ShippingAgent\":\"" + "" +
+                "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResCk(response) })
         .catch((error) => {
             sendText("Error checking out", "orange")
@@ -746,31 +962,78 @@ async function confirmloggeduserandcreateorder() {
 
         });;
 }
-
 async function confirmloggeduserandcreateorderEU() {
 
     sendText("Checking out...", "blue")
     await fetch("https://www.luisaviaroma.com/myarea/bag/confirmloggeduserandcreateorder", {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "content-type": "application/json",
-            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode + "\",\"ShippingTypeService\":\"" + TypeService + "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email + "\",\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName + "\",\"LastName\":\"" + profile.LastName + "\",\"Phone\":\"" + profile.Telephone + "\",\"CountryId\":\"" + profile.Country + "\",\"Address\":\"" + profile.AddressOne + "\",\"ZipCode\":\"" + profile.Zip + "\",\"City\":\"" + profile.City + "\",\"StateId\":\"null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService + "\",\"PaymentCode\":\"" + payment_mode + "\",\"AcceptPayPalBillingAgreement\":true,\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":" + Promos + ",\"Rows\":" + Rows + ",\"IsGuest\":false,\"CartId\":" + CartId + ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang + "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost + "\",\"ShippingAgent\":\"" + ShippingAgent + "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/json",
+                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-lvr-requested-with": "checkout/confirmloggeduserandcreateorder",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "{\"IsMobile\":false,\"ConfirmUser\":{\"Account\":{\"Email\":\"" + email +
+                "\",\"FirstName\":\"" + firstname +
+                "\",\"LastName\":\"" + lastName +
+                "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName +
+                "\",\"AddressID\":" + id_address +
+                ",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName +
+                "\",\"AddressID\":" + id_address +
+                ",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"PaymentCode\":\"" + payment_mode +
+                "\",\"ShippingTypeService\":\"" + TypeService +
+                "\",\"InvoiceRequested\":false},\"CreateOrder\":{\"type\":\"loggeduser\",\"Account\":{\"Email\":\"" + email +
+                "\",\"FirstName\":\"" + firstName +
+                "\",\"LastName\":\"" + lastName +
+                "\",\"SubscribeNewsLetter\":false,\"SubscribeLoyalty\":false,\"Password\":\"\"},\"ShipAddress\":{\"FirstName\":\"" + profile.FirstName +
+                "\",\"AddressID\":" + id_address +
+                ",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"BillAddress\":{\"FirstName\":\"" + profile.FirstName +
+                "\",\"AddressID\":" + id_address +
+                ",\"LastName\":\"" + profile.LastName +
+                "\",\"Phone\":\"" + profile.Telephone +
+                "\",\"CountryId\":\"" + profile.Country +
+                "\",\"Address\":\"" + profile.AddressOne +
+                "\",\"ZipCode\":\"" + profile.Zip +
+                "\",\"City\":\"" + profile.City +
+                "\",\"StateId\":\"null,\"CodFisc\":null,\"PecDestinatario\":null,\"CodDestinatario\":null},\"ShippingTypeService\":\"" + TypeService +
+                "\",\"PaymentCode\":\"" + payment_mode +
+                "\",\"AcceptPayPalBillingAgreement\":" + pp + ",\"CreditCard\":null,\"PromoPaymentCode\":null,\"Promos\":" + Promos +
+                ",\"Rows\":" + Rows +
+                ",\"IsGuest\":false,\"CartId\":" + CartId +
+                ",\"FattCurrencyId\":\"EUR\",\"ViewCurrencyId\":\"EUR\",\"Language\":\"" + lang +
+                "\",\"Mobile\":false,\"ShippingCost\":\"" + ShipCost +
+                "\",\"ShippingAgent\":\"" + "" +
+                "\",\"InvoiceRequested\":false,\"SalesTaxes\":0}}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResCk(response) })
         .catch((error) => {
             sendText("Error checking out", "orange")
@@ -779,18 +1042,35 @@ async function confirmloggeduserandcreateorderEU() {
 
         });;
 }
-
 async function checkResCk(response) {
-    let status = response.status
-    if (status == 200 || staus == 201) {
-        sendText("Checked out", "green")
-        price_product = TotalToPay
-        console.log(price_product)
-        sendWebhooks2()
-        document.location = "https://www.luisaviaroma.com/myarea/myOrders.aspx?"
 
-    } else {
-        sendText("Error checking out...", "red")
+    try {
+        let status = response.status
+        let text = await response.json()
+        if (status == 200 || staus == 201) {
+
+            if (text.Error != null && text.Error != "None") {
+                sendText(text.ErrorDescription, "red")
+            } else {
+                if (text.CreateOrderResponse.Action.Url) {
+                    if (text.CreateOrderResponse.Action.Url.includes("paypal")) {
+                        price_product = TotalToPay
+                        sendWebhooks3(text.CreateOrderResponse.Action.Url)
+                        document.location = text.CreateOrderResponse.Action.Url
+
+                    } else {
+                        sendText("Checked out", "green")
+                        price_product = TotalToPay
+                        sendWebhooks2()
+                        document.location = text.CreateOrderResponse.Action.Url
+                    }
+                }
+            }
+        } else {
+            sendText("Error checking out...", "red")
+        }
+    } catch (error) {
+        errorWebhooks(error, "checkResCk")
     }
 }
 
@@ -803,6 +1083,10 @@ async function sendWebhooks2() {
     chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product.toString() + "&-&full" })
 }
 
+async function sendWebhooks3(linkpp) {
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product.toString() + "&-&" + linkpp })
+}
+
 async function errorWebhooks(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
@@ -811,41 +1095,30 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_lvr" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_lvr" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "mode_lvr" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "mode_lvr" }, function(response) {
     mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "payment_mode_lvr" }, function (response) {
-    switch (response.farewell) {
-        case "PayPal":
-            payment_mode = "PPA"
-            break
-        case "Bank Transfer":
-            payment_mode = "PAB"
-            break
-    }
-});
-
-chrome.runtime.sendMessage({ greeting: "profile_lvr" }, function (response) {
-    chrome.runtime.sendMessage({ greeting: response.farewell }, function (response) {
+chrome.runtime.sendMessage({ greeting: "profile_lvr" }, function(response) {
+    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
         try {
             profile = JSON.parse(response.farewell)
-        } catch (error) { }
+        } catch (error) {}
     });
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_lvr" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             }

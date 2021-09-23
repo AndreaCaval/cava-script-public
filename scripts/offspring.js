@@ -11,7 +11,7 @@ let delay = ""
 // let checkout_mode = "ATC Only Browser"
 
 let link = document.location.href
-const link_product = "https://www.offspring.co.uk/"
+let link_productt = link
 let name_product = '';
 let size_product = '';
 let price_product = "£";
@@ -196,7 +196,7 @@ async function getMainPid() {
                     eval(element.textContent)
             });
             main_pid = window.dataLayer[0]["productId"]
-        } catch (error) { }
+        } catch (error) {}
     }
 }
 
@@ -274,7 +274,7 @@ async function mainCheckout() {
 
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_productt + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhook(error, position) {

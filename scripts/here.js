@@ -1,6 +1,8 @@
-//debugger
+debugger
 
 const site = "Here"
+let dwfrm_login_username = ""
+let dwfrm_login_password = ""
 
 let link = document.location.href
 
@@ -38,12 +40,14 @@ let order_email = ""
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
     return n
 }
+
 function arreyMixer(array) {
 
     var currentIndex = array.length,
@@ -58,6 +62,7 @@ function arreyMixer(array) {
     }
     return array;
 }
+
 function textBox() {
     let color_aco = "";
     let color_login = ""
@@ -81,13 +86,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -99,6 +104,7 @@ function textBox() {
             console.log(error)
     }
 }
+
 function dragElement(elmnt) {
     var pos1 = 0,
         pos2 = 0,
@@ -154,10 +160,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statushere").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statushere").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 
@@ -186,24 +192,24 @@ async function main() {
 
 async function getCsrfTokenLogin() {
     await fetch("https://www.here-store.com/it/login?original=%2Fit%2Faccount", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "none",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "none",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetCsrfTokenLogin(response) })
         .catch((error) => { errorWebhook(error, "getCsrfTokenLogin") });;
 }
@@ -216,6 +222,8 @@ async function checkResgetCsrfTokenLogin(response) {
 
         if (status == 200 || status == 201) {
             html.innerHTML = res
+            dwfrm_login_username = html.querySelector('[type="email"]').id
+            dwfrm_login_password = html.querySelector('[type="password"]').id
             csrf_token = html.querySelectorAll("[name='csrf_token']")[0].value
         } else {
             errorWebhook(res, "checkResgetCsrfTokenLogin_1")
@@ -251,26 +259,26 @@ async function loginR() {
 
     sendText("Logging in...", "blue")
     await fetch("https://www.here-store.com/on/demandware.store/Sites-here-it-Site/it_IT/Login-LoginForm?scope=", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "content-type": "application/x-www-form-urlencoded",
-            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": "https://www.here-store.com/it/login?original=%2Fit%2Faccount",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "dwfrm_login_username_d0arpbjlyncs=" + email_login + "&dwfrm_login_password_d0krvgmajryh=" + pw_login + "&dwfrm_login_login=Accedi&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "content-type": "application/x-www-form-urlencoded",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://www.here-store.com/it/login?original=%2Fit%2Faccount",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": dwfrm_login_username + "=" + email_login + "&" + dwfrm_login_password + "=" + pw_login + "&dwfrm_login_login=Accedi&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResLoginR(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -299,24 +307,24 @@ async function checkStock() {
 
     sendText("Getting size...", "blue")
     await fetch("https://www.here-store.com/on/demandware.store/Sites-here-it-Site/it_IT/Product-GetAvailability?format=ajax&pid=" + pid, {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResCheckStock(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -388,24 +396,24 @@ async function atcR() {
 
     sendText("Trying atc...", "blue")
     await fetch("https://www.here-store.com/on/demandware.store/Sites-here-it-Site/it_IT/Cart-AddProduct?format=ajax", {
-        "headers": {
-            "accept": "text/html, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "Quantity=1&sizeTable=&cartAction=add&pid=" + sizepid + "&productSetID=" + sizepid + "&redirect=true",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "Quantity=1&sizeTable=&cartAction=add&pid=" + sizepid + "&productSetID=" + sizepid + "&redirect=true",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResAtc(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -497,7 +505,7 @@ async function mainCheckoutShipping() {
 
                 await sleep(500)
 
-            } catch (error) { }
+            } catch (error) {}
         }
 
         document.getElementsByClassName("b-btn_fourth b-checkout__proceed js-cmp-inited js-cmp-button")[0].click()
@@ -508,23 +516,30 @@ async function mainCheckoutShipping() {
 async function mainCheckoutPayment() {
     try {
 
+        await sleep(500)
+
         if (payment_mode == "PayPal") {
             document.querySelector('[for="PayPal"]').click()
+        } else if (payment_mode == "Cash On Delivery") {
+            try { document.querySelector('[for="CASH_ON_DELIVERY"]').click() } catch (error) {}
         } else if (payment_mode == "Credit Card") {
 
             if (profile != "") {
 
-                await sleep(500)
                 document.getElementById("cardOwner").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardOwnerName"]
-                document.getElementById("cardNumber").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardNumber"]
-                document.getElementById("cardExpireMonth").getElementsByClassName("js-input_field input-select b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[0]
 
-                if (profile["MMYY"].split('/')[1].length == 2)
-                    document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = "20" + profile["MMYY"].split('/')[1]
-                else
-                    document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[1]
+                try {
+                    document.getElementById("cardNumber").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardNumber"]
+                    document.getElementById("cardExpireMonth").getElementsByClassName("js-input_field input-select b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[0]
 
-                document.getElementById("cardCvn").getElementsByClassName("js-input_field b-text-input required input-required")[0].value = profile["CVV"]
+                    if (profile["MMYY"].split('/')[1].length == 2)
+                        document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = "20" + profile["MMYY"].split('/')[1]
+                    else
+                        document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[1]
+
+                    document.getElementById("cardCvn").getElementsByClassName("js-input_field b-text-input required input-required")[0].value = profile["CVV"]
+                } catch (error) {}
+
             }
         }
 
@@ -577,46 +592,46 @@ async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "status_aco_here" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_here" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_login_here" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_login_here" }, function(response) {
     status_login = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "email_pw_here" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "email_pw_here" }, function(response) {
     try {
         var x = response.farewell
         email_login = x.split(':')[0]
         pw_login = x.split(':')[1]
-    } catch (error) { }
+    } catch (error) {}
 });
 
-chrome.runtime.sendMessage({ greeting: "multicart_here" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "multicart_here" }, function(response) {
     multicart = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "payment_mode_here" }, function (response) {
-    payment_mode = "Credit Card"
+chrome.runtime.sendMessage({ greeting: "payment_mode_here" }, function(response) {
+    payment_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "checkout_mode_here" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_here" }, function(response) {
     checkout_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "profile_here" }, function (response) {
-    chrome.runtime.sendMessage({ greeting: response.farewell }, function (response) {
+chrome.runtime.sendMessage({ greeting: "profile_here" }, function(response) {
+    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
         try {
             profile = JSON.parse(response.farewell)
-        } catch (error) { }
+        } catch (error) {}
     });
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "status_aco_here" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_here" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }

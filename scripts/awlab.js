@@ -39,6 +39,8 @@ const fetch_link = {
 }
 
 let csrf_token = ""
+let dwfrm_login_username = ""
+let dwfrm_login_password = ""
 
 let size_range = "random"
 
@@ -200,6 +202,8 @@ async function checkResgetCsrfTokenLogin(response) {
 
         if (status == 200 || status == 201) {
             html.innerHTML = res
+            dwfrm_login_username = html.querySelector('[type="email"]').id
+            dwfrm_login_password = html.querySelector('[type="password"]').id
             csrf_token = html.querySelectorAll("[name='csrf_token']")[0].value
         } else {
             errorWebhook(res, "checkResgetCsrfTokenLogin_1")
@@ -252,7 +256,7 @@ async function loginR() {
             },
             "referrer": "https://" + country + "/login?original=%2Faccount",
             "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "dwfrm_login_username_d0hwpzsxrciu=" + email_login + "&dwfrm_login_password_d0plcxmvhabv=" + pw_login + "&dwfrm_login_rememberme=true&dwfrm_login_login=" + fetch_link[country]["dwfrm_login_login"] + "&csrf_token=" + csrf_token,
+            "body": dwfrm_login_username + "=" + email_login + "&" + dwfrm_login_password + "=" + pw_login + "&dwfrm_login_rememberme=true&dwfrm_login_login=" + fetch_link[country]["dwfrm_login_login"] + "&csrf_token=" + csrf_token,
             "method": "POST",
             "mode": "cors",
             "credentials": "include"
@@ -504,23 +508,29 @@ async function mainCheckoutShipping() {
 async function mainCheckoutPayment() {
     try {
 
+        await sleep(500)
+
         if (payment_mode == "PayPal") {
             document.querySelector('[for="PayPal"]').click()
+        } else if (payment_mode == "Cash On Delivery") {
+            try { document.querySelector('[for="CASH_ON_DELIVERY"]').click() } catch (error) {}
         } else if (payment_mode == "Credit Card") {
 
             if (profile != "") {
 
-                await sleep(500)
                 document.getElementById("cardOwner").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardOwnerName"]
-                document.getElementById("cardNumber").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardNumber"]
-                document.getElementById("cardExpireMonth").getElementsByClassName("js-input_field input-select b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[0]
+                try {
+                    document.getElementById("cardNumber").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardNumber"]
+                    document.getElementById("cardExpireMonth").getElementsByClassName("js-input_field input-select b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[0]
 
-                if (profile["MMYY"].split('/')[1].length == 2)
-                    document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = "20" + profile["MMYY"].split('/')[1]
-                else
-                    document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[1]
+                    if (profile["MMYY"].split('/')[1].length == 2)
+                        document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = "20" + profile["MMYY"].split('/')[1]
+                    else
+                        document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[1]
 
-                document.getElementById("cardCvn").getElementsByClassName("js-input_field b-text-input required input-required")[0].value = profile["CVV"]
+                    document.getElementById("cardCvn").getElementsByClassName("js-input_field b-text-input required input-required")[0].value = profile["CVV"]
+                } catch (error) {}
+
             }
         }
 
