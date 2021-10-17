@@ -17,7 +17,7 @@ let price_product = "";
 let size_product = "";
 let link_product = link;
 let id_product = "";
-const img_product = "https://media.discordapp.net/attachments/680064413524426752/692785979316240464/unknown.png";
+let img_product = "";
 
 let variant_id = "";
 let sizes = "";
@@ -118,10 +118,7 @@ function textBox() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of null")
-            errorWebhooks(error, "textBox")
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {
@@ -229,7 +226,7 @@ async function mainBrowserAtc() {
                     for (let index = 0; index < sizes.length; index++) {
                         size = sizes[index].getAttribute('data-value')
                         size = JSON.parse(size)
-                        size = parseFloat(size["SizeValue"])
+                        size = parseFloat(size.SizeValue)
                         if (size >= size_1 && size <= size_2) {
                             sizes[index].click()
                             break
@@ -239,7 +236,7 @@ async function mainBrowserAtc() {
                     for (let index = 0; index < sizes.length; index++) {
                         size = sizes[index].getAttribute('data-value')
                         size = JSON.parse(size)
-                        size = size["SizeValue"]
+                        size = size.SizeValue
                         if (parseFloat(size) == parseFloat(size_range)) {
                             sizes[index].click()
                             break
@@ -286,6 +283,7 @@ async function mainAtcFast() {
             eval(element.textContent)
     });
     x = window.__BODY_MODEL__
+    img_product = "https://img.yeet.mx/proxy/?url=https://images.lvrcdn.com/MediumRetina" + x.PhotoFirst
     name_product = x.DescriptionText
     price_product = x.Detail.FinalPrice
     ItemCode = x.ItemCode
@@ -423,7 +421,7 @@ async function checkResgiftRichiesta(response) {
         let res = await response.json()
         if (status == 200 || status == 201) {
             if (res.Error == "None") {
-                Token = res["Token"]
+                Token = res.Token
                 if (Token != "") {
                     giftAccetta()
                 }
@@ -567,7 +565,9 @@ async function getGiftData() {
 
         ShippingAgent = x.SelectedShippingAgent.ShippingAgent
         TypeService = x.SelectedShippingAgent.TypeService
-        ShipCost = parseInt(x.SelectedShippingAgent.ShipCost.replace(/[^\d,.-]/g, ''))
+
+        try { ShipCost = parseInt(x.SelectedShippingAgent.ShipCost.replace(/[^\d,.-]/g, '')) } catch (error) {}
+
 
         CartId = x.OrderInfo.CartId
         TotalToPay = x.OrderInfo.TotalToPay
@@ -747,7 +747,8 @@ async function atcRFast() {
             "method": "POST",
             "mode": "cors",
             "credentials": "include"
-        }).then(response => { checkRes(response) })
+        })
+        .then(response => { checkRes(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
             if (error != "TypeError: Failed to fetch")
@@ -845,7 +846,7 @@ async function getData() {
         lastname = x.UserInfo.LastName
         pp = x.UserInfo.PayPalBillingAgreementAccepted
 
-        state = profile["State"]
+        state = profile.State
         if (state == "")
             state = null
 
@@ -1064,13 +1065,17 @@ async function checkResCk(response) {
                         sendWebhooks2()
                         document.location = text.CreateOrderResponse.Action.Url
                     }
+                } else {
+                    sendText("Error checking out...", "red")
+                    errorWebhooks(JSON.stringify(text), "checkResCk1")
                 }
             }
         } else {
+            errorWebhooks(JSON.stringify(text), "checkResCk2")
             sendText("Error checking out...", "red")
         }
     } catch (error) {
-        errorWebhooks(error, "checkResCk")
+        errorWebhooks(error, "checkResCk3")
     }
 }
 

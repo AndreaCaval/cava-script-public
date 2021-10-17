@@ -152,7 +152,7 @@ async function main() {
         mainCheckoutPayment()
     } else if ((link.includes("/spedizione") || link.includes("/shipping")) && checkout_mode == "Full Checkout") {
         mainCheckoutShipping()
-    } else if (link.includes("/riepilogoordine") || link.includes("/orderssummary")) {
+    } else if (link.includes("/riepilogoordine") || link.includes("/orderssummary") || link.includes("/ordineconfermato")) {
         mainSuccess()
     } else {
 

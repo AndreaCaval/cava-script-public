@@ -51,6 +51,7 @@ let status_aco = ""
 let checkout_mode = ""
 
 let variant_pid = ""
+let size_browser = ""
 
 let link_product = link
 let name_product = '';
@@ -63,12 +64,14 @@ let order_number = ""
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
     return n
 }
+
 function arreyMixer(array) {
 
     var currentIndex = array.length,
@@ -83,12 +86,15 @@ function arreyMixer(array) {
     }
     return array;
 }
+
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
+
 function hasNumber(myString) {
     return /\d/.test(myString);
 }
+
 function textBox() {
     let color_aco = "";
     if (status_aco == "off") { color_aco = "red" } else { color_aco = "green" }
@@ -112,19 +118,19 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_start_task = document.getElementById('btn_start_task')
-        btn_start_task.addEventListener("click", function () {
+        btn_start_task.addEventListener("click", function() {
             try {
 
                 let input = document.getElementById("input_sizepid").value
@@ -152,6 +158,7 @@ function textBox() {
             console.log(error)
     }
 }
+
 function dragElement(elmnt) {
     var pos1 = 0,
         pos2 = 0,
@@ -207,10 +214,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusCourir").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusCourir").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function main() {
@@ -224,7 +231,6 @@ async function main() {
         mainSuccess()
     }
 }
-
 async function mainAtc() {
     try {
 
@@ -233,13 +239,12 @@ async function mainAtc() {
         sizes = Array.prototype.slice.call(sizes)
         sizes = arreyMixer(sizes)
 
-        console.log(sizes[0].querySelector('a').href)
-
         if (sizes.length != 0) {
             if (size_range == "random") {
                 n = getRandomIntInclusive(0, sizes.length - 1)
                 size_product = sizes[n].textContent.replaceAll("\n", "")
                 href = sizes[n].querySelector('a').href
+                size_browser = sizes[n]
             } else {
                 if (size_range.includes('-')) {
                     size_1 = parseFloat(size_range.split('-')[0])
@@ -248,6 +253,7 @@ async function mainAtc() {
                         if (sizes[index].textContent >= size_1 && sizes[index].textContent <= size_2) {
                             size_product = sizes[index].textContent.replaceAll("\n", "")
                             href = sizes[index].querySelector('a').href
+                            size_browser = sizes[index]
                             break
                         }
                     }
@@ -256,6 +262,7 @@ async function mainAtc() {
                         if (sizes[index].textContent == size_range) {
                             size_product = sizes[index].textContent.replaceAll("\n", "")
                             href = sizes[index].querySelector('a').href
+                            size_browser = sizes[index]
                             break
                         }
                     }
@@ -279,23 +286,23 @@ async function mainAtc() {
 async function getSizePid(req) {
 
     await fetch(req, {
-        "headers": {
-            "accept": "text/html, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetSizePid(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -315,37 +322,38 @@ async function checkResgetSizePid(response) {
             variant_pid = x.querySelector('[name="pid"]').value
             atcR()
         } else {
-            errorWebhooks(res, "checkResgetSizePid")
+            errorWebhooks(res, "checkResgetSizePid1")
             sendText("Error getting product", "red")
         }
 
     } catch (error) {
-        errorWebhooks(error, "checkResgetSizePid")
+        errorWebhooks(error, "checkResgetSizePid2")
         sendText("Error getting pid", "red")
+        mainAtcBrowser()
     }
 }
 async function atcR() {
 
     sendText("Carting...", "blue")
     await fetch(FETCH_LINK[country]["AddProduct"], {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "cartAction=add&pid=" + variant_pid,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "cartAction=add&pid=" + variant_pid,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResAtc(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
@@ -361,13 +369,7 @@ async function checkResAtc(response) {
 
         if (status == 200 || status == 201) {
             sendText("Carted", "green")
-            link_product = "https://www.courir." + country1 + "/" + country + "/p/cava-" + variant_pid + ".html"
-            try {
-                name_product = document.getElementsByClassName("product-brand")[0].textContent.replaceAll("\n", "") + " " + document.getElementsByClassName("product-name")[0].textContent
-                price_product = document.querySelector('[itemprop="price"]').textContent
-                img_product = document.querySelector('[itemprop="image"]').src
-                sendWebhooks()
-            } catch (error) { }
+            webhook()
             document.location = "https://www.courir." + country1 + "/" + country + "/shipping"
         } else {
             errorWebhooks(res, "checkResgetSizePid")
@@ -382,6 +384,30 @@ async function checkResAtc(response) {
     }
 }
 
+async function mainAtcBrowser() {
+    try {
+
+        document.getElementById("select-size").click()
+        size_browser.querySelector("a").click()
+
+        variant_pid = document.getElementById("pid").value
+        atcR()
+
+    } catch (error) {
+        errorWebhooks(error, "mainAtcBrowser")
+        sendText("Error getting pid", "red")
+    }
+}
+
+async function webhook() {
+    link_product = "https://www.courir." + country1 + "/" + country + "/p/cava-" + variant_pid + ".html"
+    try {
+        name_product = document.getElementsByClassName("product-brand")[0].textContent.replaceAll("\n", "") + " " + document.getElementsByClassName("product-name")[0].textContent
+        price_product = document.querySelector('[itemprop="price"]').textContent
+        img_product = document.querySelector('[itemprop="image"]').src
+        sendWebhooks()
+    } catch (error) {}
+}
 
 async function mainShipBrowser() {
 
@@ -415,7 +441,7 @@ async function mainPaymentBrowser() {
         try { document.getElementById("encryptedCardNumber").value = profile.CardNumber } catch (error) { console.log(error, "mainPaymentBrowser1") }
         try { document.getElementById("encryptedExpiryDate").value = profile.MMYY } catch (error) { console.log(error, "mainPaymentBrowser2") }
         try { document.getElementById("encryptedSecurityCode").value = profile.CVV } catch (error) { console.log(error, "mainPaymentBrowser3") }
-        try { document.getElementsByClassName("adyen-checkout__input adyen-checkout__input--text adyen-checkout__card__holderName__input _3JmldYKADXTctIE9oP8lcu adyen-checkout__input--valid adyen-checkout__input--large")[0].value = profile.CardOwnerName } catch (error) { }
+        try { document.getElementsByClassName("adyen-checkout__input adyen-checkout__input--text adyen-checkout__card__holderName__input _3JmldYKADXTctIE9oP8lcu adyen-checkout__input--valid adyen-checkout__input--large")[0].value = profile.CardOwnerName } catch (error) {}
     }
 }
 
@@ -438,20 +464,20 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "size_courir" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_courir" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
-chrome.runtime.sendMessage({ greeting: "status_aco_courir" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_courir" }, function(response) {
     status_aco = response.farewell
 });
-chrome.runtime.sendMessage({ greeting: "checkout_mode_courir" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_courir" }, function(response) {
     checkout_mode = response.farewell
 });
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "status_aco_courir" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_courir" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }

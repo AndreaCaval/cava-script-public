@@ -381,7 +381,7 @@ async function main() {
     } else if (link.startsWith("https://" + country + "/checkout/success")) {
         mainSuccess()
     } else {
-        searchSize()
+        await searchSize()
         textBoxMain()
         if (link != "https://" + country + "/wardrobe/?" && (size_btn != "" || document.getElementsByClassName("uqkIZw ka2E9k uMhVZi FxZV-M z-oVg8 pVrzNP")[0] != undefined || document.getElementsByClassName("uqkIZw ka2E9k uMhVZi dgII7d z-oVg8 _88STHx cMfkVL")[0] != undefined)) {
             if (drop_mode == "on")
@@ -397,24 +397,42 @@ async function AtcSizeButton() {
     let total_stock = 0
     for (let i = 0; i < size_btn.length; i++) {
         var btn = document.createElement("BUTTON");
-        btn.innerHTML = size_btn[i]["size"]["local"];
-        btn.type = "button"
-        btn.className = "btn_size_atc"
-        btn.id = size_btn[i].id
-        total_stock += size_btn[i].stock
-        btn.title = "Stock = " + size_btn[i].stock.toString()
+        try {
+            btn.innerHTML = size_btn[i]["size"]["local"];
+            btn.type = "button"
+            btn.className = "btn_size_atc"
+            btn.id = size_btn[i].id
+            total_stock += size_btn[i].stock
+            btn.title = "Stock = " + size_btn[i].stock.toString()
+        } catch (error) {
+            btn.innerHTML = size_btn[i].size;
+            btn.type = "button"
+            btn.className = "btn_size_atc"
+            btn.id = size_btn[i].sku
+            btn.title = "Stock = " + size_btn[i].offer.stock.quantity
+        }
 
-        if (size_btn[i].stock > 10)
-            btn.style.border = "3px solid #4CAF50"
-        else if (size_btn[i].stock > 0)
-            btn.style.border = "3px solid #ffd400"
-        else
-            btn.style.border = "3px solid #f44336"
+        if (hasNumber(btn.title)) {
+            if (size_btn[i].stock > 10)
+                btn.style.border = "3px solid #4CAF50"
+            else if (size_btn[i].stock > 0)
+                btn.style.border = "3px solid #ffd400"
+            else
+                btn.style.border = "3px solid #f44336"
+
+        } else {
+            let s = btn.title.replace("Stock = ", '')
+            if (s == "MANY")
+                element.style.border = "3px solid #4CAF50"
+            else if (s == "OUT_OF_STOCK")
+                element.style.border = "3px solid #f44336"
+            else
+                element.style.border = "3px solid #ffd400"
+        }
         btn.style.width = "100px"
         btn.style.height = "30px"
         btn.style.margin = "10px"
-            // btn.style.backgroundColor = 'black';
-            // btn.style.color = 'white';
+        btn.style.borderRadius = "15px"
         document.getElementsByClassName("okmnKS")[0].appendChild(btn);
     }
 
@@ -659,7 +677,7 @@ async function newsletterR(mail, i) {
 
 
 
-function searchSize() {
+async function searchSize() {
     try {
         if (country.split('.')[1] == 'zalando') {
             try {
@@ -673,8 +691,32 @@ function searchSize() {
                     size_eu.push(sizes[i]["size"]["local"])
                 }
             } catch (error) {
-                if (error != "TypeError: Cannot read property 'textContent' of null")
-                    errorWebhook(error, "searchSize_1")
+                await getProduct()
+                await res.then(function(result) {
+                    let html = document.createElement('html')
+                    html.innerHTML = result
+                    let x = ""
+                    let k = ""
+                    let s = html.querySelectorAll("script")
+                    s.forEach(element => {
+                        if (element.textContent.includes('enrichedEntity') && element.className == "re-1-12") {
+                            x = JSON.parse(element.textContent)
+                        }
+                    });
+                    for (const [key, value] of Object.entries(x.graphqlCache)) {
+                        let yy = JSON.stringify(value)
+                        if (yy.includes("quantity") && yy.includes("stock") && yy.includes("size") && yy.includes("sku") && yy.includes("offer") && (yy.includes("ONE") || yy.includes("OUT_OF_STOCK") || yy.includes("MANY"))) {
+                            k = key
+                            break
+                        }
+                    }
+                    let sizes = x.graphqlCache[k].data.product.simples
+                    size_btn = sizes
+                    for (let i = 0; i < sizes.length; i++) {
+                        size.push(sizes[i].sku)
+                        size_eu.push(sizes[i].size)
+                    }
+                })
             }
         }
     } catch (error) { errorWebhook(error, "searchSize_2") }
@@ -730,8 +772,48 @@ async function dropMode() {
                         }
                     }
                 } catch (error) {
-                    if (error != "TypeError: Cannot read property 'textContent' of null")
-                        errorWebhook(error, "dropMode")
+                    try {
+                        let x = ""
+                        let k = ""
+                        let s = html.querySelectorAll("script")
+                        s.forEach(element => {
+                            if (element.textContent.includes('enrichedEntity') && element.className == "re-1-12") {
+                                x = JSON.parse(element.textContent)
+                            }
+                        });
+                        for (const [key, value] of Object.entries(x.graphqlCache)) {
+                            let yy = JSON.stringify(value)
+                            if (yy.includes("quantity") && yy.includes("stock") && yy.includes("size") && yy.includes("sku") && yy.includes("offer") && (yy.includes("ONE") || yy.includes("OUT_OF_STOCK") || yy.includes("MANY"))) {
+                                k = key
+                                break
+                            }
+                        }
+                        sizes = x.graphqlCache[k].data.product.simples
+                        console.log(sizes)
+                        for (let i = 0; i < sizes.length; i++) {
+                            if (sizes[i].offer.stock.quantity != "OUT_OF_STOCK") {
+                                console.log("stock")
+                                if (size_range == "random")
+                                    size_in_stock.push(sizes[i].sku)
+                                else {
+                                    s = parseFloat(sizes[i].size)
+                                    if (size_range.includes('-')) {
+                                        size_1 = parseFloat(size_range.split('-')[0])
+                                        size_2 = parseFloat(size_range.split('-')[1])
+                                        if (s >= size_1 && s <= size_2) {
+                                            size_in_stock.push(sizes[i].sku)
+                                        }
+                                    } else {
+                                        if (parseFloat(size_range) == s) {
+                                            size_in_stock.push(sizes[i].sku)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
                 }
             })
 
@@ -758,7 +840,7 @@ async function dropMode() {
 
     } catch (error) {
         if (error != "TypeError: Cannot read property 'textContent' of null")
-            errorWebhook(error, "searchSize_1")
+            errorWebhook(error, "dropmode")
     }
 
 }

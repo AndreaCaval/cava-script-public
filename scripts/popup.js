@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.5'
+const version = 'Cava-Scripts 1.2.7'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
@@ -41,20 +41,20 @@ try {
     const button = document.querySelector("button")
     if (button.getAttribute("id") == "button_in") sing_in()
     else if (button.getAttribute("id") == "button_out") sing_out()
-} catch (error) { }
+} catch (error) {}
 
 function sing_in() { /* popup-sign-in-script.js */
     try {
         const button_in = document.getElementById("button_in");
         button_in.addEventListener('click', () => {
             const license = document.getElementById("license").value
-            chrome.runtime.sendMessage({ greeting: 'login', license: license }, function (response) {
+            chrome.runtime.sendMessage({ greeting: 'login', license: license }, function(response) {
                 if (response.farewell == 'success') {
                     window.location.replace("/popup/popup-site-aco.html");
                 }
             });
         });
-    } catch (error) { }
+    } catch (error) {}
 }
 
 function sing_out() { /* popup-sign-out-script.js */
@@ -62,18 +62,18 @@ function sing_out() { /* popup-sign-out-script.js */
         const button_out = document.getElementById('button_out');
         button_out.addEventListener('click', () => {
             const license = localStorage.getItem("license")
-            chrome.runtime.sendMessage({ greeting: 'logout', license: license }, function (response) {
+            chrome.runtime.sendMessage({ greeting: 'logout', license: license }, function(response) {
                 if (response.farewell == 'success') {
                     window.location.replace("/popup/popup-login.html");
                 }
             });
         });
-    } catch (error) { }
+    } catch (error) {}
 }
 
-$(function () {
+$(function() {
 
-    chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+    chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
         if (response.farewell == 'on') {
             onUserLogged()
         } else {
@@ -85,17 +85,17 @@ $(function () {
 
 function onUserLogged() {
 
-    chrome.runtime.sendMessage({ greeting: "userData" }, function (response) {
+    chrome.runtime.sendMessage({ greeting: "userData" }, function(response) {
         const userData = response.farewell
         try {
             document.getElementById("imgAvatar").src = "https://cdn.discordapp.com/avatars/" + userData.discordId + "/" + userData.avatar + ".png";
             document.getElementById("discordTag").innerHTML = userData.discordTag;
             document.getElementById("discordEmail").innerHTML = userData.discordEmail;
-        } catch (error) { }
+        } catch (error) {}
     });
 
     //INSERISCO LA VERSIONE NELLE PAGINE----------------------------------
-    try { document.getElementById("version").innerHTML = version; } catch (error) { }
+    try { document.getElementById("version").innerHTML = version; } catch (error) {}
     //--------------------------------------------------------------------
 
     //GESTIONE PAGINA ACO------------------------------------------------
@@ -142,79 +142,79 @@ function onUserLogged() {
 
     //gestisco i click delle checkbox
     //Zalando
-    $('#Status_aco_zalando').click(function () {
+    $('#Status_aco_zalando').click(function() {
         if ($("#Status_aco_zalando").is(':checked')) { localStorage.setItem("status_aco_zalando", "on"); } else { localStorage.setItem("status_aco_zalando", "off"); }
     });
     //Sns
-    $('#Status_aco_sns').click(function () {
+    $('#Status_aco_sns').click(function() {
         if ($("#Status_aco_sns").is(':checked')) { localStorage.setItem("status_aco_sns", "on"); } else { localStorage.setItem("status_aco_sns", "off"); }
     });
     //Solebox
-    $('#Status_aco_solebox').click(function () {
+    $('#Status_aco_solebox').click(function() {
         if ($("#Status_aco_solebox").is(':checked')) { localStorage.setItem("status_aco_solebox", "on"); } else { localStorage.setItem("status_aco_solebox", "off"); }
     });
     //Snipes
-    $('#Status_aco_snipes').click(function () {
+    $('#Status_aco_snipes').click(function() {
         if ($("#Status_aco_snipes").is(':checked')) { localStorage.setItem("status_aco_snipes", "on"); } else { localStorage.setItem("status_aco_snipes", "off"); }
     });
     //Lvr
-    $('#Status_aco_lvr').click(function () {
+    $('#Status_aco_lvr').click(function() {
         if ($("#Status_aco_lvr").is(':checked')) { localStorage.setItem("status_aco_lvr", "on"); } else { localStorage.setItem("status_aco_lvr", "off"); }
     });
     //Naked
-    $('#Status_aco_naked').click(function () {
+    $('#Status_aco_naked').click(function() {
         if ($("#Status_aco_naked").is(':checked')) { localStorage.setItem("status_aco_naked", "on"); } else { localStorage.setItem("status_aco_naked", "off"); }
     });
     //Kickz
-    $('#Status_aco_kickz').click(function () {
+    $('#Status_aco_kickz').click(function() {
         if ($("#Status_aco_kickz").is(':checked')) { localStorage.setItem("status_aco_kickz", "on"); } else { localStorage.setItem("status_aco_kickz", "off"); }
     });
     //Offspring
-    $('#Status_aco_offspring').click(function () {
+    $('#Status_aco_offspring').click(function() {
         if ($("#Status_aco_offspring").is(':checked')) { localStorage.setItem("status_aco_offspring", "on"); } else { localStorage.setItem("status_aco_offspring", "off"); }
     });
     //Basket4ballers
-    $('#Status_aco_basket4ballers').click(function () {
+    $('#Status_aco_basket4ballers').click(function() {
         if ($("#Status_aco_basket4ballers").is(':checked')) { localStorage.setItem("status_aco_basket4ballers", "on"); } else { localStorage.setItem("status_aco_basket4ballers", "off"); }
     });
     //Awlab
-    $('#Status_aco_awlab').click(function () {
+    $('#Status_aco_awlab').click(function() {
         if ($("#Status_aco_awlab").is(':checked')) { localStorage.setItem("status_aco_awlab", "on"); } else { localStorage.setItem("status_aco_awlab", "off"); }
     });
     //Here
-    $('#Status_aco_here').click(function () {
+    $('#Status_aco_here').click(function() {
         if ($("#Status_aco_here").is(':checked')) { localStorage.setItem("status_aco_here", "on"); } else { localStorage.setItem("status_aco_here", "off"); }
     });
     //Onygo
-    $('#Status_aco_onygo').click(function () {
+    $('#Status_aco_onygo').click(function() {
         if ($("#Status_aco_onygo").is(':checked')) { localStorage.setItem("status_aco_onygo", "on"); } else { localStorage.setItem("status_aco_onygo", "off"); }
     });
     //Woodwood
-    $('#Status_aco_woodwood').click(function () {
+    $('#Status_aco_woodwood').click(function() {
         if ($("#Status_aco_woodwood").is(':checked')) { localStorage.setItem("status_aco_woodwood", "on"); } else { localStorage.setItem("status_aco_woodwood", "off"); }
     });
     //Footdistrict
-    $('#Status_aco_footdistrict').click(function () {
+    $('#Status_aco_footdistrict').click(function() {
         if ($("#Status_aco_footdistrict").is(':checked')) { localStorage.setItem("status_aco_footdistrict", "on"); } else { localStorage.setItem("status_aco_footdistrict", "off"); }
     });
     //Asos
-    $('#Status_aco_asos').click(function () {
+    $('#Status_aco_asos').click(function() {
         if ($("#Status_aco_asos").is(':checked')) { localStorage.setItem("status_aco_asos", "on"); } else { localStorage.setItem("status_aco_asos", "off"); }
     });
     //Kith
-    $('#Status_aco_kith').click(function () {
+    $('#Status_aco_kith').click(function() {
         if ($("#Status_aco_kith").is(':checked')) { localStorage.setItem("status_aco_kith", "on"); } else { localStorage.setItem("status_aco_kith", "off"); }
     });
     //Courir
-    $('#Status_aco_courir').click(function () {
+    $('#Status_aco_courir').click(function() {
         if ($("#Status_aco_courir").is(':checked')) { localStorage.setItem("status_aco_courir", "on"); } else { localStorage.setItem("status_aco_courir", "off"); }
     });
     //Supreme
-    $('#Status_aco_supreme').click(function () {
+    $('#Status_aco_supreme').click(function() {
         if ($("#Status_aco_supreme").is(':checked')) { localStorage.setItem("status_aco_supreme", "on"); } else { localStorage.setItem("status_aco_supreme", "off"); }
     });
     //Office
-    $('#Status_aco_office').click(function () {
+    $('#Status_aco_office').click(function() {
         if ($("#Status_aco_office").is(':checked')) { localStorage.setItem("status_aco_office", "on"); } else { localStorage.setItem("status_aco_office", "off"); }
     });
     //---------------------------------------------------------------------
@@ -243,39 +243,39 @@ function onUserLogged() {
 
     //gestisco i click delle checkbox
     //Awlab
-    $('#Status_login_awlab').click(function () {
+    $('#Status_login_awlab').click(function() {
         if ($("#Status_login_awlab").is(':checked')) { localStorage.setItem("status_login_awlab", "on"); } else { localStorage.setItem("status_login_awlab", "off"); }
     });
     //Here
-    $('#Status_login_here').click(function () {
+    $('#Status_login_here').click(function() {
         if ($("#Status_login_here").is(':checked')) { localStorage.setItem("status_login_here", "on"); } else { localStorage.setItem("status_login_here", "off"); }
     });
     //Solebox
-    $('#Status_login_solebox').click(function () {
+    $('#Status_login_solebox').click(function() {
         if ($("#Status_login_solebox").is(':checked')) { localStorage.setItem("status_login_solebox", "on"); } else { localStorage.setItem("status_login_solebox", "off"); }
     });
     //Snipes
-    $('#Status_login_snipes').click(function () {
+    $('#Status_login_snipes').click(function() {
         if ($("#Status_login_snipes").is(':checked')) { localStorage.setItem("status_login_snipes", "on"); } else { localStorage.setItem("status_login_snipes", "off"); }
     });
     //Kickz
-    $('#Status_login_kickz').click(function () {
+    $('#Status_login_kickz').click(function() {
         if ($("#Status_login_kickz").is(':checked')) { localStorage.setItem("status_login_kickz", "on"); } else { localStorage.setItem("status_login_kickz", "off"); }
     });
     //Offspring
-    $('#Status_login_offspring').click(function () {
+    $('#Status_login_offspring').click(function() {
         if ($("#Status_login_offspring").is(':checked')) { localStorage.setItem("status_login_offspring", "on"); } else { localStorage.setItem("status_login_offspring", "off"); }
     });
     //Onygo
-    $('#Status_login_onygo').click(function () {
+    $('#Status_login_onygo').click(function() {
         if ($("#Status_login_onygo").is(':checked')) { localStorage.setItem("status_login_onygo", "on"); } else { localStorage.setItem("status_login_onygo", "off"); }
     });
     //Footdistrict
-    $('#Status_login_footdistrict').click(function () {
+    $('#Status_login_footdistrict').click(function() {
         if ($("#Status_login_footdistrict").is(':checked')) { localStorage.setItem("status_login_footdistrict", "on"); } else { localStorage.setItem("status_login_footdistrict", "off"); }
     });
     //Courir
-    $('#Status_login_courir').click(function () {
+    $('#Status_login_courir').click(function() {
         if ($("#Status_login_courir").is(':checked')) { localStorage.setItem("status_login_courir", "on"); } else { localStorage.setItem("status_login_courir", "off"); }
     });
 
@@ -294,7 +294,7 @@ function onUserLogged() {
             }));
         }
     }
-    $("#btnEditProfile").click(function () {
+    $("#btnEditProfile").click(function() {
         $("#ProfileCreator").show();
         profile_edit = $("#ProfileSaved").val();
         data = JSON.parse(localStorage.getItem(profile_edit))
@@ -314,10 +314,10 @@ function onUserLogged() {
         $("#MMYY").val(data["MMYY"]);
         $("#CVV").val(data["CVV"]);
     });
-    $("#btnNewProfile").click(function () {
+    $("#btnNewProfile").click(function() {
         $("#ProfileCreator").toggle(500);
     });
-    $("#btnDeleteProfile").click(function () {
+    $("#btnDeleteProfile").click(function() {
         profile_delete = $("#ProfileSaved").val();
 
         profiles = localStorage.getItem("array_profiles")
@@ -334,7 +334,7 @@ function onUserLogged() {
 
         location.reload();
     });
-    $("#btnSaveProfile").click(function () {
+    $("#btnSaveProfile").click(function() {
         profile_name = $("#ProfileName").val()
         if (!isValid(profile_name)) {
             alert("Profile name invalid, remove special characters")
@@ -390,23 +390,23 @@ function onUserLogged() {
         saveLocalStorageToJsonProfile()
     })
     $("#btnImportProfiles").click(() => {
-        try {
-            const fileSelector = document.getElementById('importProfileSelector');
-            const file = fileSelector.files[0]
-            // alert(file.name)
-            const reader = new FileReader()
-            reader.readAsText(file, "UTF-8")
-            reader.onload = (evt) => {
-                const result = evt.target.result
-                const resultObj = JSON.parse(result)
-                importData(resultObj)
-            }
-            reader.onerror = (error) => {
-                alert("Error importing profiles")
-            }
-        } catch (error) { alert("Error importing profiles") }
-    })
-    //---------------------------------------------------------------------
+            try {
+                const fileSelector = document.getElementById('importProfileSelector');
+                const file = fileSelector.files[0]
+                    // alert(file.name)
+                const reader = new FileReader()
+                reader.readAsText(file, "UTF-8")
+                reader.onload = (evt) => {
+                    const result = evt.target.result
+                    const resultObj = JSON.parse(result)
+                    importData(resultObj)
+                }
+                reader.onerror = (error) => {
+                    alert("Error importing profiles")
+                }
+            } catch (error) { alert("Error importing profiles") }
+        })
+        //---------------------------------------------------------------------
 
     //GESTIONE PAGINA SETTING----------------------------------------------
     profiles = localStorage.getItem("array_profiles")
@@ -424,7 +424,7 @@ function onUserLogged() {
     if (localStorage.getItem("default_profile") != "off") { $("#ProfileDefault").val(localStorage.getItem("default_profile")); }
     if (localStorage.getItem("id_webhook") != "off") { $("#idWebhook").val(localStorage.getItem("id_webhook")); }
     $("#nDelay").val(localStorage.getItem("delay"));
-    $("#btnSetting").click(function () {
+    $("#btnSetting").click(function() {
         var id = $("#idWebhook").val();
         var d = $("#nDelay").val();
         var pd = $("#ProfileDefault").val();
@@ -440,7 +440,7 @@ function onUserLogged() {
         try {
             const fileSelector = document.getElementById('importDataSelector');
             const file = fileSelector.files[0]
-            // alert(file.name)
+                // alert(file.name)
             const reader = new FileReader()
             reader.readAsText(file, "UTF-8")
             reader.onload = (evt) => {
@@ -453,7 +453,7 @@ function onUserLogged() {
             }
         } catch (error) { alert("Error importing data") }
     })
-    $("#btnWebhook").click(function () {
+    $("#btnWebhook").click(function() {
         testWebhook($("#idWebhook").val())
     });
 
@@ -476,7 +476,7 @@ function onUserLogged() {
     if (localStorage.getItem("payment_zalando") != "off") { $("#zalandoPaymentMode").val(localStorage.getItem("payment_zalando")); }
     if (localStorage.getItem("size_zalando") != "off") { $("#size_zalando").val(localStorage.getItem("size_zalando")); }
     //gestisco il click del bottone salva
-    $("#btnZ").click(function () {
+    $("#btnZ").click(function() {
         let e = $("#email_zalando").val()
         let p = $("#pw_zalando").val()
         let cart = $("#zalandoCartMode").val();
@@ -494,7 +494,7 @@ function onUserLogged() {
     });
     //DropMode
     if (localStorage.getItem("drop_mode_zalando") == "on") { $('#zalandoDropMode').prop('checked', true); }
-    $('#zalandoDropMode').click(function () {
+    $('#zalandoDropMode').click(function() {
         if ($("#zalandoDropMode").is(':checked')) { localStorage.setItem("drop_mode_zalando", "on"); } else { localStorage.setItem("drop_mode_zalando", "off"); }
     });
     //---------------------------------------------------------------------
@@ -524,7 +524,7 @@ function onUserLogged() {
     if (localStorage.getItem("payment_mode_solebox") != "off") { $("#payment_mode_solebox").val(localStorage.getItem("payment_mode_solebox")); }
     if (localStorage.getItem("checkout_mode_solebox") != "off") { $("#checkout_mode_solebox").val(localStorage.getItem("checkout_mode_solebox")); }
     //gestisco il click del bottone salva
-    $("#btn_save_solebox").click(function () {
+    $("#btn_save_solebox").click(function() {
         let e = $("#email_solebox").val();
         let p = $("#pw_solebox").val();
         let size_solebox = $("#size_solebox").val();
@@ -564,7 +564,7 @@ function onUserLogged() {
     if (localStorage.getItem("payment_mode_courir") != "off") { $("#payment_mode_courir").val(localStorage.getItem("payment_mode_courir")); }
     if (localStorage.getItem("checkout_mode_courir") != "off") { $("#checkout_mode_courir").val(localStorage.getItem("checkout_mode_courir")); }
     //gestisco il click del bottone salva
-    $("#btn_save_courir").click(function () {
+    $("#btn_save_courir").click(function() {
         let e = $("#email_courir").val();
         let p = $("#pw_courir").val();
         let size_courir = $("#size_courir").val();
@@ -605,7 +605,7 @@ function onUserLogged() {
     if (localStorage.getItem("payment_mode_snipes") != "off") { $("#payment_mode_snipes").val(localStorage.getItem("payment_mode_snipes")); }
     if (localStorage.getItem("country_snipes") != "off") { $("#country_snipes").val(localStorage.getItem("country_snipes")); }
     //gestisco il click del bottone salva
-    $("#btn_save_snipes").click(function () {
+    $("#btn_save_snipes").click(function() {
         let e = $("#email_snipes").val();
         let p = $("#pw_snipes").val();
         let c = $("#country_snipes").val();
@@ -645,7 +645,7 @@ function onUserLogged() {
     }
     if (localStorage.getItem("size_onygo") != "off") { $("#size_onygo").val(localStorage.getItem("size_onygo")); }
     //gestisco il click del bottone salva
-    $("#btn_save_onygo").click(function () {
+    $("#btn_save_onygo").click(function() {
         let e = $("#email_onygo").val();
         let p = $("#pw_onygo").val();
         let size_onygo = $("#size_onygo").val();
@@ -679,7 +679,7 @@ function onUserLogged() {
     }
     if (localStorage.getItem("size_footdistrict") != "off") { $("#size_footdistrict").val(localStorage.getItem("size_footdistrict")); }
     //gestisco il click del bottone salva
-    $("#btn_save_footdistrict").click(function () {
+    $("#btn_save_footdistrict").click(function() {
         let e = $("#email_footdistrict").val();
         let p = $("#pw_footdistrict").val();
         let size_footdistrict = $("#size_footdistrict").val();
@@ -702,7 +702,7 @@ function onUserLogged() {
     if (localStorage.getItem("size_kickz") != "off") { $("#size_kickz").val(localStorage.getItem("size_kickz")); }
     $("#delay_kickz").val(localStorage.getItem("delay_kickz"));
     //gestisco il click del bottone salva
-    $("#btn_save_kickz").click(function () {
+    $("#btn_save_kickz").click(function() {
         let e = $("#email_kickz").val();
         let p = $("#pw_kickz").val();
         let size_kickz = $("#size_kickz").val();
@@ -718,7 +718,7 @@ function onUserLogged() {
     if (localStorage.getItem("mode_sns") != "off") { $("#mode_sns").val(localStorage.getItem("mode_sns")); }
     $("#delay_sns").val(localStorage.getItem("delay_sns"));
     //gestisco il click del bottone salva
-    $("#btn_save_sns").click(function () {
+    $("#btn_save_sns").click(function() {
         let size_sns = $("#size_sns").val();
         let mode_sns = $("#mode_sns").val();
         let delay_sns = $("#delay_sns").val();
@@ -733,7 +733,7 @@ function onUserLogged() {
     if (localStorage.getItem("mode_woodwood") != "off") { $("#mode_woodwood").val(localStorage.getItem("mode_woodwood")); }
     $("#delay_woodwood").val(localStorage.getItem("delay_woodwood"));
     //gestisco il click del bottone salva
-    $("#btn_save_woodwood").click(function () {
+    $("#btn_save_woodwood").click(function() {
         let size_woodwood = $("#size_woodwood").val();
         let mode_woodwood = $("#mode_woodwood").val();
         let delay_woodwood = $("#delay_woodwood").val();
@@ -748,7 +748,7 @@ function onUserLogged() {
     if (localStorage.getItem("mode_naked") != "off") { $("#mode_naked").val(localStorage.getItem("mode_naked")); }
     $("#delay_naked").val(localStorage.getItem("delay_naked"));
     //gestisco il click del bottone salva
-    $("#btn_save_naked").click(function () {
+    $("#btn_save_naked").click(function() {
         var size_naked = $("#size_naked").val();
         let mode_naked = $("#mode_naked").val();
         let delay_naked = $("#delay_naked").val();
@@ -762,7 +762,7 @@ function onUserLogged() {
     if (localStorage.getItem("size_b4b") != "off") { $("#size_b4b").val(localStorage.getItem("size_b4b")); }
     $("#delay_b4b").val(localStorage.getItem("delay_b4b"));
     //gestisco il click del bottone salva
-    $("#btn_save_b4b").click(function () {
+    $("#btn_save_b4b").click(function() {
         let size_b4b = $("#size_b4b").val();
         let delay_b4b = $("#delay_b4b").val();
         if (delay_b4b != '') { localStorage.setItem("delay_b4b", delay_b4b); } else { localStorage.setItem("delay_b4b", "1000"); }
@@ -788,7 +788,7 @@ function onUserLogged() {
     if (localStorage.getItem("mode_lvr") != "off") { $("#mode_lvr").val(localStorage.getItem("mode_lvr")); }
     if (localStorage.getItem("size_lvr") != "off") { $("#size_lvr").val(localStorage.getItem("size_lvr")); }
     //gestisco il click del bottone salva
-    $("#btn_save_lvr").click(function () {
+    $("#btn_save_lvr").click(function() {
         let size_lvr = $("#size_lvr").val();
         let mode_lvr = $("#mode_lvr").val();
         let profile_lvr = $("#ProfileLvr").val();
@@ -818,7 +818,7 @@ function onUserLogged() {
     if (localStorage.getItem("checkout_mode_supreme") != "off") { $("#checkout_mode_supreme").val(localStorage.getItem("checkout_mode_supreme")); }
     if (localStorage.getItem("size_supreme") != "off") { $("#size_supreme").val(localStorage.getItem("size_supreme")); }
     //gestisco il click del bottone salva
-    $("#btn_save_supreme").click(function () {
+    $("#btn_save_supreme").click(function() {
         let size_supreme = $("#size_supreme").val();
         let payment_mode_supreme = $("#payment_mode_supreme").val();
         let checkout_mode_supreme = $("#checkout_mode_supreme").val();
@@ -847,7 +847,7 @@ function onUserLogged() {
     if (localStorage.getItem("checkout_mode_kith") != "off") { $("#checkout_mode_kith").val(localStorage.getItem("checkout_mode_kith")); }
     if (localStorage.getItem("size_kith") != "off") { $("#size_kith").val(localStorage.getItem("size_kith")); }
     //gestisco il click del bottone salva
-    $("#btn_save_kith").click(function () {
+    $("#btn_save_kith").click(function() {
         let size_kith = $("#size_kith").val();
         let checkout_mode_kith = $("#checkout_mode_kith").val();
         let profile_kith = $("#ProfileKith").val();
@@ -876,7 +876,7 @@ function onUserLogged() {
     if (localStorage.getItem("size_offspring") != "off") { $("#size_offspring").val(localStorage.getItem("size_offspring")); }
     $("#delay_offspring").val(localStorage.getItem("delay_offspring"));
     //gestisco il click del bottone salva
-    $("#btn_save_offspring").click(function () {
+    $("#btn_save_offspring").click(function() {
         let size_offspring = $("#size_offspring").val();
         let delay_offspring = $("#delay_offspring").val();
         let payment_mode_offspring = $("#payment_mode_offspring").val();
@@ -909,7 +909,7 @@ function onUserLogged() {
     if (localStorage.getItem("size_office") != "off") { $("#size_office").val(localStorage.getItem("size_office")); }
     $("#delay_office").val(localStorage.getItem("delay_office"));
     //gestisco il click del bottone salva
-    $("#btn_save_office").click(function () {
+    $("#btn_save_office").click(function() {
         let size_office = $("#size_office").val();
         let delay_office = $("#delay_office").val();
         let payment_mode_office = $("#payment_mode_office").val();
@@ -926,13 +926,13 @@ function onUserLogged() {
     //GESTIONE PAGINA ASOS----------------------------------------------
     $("#delay_asos").val(localStorage.getItem("delay_asos"));
     //gestisco il click del bottone salva
-    $("#btn_save_asos").click(function () {
+    $("#btn_save_asos").click(function() {
         let delay_asos = $("#delay_asos").val();
         if (delay_asos != '') { localStorage.setItem("delay_asos", delay_asos); } else { localStorage.setItem("delay_asos", "1000"); }
     });
     //multicart
     if (localStorage.getItem("multicart_asos") == "on") { $('#multicart_asos').prop('checked', true); }
-    $('#multicart_asos').click(function () {
+    $('#multicart_asos').click(function() {
         if ($("#multicart_asos").is(':checked')) { localStorage.setItem("multicart_asos", "on"); } else { localStorage.setItem("multicart_asos", "off"); }
     });
     //---------------------------------------------------------------------
@@ -962,7 +962,7 @@ function onUserLogged() {
         $("#pw_awlab").val(pw);
     }
     //gestisco il click del bottone salva
-    $("#btn_save_awlab").click(function () {
+    $("#btn_save_awlab").click(function() {
         let e = $("#email_awlab").val();
         let p = $("#pw_awlab").val();
         let checkout_mode_awlab = $("#checkout_mode_awlab").val();
@@ -977,7 +977,7 @@ function onUserLogged() {
     });
     //multicart
     if (localStorage.getItem("multicart_awlab") == "on") { $('#multicart_awlab').prop('checked', true); }
-    $('#multicart_awlab').click(function () {
+    $('#multicart_awlab').click(function() {
         if ($("#multicart_awlab").is(':checked')) { localStorage.setItem("multicart_awlab", "on"); } else { localStorage.setItem("multicart_awlab", "off"); }
     });
     //---------------------------------------------------------------------
@@ -1007,7 +1007,7 @@ function onUserLogged() {
         $("#pw_here").val(pw);
     }
     //gestisco il click del bottone salva
-    $("#btn_save_here").click(function () {
+    $("#btn_save_here").click(function() {
         let e = $("#email_here").val();
         let p = $("#pw_here").val();
         let checkout_mode_here = $("#checkout_mode_here").val();
@@ -1022,7 +1022,7 @@ function onUserLogged() {
     });
     //multicart
     if (localStorage.getItem("multicart_here") == "on") { $('#multicart_here').prop('checked', true); }
-    $('#multicart_here').click(function () {
+    $('#multicart_here').click(function() {
         if ($("#multicart_here").is(':checked')) { localStorage.setItem("multicart_here", "on"); } else { localStorage.setItem("multicart_here", "off"); }
     });
     //---------------------------------------------------------------------

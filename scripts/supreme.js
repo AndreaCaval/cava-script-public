@@ -1,4 +1,4 @@
-//debugger
+debugger
 
 const site = "Supreme"
 
@@ -70,7 +70,7 @@ function textBox() {
     try {
         var btn1 = document.getElementById("top_notice")
 
-        if (!link.includes("www"))
+        if (link.startsWith("https://milan"))
             btn1 = document.getElementsByClassName("header")[0]
 
         btn1.insertAdjacentHTML("beforebegin", '<style>.btn_cava {box-shadow: rgb(247 197 192) 0px 1px 0px 0px inset;background: linear-gradient(rgb(252, 141, 131) 5%, rgb(228, 104, 93) 100%) rgb(252, 141, 131);border-radius: 6px;border: 1px solid rgb(216, 53, 38);display: inline-block;cursor: pointer;color: rgb(255, 255, 255);font-family: Arial;font-size: 14px;font-weight: bold;text-decoration: none;text-shadow: rgb(178 62 53) 0px 1px 0px;outline: none;width: 100%;}' +
@@ -89,13 +89,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -163,10 +163,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusSupreme").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusSupreme").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function main() {
@@ -176,7 +176,7 @@ async function main() {
         mainAtc()
     else if (link.startsWith("https://www.supremenewyork.com/checkout") && document.getElementsByClassName("tab tab-confirmation selected")[0] != undefined)
         mainSuccess()
-    else if( status_aco_instore == "on"){
+    else if (status_aco_instore == "on") {
         if (link.includes("step-1"))
             instoreStep1()
         else if (link.includes("step-2"))
@@ -202,7 +202,7 @@ async function mainAtc() {
                 sizes.forEach(element => {
                     if (element.textContent == size_range) {
                         document.getElementById("size").value = element.getAttribute("value")
-                        // size = element.getAttribute("value")
+                            // size = element.getAttribute("value")
                     }
                 });
             }
@@ -230,7 +230,7 @@ async function mainCheckout() {
 
         if (profile != "") {
             sendText("trying fill data...", "blue")
-            // if (document.getElementById("order_billing_name").value == "")
+                // if (document.getElementById("order_billing_name").value == "")
             document.getElementById("order_billing_name").value = profile["FirstName"] + " " + profile["LastName"]
             document.getElementById("order_email").value = profile["Email"]
             document.getElementById("order_tel").value = profile["Telephone"]
@@ -276,12 +276,12 @@ async function mainSuccess() {
         img_product = document.getElementsByClassName("cart-image")[0].querySelector("img").src
         let mixpanel = false
 
-        let scripts1 = document.querySelectorAll("script")
-        scripts1.forEach(element => {
-            if (element.textContent.includes("Purchase Success")) {
-                eval(element.textContent)
-            }
-        });
+        // let scripts1 = document.querySelectorAll("script")
+        // scripts1.forEach(element => {
+        //     if (element.textContent.includes("Purchase Success")) {
+        //         eval(element.textContent)
+        //     }
+        // });
 
         let scripts2 = document.querySelectorAll("script")
         scripts2.forEach(element => {
@@ -297,15 +297,10 @@ async function mainSuccess() {
     } catch (error) { errorWebhook(error, "mainSuccess") }
 }
 
-function ga_tracka(a, b, order) {
-    name_product = order["Products"][0]["Name"] + order["Products"][0]["Color"]
-    size_product = order["Products"][0]["Size"]
-}
-
 function ga_track(a, orderid, sku, pname, colorsize, price1, quantity) {
     if (a == "ecommerce:addItem") {
-        // name_product = pname
-        // size_product = colorsize
+        name_product = pname
+        size_product = colorsize
         order_number = orderid
     }
 }
@@ -367,7 +362,7 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "size_supreme" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_supreme" }, function(response) {
     if (response.farewell != "off")
         switch (response.farewell.toLowerCase()) {
             case "s":
@@ -392,34 +387,34 @@ chrome.runtime.sendMessage({ greeting: "size_supreme" }, function (response) {
 
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_supreme_instore" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_supreme_instore" }, function(response) {
     status_aco_instore = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "payment_mode_supreme" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "payment_mode_supreme" }, function(response) {
     payment_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "checkout_mode_supreme" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_supreme" }, function(response) {
     checkout_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "profile_supreme" }, function (response) {
-    chrome.runtime.sendMessage({ greeting: response.farewell }, function (response) {
+chrome.runtime.sendMessage({ greeting: "profile_supreme" }, function(response) {
+    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
         try {
             profile = JSON.parse(response.farewell)
-        } catch (error) { }
+        } catch (error) {}
     });
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }
