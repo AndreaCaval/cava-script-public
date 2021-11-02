@@ -71,7 +71,9 @@ let drop_mode = ""
 
 let delay = "0"
 
+let body = "["
 let size_btn = ""
+let selected_sizes = []
 let size = []
 let size_eu = []
 let size_in_stock = []
@@ -79,13 +81,16 @@ let count_cart = 0
 let carted = 0
 let id = "";
 
+
 let frsx = ""
 
 let img_product = '';
 let name_product = '';
 let size_product = '';
 let quantity_product = '';
-let link_product = "https://www.zalando.it/"
+let price_product = "";
+let link_product = "";
+let linkpp = "";
 
 let id_address
 
@@ -379,7 +384,7 @@ async function main() {
     } else if (link.startsWith("https://" + country + "/checkout/confirm")) {
         mainCheckout()
     } else if (link.startsWith("https://" + country + "/checkout/success")) {
-        mainSuccess()
+        // mainSuccess()
     } else {
         await searchSize()
         textBoxMain()
@@ -394,73 +399,241 @@ async function main() {
 }
 
 async function AtcSizeButton() {
-    let total_stock = 0
-    for (let i = 0; i < size_btn.length; i++) {
-        var btn = document.createElement("BUTTON");
-        try {
-            btn.innerHTML = size_btn[i]["size"]["local"];
-            btn.type = "button"
-            btn.className = "btn_size_atc"
-            btn.id = size_btn[i].id
-            total_stock += size_btn[i].stock
-            btn.title = "Stock = " + size_btn[i].stock.toString()
-        } catch (error) {
-            btn.innerHTML = size_btn[i].size;
-            btn.type = "button"
-            btn.className = "btn_size_atc"
-            btn.id = size_btn[i].sku
-            btn.title = "Stock = " + size_btn[i].offer.stock.quantity
+    try {
+        let total_stock = 0
+
+        document.getElementsByClassName("okmnKS")[0].insertAdjacentHTML("beforeend", '<style>' +
+            `.btn_size_atc {
+            text-align: center;
+            width: 75px;
+            border-radius: 15px;
+        }      
+
+        ul {
+            padding: 0;
+            margin: 0;
+            clear: both;
+        }
+        
+        li{
+            list-style-type: none;
+            list-style-position: outside;
+            padding: 10px;
+            float: left;
+        }
+        
+        input[type="checkbox"]:not(:checked), 
+        input[type="checkbox"]:checked {
+            position: absolute;
+            left: -9999%;
+        }
+        
+        input[type="checkbox"] + label {
+            display: inline-block;
+            padding: 10px;
+            cursor: pointer;
+            border: 3px solid black;
+            color: black;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+        
+        input[type="checkbox"]:checked + label {
+            border: 3px solid black;
+            color: white;
+            background-color: darkgray;
+        }` +
+            '</style><ul class="size_ul"></ul><br style="clear:both;">' +
+
+            '<label style="margin-right:10px">Timer:</label> <input style="width:100px; color:black; type=text; margin-right:10px" id="timer" placeholder="es: 09:15:00">' +
+            '<input id="btn_start_monitoring" type="submit" value="START MONITORING">')
+
+        for (let i = 0; i < size_btn.length; i++) {
+            try {
+                total_stock += size_btn[i].stock
+                document.getElementsByClassName("size_ul")[0].insertAdjacentHTML("beforeend",
+                    '<li><input class="ckbox_size" type="checkbox" id="' + size_btn[i].id + '" name="check_' + i.toString() + '" value="check_' + i.toString() + '">' +
+                    '<label class="btn_size_atc" title= "Stock = ' + size_btn[i].stock.toString() + '" id="' + size_btn[i].id + '" for="check_' + i.toString() + '">' + size_btn[i]["size"]["local"] + '</label></li>');
+            } catch (error) {
+                document.getElementsByClassName("size_ul")[0].insertAdjacentHTML("beforeend",
+                    '<li><input class="ckbox_size" type="checkbox" id="' + size_btn[i].sku + '" name="check_' + i.toString() + '" value="check_' + i.toString() + '">' +
+                    '<label class="btn_size_atc" title= "Stock = ' + size_btn[i].offer.stock.quantity + '" id="' + size_btn[i].sku + '" for="check_' + i.toString() + '">' + size_btn[i].size + '</label></li>');
+
+            }
         }
 
-        if (hasNumber(btn.title)) {
-            if (size_btn[i].stock > 10)
-                btn.style.border = "3px solid #4CAF50"
-            else if (size_btn[i].stock > 0)
-                btn.style.border = "3px solid #ffd400"
-            else
-                btn.style.border = "3px solid #f44336"
+        let btns = document.getElementsByClassName("btn_size_atc")
+        btns = Array.prototype.slice.call(btns)
+        btns.forEach(element => {
+            if (hasNumber(element.title)) {
+                let s = parseInt(element.title.replace("Stock = ", ''))
+                if (s > 10)
+                    element.style.border = "3px solid #4CAF50"
+                    // element.style.color = "3px solid #4CAF50"
+                else if (s > 0)
+                    element.style.border = "3px solid #ffd400"
+                    // element.style.color = "3px solid #ffd400"
+                else
+                    element.style.border = "3px solid #f44336"
+                    // element.style.color = "#f44336"
+            } else {
+                let s = element.title.replace("Stock = ", '')
+                if (s == "MANY")
+                    element.style.border = "3px solid #4CAF50"
+                else if (s == "OUT_OF_STOCK")
+                    element.style.border = "3px solid #f44336"
+                else
+                    element.style.border = "3px solid #ffd400"
+            }
 
-        } else {
-            let s = btn.title.replace("Stock = ", '')
-            if (s == "MANY")
-                element.style.border = "3px solid #4CAF50"
-            else if (s == "OUT_OF_STOCK")
-                element.style.border = "3px solid #f44336"
-            else
-                element.style.border = "3px solid #ffd400"
-        }
-        btn.style.width = "100px"
-        btn.style.height = "30px"
-        btn.style.margin = "10px"
-        btn.style.borderRadius = "15px"
-        document.getElementsByClassName("okmnKS")[0].appendChild(btn);
+
+            element.addEventListener("dblclick", function() {
+                frsx = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
+                atcR(element.id)
+            });
+            element.addEventListener("click", function() {
+                if (document.getElementById(element.id).checked == true)
+                    document.getElementById(element.id).checked = false
+                else
+                    document.getElementById(element.id).checked = true
+            });
+        });
+
+        let btn_start_monitoring = document.getElementById("btn_start_monitoring")
+        btn_start_monitoring.addEventListener("click", function() {
+            btn_monitoring()
+        });
+
+        var x = document.createElement("SPAN");
+        var t = document.createTextNode("Total Stock = " + total_stock.toString());
+        x.style.float = "right"
+        x.style.fontSize = "25px"
+        if (total_stock > 0)
+            x.style.color = "green"
+        else
+            x.style.color = "red"
+        x.appendChild(t);
+        document.getElementsByClassName("_1z5_Qg")[0].appendChild(x);
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function btn_monitoring() {
+    selected_sizes = []
+    let s = document.getElementsByClassName("ckbox_size")
+    s = Array.prototype.slice.call(s)
+    s.forEach(element => {
+        if (element.checked == true)
+            selected_sizes.push(element.id)
+    });
+    if (selected_sizes.length == 0)
+        selected_sizes = size
+
+    selected_sizes.forEach(element => {
+        body += "{\"id\":\"e7f9dfd05f6b992d05ec8d79803ce6a6bcfb0a10972d4d9731c6b94f6ec75033\",\"variables\":{\"addToCartInput\":{\"productId\":\"" + element + "\",\"clientMutationId\":\"addToCartMutation\"}}},"
+    });
+    body = body.substring(0, body.length - 1)
+    body += "]"
+
+    if (document.getElementById("timer").value != "") {
+        let t = document.getElementById("timer").value.split(':')
+        let d2 = new Date();
+        d2.setHours(t[0], t[1], t[2], 0)
+        let d1 = new Date();
+        let wait = d2.getTime() - d1.getTime()
+        sendText("Waiting...", "blue")
+
+        await sleep(wait)
     }
 
+    while (carted == 0) {
 
-    let btns = document.getElementsByClassName("btn_size_atc")
-    btns = Array.prototype.slice.call(btns)
-    btns.forEach(element => {
-        element.addEventListener("click", function() {
-            frsx = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5)
-            atcR(element.id)
-        });
-    });
+        await atcRall()
+        await sleep(parseInt(delay))
 
+    }
 
-    var x = document.createElement("SPAN");
-    var t = document.createTextNode("Total Stock = " + total_stock.toString());
-    x.style.float = "right"
-    x.style.fontSize = "25px"
-    if (total_stock > 0)
-        x.style.color = "green"
-    else
-        x.style.color = "red"
-    x.appendChild(t);
-    document.getElementsByClassName("_1z5_Qg")[0].appendChild(x);
+}
+async function atcRall() {
+
+    sendText("Carting items...", "blue")
+    try { frsx = document.cookie.split('; ').find(row => row.startsWith('frsx')).substring(5) } catch (error) {}
+    await fetch("https://" + country + "/api/graphql/", {
+            "headers": {
+                "accept": "*//*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "dpr": "1",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+                "x-xsrf-token": frsx,
+                "x-zalando-intent-context": "navigationTargetGroup=WOMEN"
+            },
+            "referrerPolicy": "no-referrer-when-downgrade",
+            "body": body,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResAtcAll(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "atcR_fetch")
+        });;
+}
+async function checkResAtcAll(response) {
+
+    try {
+
+        let status = response.status
+        let res = await response.text()
+        let x = res
+        res = JSON.parse(res)
+        let message = res[0]["data"]["addToCart"]
+        let errors = ""
+
+        if (status == 200 || status == 201) {
+            if (message != null) {
+                sendText("Carted", "yellow")
+                carted++
+                sendText("Getting checkout", "blue")
+
+                checkStockGetCheckout()
+
+                while (true) {
+                    await getCheckout()
+                    await sleep(parseInt(delay))
+                }
+
+            } else {
+
+                sendText("Error carting...", "red")
+
+                errors = res[0]["errors"][0]
+                if (errors["message"].includes("Received Status: 429 from Cart:") && errors["message"].includes("TOO_MANY_REQUESTS")) {
+                    console.log("Error 429 Cart Too Many Requests")
+                } else if (errors["message"] == "Received Status: 429 from Cart: " || errors["message"] == "Received Status: 429 from Cart:") {
+                    console.log("Received Status: 429 from Cart:")
+                } else {
+                    errorWebhook(errors["message"], "checkAtcRes_1")
+                }
+            }
+        } else {
+            sendText("Error carting...", "red")
+        }
+
+    } catch (error) {
+        if (error != "SyntaxError: Unexpected token < in JSON at position 0")
+            errorWebhook(error, "checkAtcRes_2")
+    }
 }
 
+
 async function mainClearCart() {
-    getProductCart()
+    await getProductCart()
 }
 
 async function getProductCart() {
@@ -502,7 +675,7 @@ async function checkResStock(response) {
             if (cart_size_oos.length == 0 && cart_size_instock.length == 0) {
                 sendText("Cart empty", "green")
             } else {
-                checkStock()
+                await checkStock()
             }
 
         } else {
@@ -719,9 +892,11 @@ async function searchSize() {
                 })
             }
         }
-    } catch (error) { errorWebhook(error, "searchSize_2") }
+    } catch (error) {
+        if (error != "TypeError: Cannot convert undefined or null to object")
+            errorWebhook(error, "searchSize_2")
+    }
 }
-
 
 async function dropMode() {
     let c = 0
@@ -789,7 +964,6 @@ async function dropMode() {
                             }
                         }
                         sizes = x.graphqlCache[k].data.product.simples
-                        console.log(sizes)
                         for (let i = 0; i < sizes.length; i++) {
                             if (sizes[i].offer.stock.quantity != "OUT_OF_STOCK") {
                                 console.log("stock")
@@ -1141,6 +1315,13 @@ async function checkResGetCheckout(response) {
                 etag = etag.replace('"', '')
                 etag = '"' + '\\' + '"' + etag + '\\' + '"' + '"'
                 checkoutId = x.model.checkoutId
+
+                price_product = x.model.totalPrice
+                email = x.model.customerData.email
+                link_product = "https://" + country + "/" + site_region[country]["ct"] + "/?q=" + x.model.groups[0].articles[0].configSku
+                name_product = x.model.groups[0].articles[0].name
+                img_product = x.model.groups[0].articles[0].imageUrl
+                size_product = x.model.groups[0].articles[0].size
                 await checkoutBuyNow(etag, checkoutId)
             } else if (url.startsWith("/welcomenoaccount/true?target") || url.startsWith("https://" + country + "/welcomenoaccount/true?target")) {
                 document.location = "https://" + country + "/login?target=/myaccount/"
@@ -1481,6 +1662,13 @@ async function checkoutConfirm() {
 
         checkoutid = x.model.checkoutId
 
+        email = x.model.customerData.email
+        price_product = x.model.totalPrice
+        link_product = "https://" + country + "/" + site_region[country]["ct"] + "/?q=" + x.model.groups[0].articles[0].configSku
+        name_product = x.model.groups[0].articles[0].name
+        img_product = x.model.groups[0].articles[0].imageUrl
+        size_product = x.model.groups[0].articles[0].size
+
         checkoutBuyNow(etag, checkoutid)
 
     } catch (error) {
@@ -1531,13 +1719,16 @@ async function checkRescheckoutBuyNow(response) {
 
             if (url == "/checkout/success") {
                 main()
+                sendWebhooks()
                 open('https://' + country + '/checkout/success')
             } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error" || url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
                 location.reload()
             } else if (url.startsWith("https://checkout.payment.zalando.com/")) {
                 mainPaymentFast(url)
             } else if (url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/checkoutnow?")) {
-                open(url)
+                linkpp = url
+                sendWebhooks()
+                document.location = url
             } else {
                 errorWebhook(x, "checkRescheckoutBuyNow_1")
                 location.reload()
@@ -1556,7 +1747,7 @@ async function checkRescheckoutBuyNow(response) {
 }
 
 async function mainSuccess() {
-    foundData()
+    // foundData()
 }
 async function foundData() {
     try {
@@ -1593,7 +1784,7 @@ async function foundData() {
 }
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + site_region[country]["ID"] + "&-&" + size_product + "&-&" + quantity_product + "&-&" + email })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + site_region[country]["ID"] + "&-&" + size_product + "&-&" + price_product + "&-&" + email + "&-&" + linkpp })
 }
 async function errorWebhook(error, position) {
     chrome.runtime.sendMessage({ greeting: "error_webhook&-&" + site + "&-&" + error + "&-&" + position })

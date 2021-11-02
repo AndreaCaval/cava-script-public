@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.2.7";
+const version = "1.2.8";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/dash%2Ficonpk.png?alt=media&token=52cd991d-5687-40b0-945a-49dcbf4c999a";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -100,7 +100,13 @@ function SetStatus_off() {
     setIfNotPresent("checkout_mode_kith", "Full Checkout");
 
     //Nbb
-    setIfNotPresent("checkout_mode_nbb", "Full Checkout")
+    setIfNotPresent("checkout_mode_nbb", "Fast")
+
+    //Ldlc
+    setIfNotPresent("checkout_mode_ldlc", "Fast")
+
+    //Aboutyou
+    setIfNotPresent("payment_mode_aboutyou", "Cash On Delivery")
 
     //Lvr
     setIfNotPresent("mode_lvr", "Fast");
@@ -150,11 +156,21 @@ function SetStatus_off() {
         "email_pw_nbb",
         "profile_nbb",
 
+        //Ldlc
+        "status_aco_ldlc",
+        "status_login_ldlc",
+        "email_pw_ldlc",
+        "profile_ldlc",
+
         //Supreme
         "status_aco_supreme",
         "status_aco_supreme_instore",
         "size_supreme",
         "profile_supreme",
+
+        //Aboutyou
+        "status_aco_aboutyou",
+        "size_aboutyou",
 
         //Kith EU
         "status_aco_kith",
@@ -191,6 +207,8 @@ function SetStatus_off() {
         "coupon_awlab",
         "continue_no_awlab",
         "profile_awlab",
+        "profile_awlab_es",
+        "profile_awlab_en",
         "multicart_awlab",
 
         //Here
@@ -211,6 +229,10 @@ function SetStatus_off() {
         //Sns,
         "status_aco_sns",
         "size_sns",
+
+        //Yoox,
+        "status_aco_yoox",
+        "size_yoox",
 
         //Asos,
         "status_aco_asos",
@@ -528,10 +550,10 @@ async function sendWebhookCheckout(x) {
     let price_product = x[6]
     let email = ""
     let payment_link = ""
-    if (site.startsWith("Zalando") || site == "Lvr" || site.startsWith("Courir")) {
+    if (site == "Lvr" || site.startsWith("Courir")) {
         email = x[7]
     }
-    if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Supreme") {
+    if (site.startsWith("Zalando") || site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Supreme") {
         try {
             email = x[7]
             payment_link = x[8]
@@ -575,6 +597,8 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
         }
     } else if (site.startsWith("Zalando")) {
 
+        let pid = link_product.split('=')[1]
+
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
             description: '[' + name_product + '](' + link_product + ')',
@@ -591,8 +615,24 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
                     inline: true
                 },
                 {
-                    name: 'Quantity',
+                    name: 'Price',
                     value: price_product,
+                    inline: true
+                },
+                {
+                    name: 'Regions',
+                    value: "[[AT](https://www.zalando.at/katalog/?q=" + pid + ")]" +
+                        "[[BE](https://www.zalando.be/catalogus/?q=" + pid + ")]" +
+                        "[[CH](https://www.zalando.ch/schuhe/?q=" + pid + ")] " +
+                        "[[UK](https://www.zalando.co.uk/catalog/?q=" + pid + ")] " +
+                        "[[CZ](https://www.zalando.cz/katalog/?q=" + pid + ")]" +
+                        "[[DE](https://www.zalando.de/katalog/?q=" + pid + ")]" +
+                        "[[ES](https://www.zalando.es/catalogo/?q=" + pid + ")]" +
+                        "[[FR](https://www.zalando.fr/catalogue/?q=" + pid + ")]" +
+                        "[[IT](https://www.zalando.it/catalogo/?q=" + pid + ")]" +
+                        "[[NL](https://www.zalando.nl/catalogus/?q=" + pid + ")]" +
+                        "[[NO](https://www.zalando.no/catalog/?q=" + pid + ")]" +
+                        "[[PL](https://www.zalando.pl/katalog/?q=" + pid + ")] ",
                     inline: true
                 }
             ],
@@ -716,7 +756,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
     } else if (site.startsWith("Zalando")) {
-
+        let pid = link_product.split('=')[1]
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
             description: '[' + name_product + '](' + link_product + ')',
@@ -911,7 +951,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site == "Offspring" && payment_link != "") || (site == "Office" && payment_link != "")) {
+    } else if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site == "Offspring" && payment_link != "") || (site == "Office" && payment_link != "") || (site.startsWith("Zalando") && payment_link != "")) {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -968,7 +1008,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
         }
 
     } else if (site.startsWith("Zalando")) {
-
+        let pid = link_product.split('=')[1]
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
             description: '[' + name_product + '](' + link_product + ')',
@@ -985,7 +1025,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
                     inline: true
                 },
                 {
-                    name: 'Quantity',
+                    name: 'Price',
                     value: price_product,
                     inline: true
                 },

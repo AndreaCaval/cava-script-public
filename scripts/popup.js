@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.7'
+const version = 'Cava-Scripts 1.2.8'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
@@ -139,6 +139,12 @@ function onUserLogged() {
     if (localStorage.getItem("status_aco_supreme") == "on") { $('#Status_aco_supreme').prop('checked', true); }
     //Office
     if (localStorage.getItem("status_aco_office") == "on") { $('#Status_aco_office').prop('checked', true); }
+    //Nbb
+    if (localStorage.getItem("status_aco_nbb") == "on") { $('#Status_aco_nbb').prop('checked', true); }
+    //Aboutyou
+    if (localStorage.getItem("status_aco_aboutyou") == "on") { $('#Status_aco_aboutyou').prop('checked', true); }
+    //Ldlc
+    if (localStorage.getItem("status_aco_ldlc") == "on") { $('#Status_aco_ldlc').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Zalando
@@ -217,6 +223,18 @@ function onUserLogged() {
     $('#Status_aco_office').click(function() {
         if ($("#Status_aco_office").is(':checked')) { localStorage.setItem("status_aco_office", "on"); } else { localStorage.setItem("status_aco_office", "off"); }
     });
+    //Nbb
+    $('#Status_aco_nbb').click(function() {
+        if ($("#Status_aco_nbb").is(':checked')) { localStorage.setItem("status_aco_nbb", "on"); } else { localStorage.setItem("status_aco_nbb", "off"); }
+    });
+    //Aboutyou
+    $('#Status_aco_aboutyou').click(function() {
+        if ($("#Status_aco_aboutyou").is(':checked')) { localStorage.setItem("status_aco_aboutyou", "on"); } else { localStorage.setItem("status_aco_aboutyou", "off"); }
+    });
+    //Ldlc
+    $('#Status_aco_ldlc').click(function() {
+        if ($("#Status_aco_ldlc").is(':checked')) { localStorage.setItem("status_aco_ldlc", "on"); } else { localStorage.setItem("status_aco_ldlc", "off"); }
+    });
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA Login------------------------------------------------
@@ -240,6 +258,10 @@ function onUserLogged() {
     if (localStorage.getItem("status_login_footdistrict") == "on") { $('#Status_login_footdistrict').prop('checked', true); }
     //Courir
     if (localStorage.getItem("status_login_courir") == "on") { $('#Status_login_courir').prop('checked', true); }
+    //Nbb
+    if (localStorage.getItem("status_login_nbb") == "on") { $('#Status_login_nbb').prop('checked', true); }
+    //Ldlc
+    if (localStorage.getItem("status_login_ldlc") == "on") { $('#Status_login_ldlc').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Awlab
@@ -278,6 +300,14 @@ function onUserLogged() {
     $('#Status_login_courir').click(function() {
         if ($("#Status_login_courir").is(':checked')) { localStorage.setItem("status_login_courir", "on"); } else { localStorage.setItem("status_login_courir", "off"); }
     });
+    //Nbb
+    $('#Status_login_nbb').click(function() {
+        if ($("#Status_login_nbb").is(':checked')) { localStorage.setItem("status_login_nbb", "on"); } else { localStorage.setItem("status_login_nbb", "off"); }
+    });
+    //Ldlc
+    $('#Status_login_ldlc').click(function() {
+        if ($("#Status_login_ldlc").is(':checked')) { localStorage.setItem("status_login_ldlc", "on"); } else { localStorage.setItem("status_login_ldlc", "off"); }
+    });
 
 
     //GESTIONE PAGINA PROFILI----------------------------------------------
@@ -299,20 +329,20 @@ function onUserLogged() {
         profile_edit = $("#ProfileSaved").val();
         data = JSON.parse(localStorage.getItem(profile_edit))
         $("#ProfileName").val(profile_edit);
-        $("#FirstName").val(data["FirstName"]);
-        $("#LastName").val(data["LastName"]);
-        $("#Email").val(data["Email"]);
-        $("#Telephone").val(data["Telephone"]);
-        $("#AddressOne").val(data["AddressOne"]);
-        $("#AddressTwo").val(data["AddressTwo"]);
-        $("#City").val(data["City"]);
-        $("#Zip").val(data["Zip"]);
-        $("#State").val(data["State"]);
-        $("#Country").val(data["Country"]);
-        $("#CardOwnerName").val(data["CardOwnerName"]);
-        $("#CardNumber").val(data["CardNumber"]);
-        $("#MMYY").val(data["MMYY"]);
-        $("#CVV").val(data["CVV"]);
+        $("#FirstName").val(data.FirstName);
+        $("#LastName").val(data.LastName);
+        $("#Email").val(data.Email);
+        $("#Telephone").val(data.Telephone);
+        $("#AddressOne").val(data.AddressOne);
+        $("#AddressTwo").val(data.AddressTwo);
+        $("#City").val(data.City);
+        $("#Zip").val(data.Zip);
+        $("#State").val(data.State);
+        $("#Country").val(data.Country);
+        $("#CardOwnerName").val(data.CardOwnerName);
+        $("#CardNumber").val(data.CardNumber);
+        $("#MMYY").val(data.MMYY);
+        $("#CVV").val(data.CVV);
     });
     $("#btnNewProfile").click(function() {
         $("#ProfileCreator").toggle(500);
@@ -951,7 +981,29 @@ function onUserLogged() {
             }));
         }
     }
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileAwlabEN').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileAwlabEN').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileAwlabES').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileAwlabES').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
     if (localStorage.getItem("profile_awlab") != "off") { $("#ProfileAwlab").val(localStorage.getItem("profile_awlab")); }
+    if (localStorage.getItem("profile_awlab_en") != "off") { $("#ProfileAwlabEN").val(localStorage.getItem("profile_awlab_en")); }
+    if (localStorage.getItem("profile_awlab_es") != "off") { $("#ProfileAwlabES").val(localStorage.getItem("profile_awlab_es")); }
     if (localStorage.getItem("checkout_mode_awlab") != "off") { $("#checkout_mode_awlab").val(localStorage.getItem("checkout_mode_awlab")); }
     if (localStorage.getItem("payment_mode_awlab") != "off") { $("#payment_mode_awlab").val(localStorage.getItem("payment_mode_awlab")); }
 
@@ -968,7 +1020,11 @@ function onUserLogged() {
         let checkout_mode_awlab = $("#checkout_mode_awlab").val();
         let payment_mode_awlab = $("#payment_mode_awlab").val();
         let profile_awlab = $("#ProfileAwlab").val();
+        let profile_awlab_en = $("#ProfileAwlabEN").val();
+        let profile_awlab_es = $("#ProfileAwlabES").val();
 
+        if (profile_awlab_es != '') { localStorage.setItem("profile_awlab_es", profile_awlab_es); } else { localStorage.setItem("profile_awlab_es", "off"); }
+        if (profile_awlab_en != '') { localStorage.setItem("profile_awlab_en", profile_awlab_en); } else { localStorage.setItem("profile_awlab_en", "off"); }
         if (profile_awlab != '') { localStorage.setItem("profile_awlab", profile_awlab); } else { localStorage.setItem("profile_awlab", "off"); }
         if (payment_mode_awlab != '') { localStorage.setItem("payment_mode_awlab", payment_mode_awlab); } else { localStorage.setItem("payment_mode_awlab", "off"); }
         if (checkout_mode_awlab != '') { localStorage.setItem("checkout_mode_awlab", checkout_mode_awlab); } else { localStorage.setItem("checkout_mode_awlab", "off"); }
@@ -983,7 +1039,6 @@ function onUserLogged() {
     //---------------------------------------------------------------------
 
     //GESTIONE PAGINA HERE----------------------------------------------
-
     profiles = localStorage.getItem("array_profiles")
     profiles = profiles.split('&')
     if (profiles.length != 0 && profiles != "off") {
@@ -1027,6 +1082,86 @@ function onUserLogged() {
     });
     //---------------------------------------------------------------------
 
+    //GESTIONE PAGINA NBB----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileNbb').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileNbb').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_nbb") != "off") { $("#ProfileNbb").val(localStorage.getItem("profile_nbb")); }
+    if (localStorage.getItem("checkout_mode_nbb") != "off") { $("#checkout_mode_nbb").val(localStorage.getItem("checkout_mode_nbb")); }
+
+    if (localStorage.getItem("email_pw_nbb") != "off") {
+        var email = localStorage.getItem("email_pw_nbb").split(':')[0]
+        var pw = localStorage.getItem("email_pw_nbb").split(':')[1]
+        $("#email_nbb").val(email);
+        $("#pw_nbb").val(pw);
+    }
+    //gestisco il click del bottone salva
+    $("#btn_save_nbb").click(function() {
+        let e = $("#email_nbb").val();
+        let p = $("#pw_nbb").val();
+        let checkout_mode_nbb = $("#checkout_mode_nbb").val();
+        let profile_nbb = $("#ProfileNbb").val();
+
+        if (profile_nbb != '') { localStorage.setItem("profile_nbb", profile_nbb); } else { localStorage.setItem("profile_nbb", "off"); }
+        if (checkout_mode_nbb != '') { localStorage.setItem("checkout_mode_nbb", checkout_mode_nbb); } else { localStorage.setItem("checkout_mode_nbb", "off"); }
+        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_nbb", e + ":" + p); } else { localStorage.setItem("email_pw_nbb", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA ABOUTYOU----------------------------------------------
+
+    if (localStorage.getItem("payment_mode_aboutyou") != "off") { $("#payment_mode_aboutyou").val(localStorage.getItem("payment_mode_aboutyou")); }
+    //gestisco il click del bottone salva
+    $("#btn_save_aboutyou").click(function() {
+        let payment_mode_aboutyou = $("#payment_mode_aboutyou").val();
+
+        if (payment_mode_aboutyou != '') { localStorage.setItem("payment_mode_aboutyou", payment_mode_aboutyou); } else { localStorage.setItem("payment_mode_aboutyou", "off"); }
+    });
+    //---------------------------------------------------------------------
+
+    //GESTIONE PAGINA LDLC----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileLdlc').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileLdlc').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_ldlc") != "off") { $("#ProfileLdlc").val(localStorage.getItem("profile_ldlc")); }
+    if (localStorage.getItem("checkout_mode_ldlc") != "off") { $("#checkout_mode_ldlc").val(localStorage.getItem("checkout_mode_ldlc")); }
+
+    if (localStorage.getItem("email_pw_ldlc") != "off") {
+        var email = localStorage.getItem("email_pw_ldlc").split(':')[0]
+        var pw = localStorage.getItem("email_pw_ldlc").split(':')[1]
+        $("#email_ldlc").val(email);
+        $("#pw_ldlc").val(pw);
+    }
+    //gestisco il click del bottone salva
+    $("#btn_save_ldlc").click(function() {
+        let e = $("#email_ldlc").val();
+        let p = $("#pw_ldlc").val();
+        let checkout_mode_ldlc = $("#checkout_mode_ldlc").val();
+        let profile_ldlc = $("#ProfileLdlc").val();
+
+        if (profile_ldlc != '') { localStorage.setItem("profile_ldlc", profile_ldlc); } else { localStorage.setItem("profile_ldlc", "off"); }
+        if (checkout_mode_ldlc != '') { localStorage.setItem("checkout_mode_ldlc", checkout_mode_ldlc); } else { localStorage.setItem("checkout_mode_ldlc", "off"); }
+        if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_ldlc", e + ":" + p); } else { localStorage.setItem("email_pw_ldlc", "off"); }
+    });
+    //---------------------------------------------------------------------
 }
 
 function saveLocalStorageToJson() {

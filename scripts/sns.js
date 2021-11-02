@@ -76,13 +76,13 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
@@ -149,10 +149,10 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusSns").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusSns").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 async function errorRefresh() {
@@ -165,7 +165,7 @@ async function errorRefresh() {
 
 async function main() {
 
-    while (document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser' || document.title == "Sneakersnstuff - Temporary web site maintenance") {
+    while (document.title == "Access denied | www.sneakersnstuff.com used Cloudflare to restrict access" || document.title == 'Sneakersnstuff - Man or machine' || document.title == 'Sneakersnstuff - Checking your browser' || document.title == "Sneakersnstuff - Temporary web site maintenance" || document.title == "Sneakersnstuff - You have been temporarily blocked") {
         await sleep(250)
     }
 
@@ -313,22 +313,22 @@ async function atcR() {
 
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.sneakersnstuff.com/" + country + "/cart/add", {
-        "headers": {
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "no-referrer-when-downgrade",
-        "body": "did=" + product_id + "&id=" + variant_id + "&partial=mini-cart",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "no-referrer-when-downgrade",
+            "body": "did=" + product_id + "&id=" + variant_id + "&partial=mini-cart",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkRes(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
@@ -345,13 +345,13 @@ async function checkRes(response) {
 
         if (status == 200 || status == 201) {
             html.innerHTML = res
-            // let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
-            // let j = JSON.parse(cart_size)
-            // let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
-            // let j_1 = JSON.parse(cart_1)
-            // name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
-            // price_product = j_1["price"]
-            // size_product = j["converted-size-size-eu"]
+                // let cart_size = html.getElementsByClassName('cart-item__size')[0].querySelectorAll('span')[0].getAttribute("data-size-types")
+                // let j = JSON.parse(cart_size)
+                // let cart_1 = html.getElementsByClassName('cart-item')[0].getAttribute('data-gtm-list-product')
+                // let j_1 = JSON.parse(cart_1)
+                // name_product = j_1["brand"] + ' | ' + j_1["name"] + ' | ' + j_1["id"]
+                // price_product = j_1["price"]
+                // size_product = j["converted-size-size-eu"]
 
             name_product = document.getElementsByClassName("product-view__title")[0].textContent.replaceAll("\n", " ")
             price_product = document.getElementsByClassName("price__current")[0].textContent.replaceAll("\n", " ")
@@ -380,26 +380,26 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay_sns" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "delay_sns" }, function(response) {
     delay = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_sns" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_sns" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "mode_sns" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "mode_sns" }, function(response) {
     mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
-        chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_sns" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             }

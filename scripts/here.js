@@ -381,7 +381,9 @@ async function mainAtc() {
                 atcR()
             });
         } else {
-            if (size_range == "random") {
+            if (link.includes(document.querySelector('[name="pid"]').value) && sizepid_instock.includes(document.querySelector('[name="pid"]').value)) {
+                sizepid = document.querySelector('[name="pid"]').value
+            } else if (size_range == "random") {
                 let n = getRandomIntInclusive(0, sizepid_instock.length - 1)
                 sizepid = sizepid_instock[n]
             }

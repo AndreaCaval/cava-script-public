@@ -234,8 +234,8 @@ async function mainCheckout() {
             document.getElementById("order_billing_name").value = profile["FirstName"] + " " + profile["LastName"]
             document.getElementById("order_email").value = profile["Email"]
             document.getElementById("order_tel").value = profile["Telephone"]
-            document.getElementById("bo").value = profile["AddressOne"]
-            document.getElementById("oba3").value = profile["AddressTwo"]
+            document.getElementById("order_billing_address").value = profile["AddressOne"]
+            document.getElementById("order_billing_address_2").value = profile["AddressTwo"]
             document.getElementById("order_billing_city").value = profile["City"]
             document.getElementById("order_billing_zip").value = profile["Zip"]
             document.getElementById("order_billing_country").value = profile["Country"]
@@ -251,12 +251,12 @@ async function mainCheckout() {
                 document.getElementById("paypal_message").style = "display: none;"
                 document.getElementById("card_details").style = "display: block;"
 
-                document.getElementById("cnb").value = profile["CardNumber"]
+                document.getElementById("credit_card_number").value = profile["CardNumber"]
                 if (profile["MMYY"].split('/')[0].length == 1) document.getElementById("credit_card_month").value = "0" + profile["MMYY"].split('/')[0]
                 else document.getElementById("credit_card_month").value = profile["MMYY"].split('/')[0]
                 if (profile["MMYY"].split('/')[1].length == 2) document.getElementById("credit_card_year").value = "20" + profile["MMYY"].split('/')[1]
                 else document.getElementById("credit_card_year").value = profile["MMYY"].split('/')[1]
-                document.getElementById("vval").value = profile["CVV"]
+                document.getElementById("credit_card_verification_value").value = profile["CVV"]
 
                 sendText("Data filled", "green")
             }
@@ -275,13 +275,6 @@ async function mainSuccess() {
         link_product = document.getElementsByClassName("cart-image")[0].querySelector("a").href
         img_product = document.getElementsByClassName("cart-image")[0].querySelector("img").src
         let mixpanel = false
-
-        // let scripts1 = document.querySelectorAll("script")
-        // scripts1.forEach(element => {
-        //     if (element.textContent.includes("Purchase Success")) {
-        //         eval(element.textContent)
-        //     }
-        // });
 
         let scripts2 = document.querySelectorAll("script")
         scripts2.forEach(element => {

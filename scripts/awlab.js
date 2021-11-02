@@ -367,7 +367,9 @@ async function mainAtc() {
                 atcR()
             });
         } else {
-            if (size_range == "random") {
+            if (link.includes(document.querySelector('[name="pid"]').value) && sizepid_instock.includes(document.querySelector('[name="pid"]').value)) {
+                sizepid = document.querySelector('[name="pid"]').value
+            } else if (size_range == "random") {
                 let n = getRandomIntInclusive(0, sizepid_instock.length - 1)
                 sizepid = sizepid_instock[n]
             }
@@ -609,13 +611,35 @@ chrome.runtime.sendMessage({ greeting: "checkout_mode_awlab" }, function(respons
     checkout_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "profile_awlab" }, function(response) {
-    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
-        try {
-            profile = JSON.parse(response.farewell)
-        } catch (error) {}
-    });
-});
+switch (country) {
+    case "es.aw-lab.com":
+        chrome.runtime.sendMessage({ greeting: "profile_awlab_es" }, function(response) {
+            chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
+                try {
+                    profile = JSON.parse(response.farewell)
+                } catch (error) {}
+            });
+        });
+        break;
+    case "en.aw-lab.com":
+        chrome.runtime.sendMessage({ greeting: "profile_awlab_en" }, function(response) {
+            chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
+                try {
+                    profile = JSON.parse(response.farewell)
+                } catch (error) {}
+            });
+        });
+        break;
+    default:
+        chrome.runtime.sendMessage({ greeting: "profile_awlab" }, function(response) {
+            chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
+                try {
+                    profile = JSON.parse(response.farewell)
+                } catch (error) {}
+            });
+        });
+        break;
+}
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
