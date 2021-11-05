@@ -8,6 +8,7 @@ let country2 = link.split('/')[3]
 
 let size_range = "random"
 let mode = ""
+let multicart = ""
 
 let status_aco = "";
 let delay = "0";
@@ -16,7 +17,7 @@ let link_product = link
 let name_product = '';
 let size_product = '';
 let price_product = "";
-const img_product = "https://diginomica.com/sites/default/files/images/2020-04/Screenshot%202020-04-14%20at%2013.43.39.png"
+let img_product = "https://diginomica.com/sites/default/files/images/2020-04/Screenshot%202020-04-14%20at%2013.43.39.png"
 
 let url_check_stock = "https://www.asos.com"
 
@@ -33,6 +34,7 @@ let browseSizeSchema = ""
 let browseCurrency = ""
 let geocountry = ""
 let browseCountry = ""
+let keyStoreDataversion = ""
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -190,18 +192,28 @@ async function main() {
             mainCheckStock()
         }
 
+        browseCountry = document.cookie.split('; ').find(row => row.startsWith('browseCountry')).substring(14)
     } catch (error) { errorWebhooks(error, "main") }
 }
 
 async function mainCheckStock() {
     try {
-
+        xyz = 0
         while (true) {
             await checkStock()
             if (delay == "0")
                 break
             await sleep(parseInt(delay))
-            sendText("Monitoring...", "blue")
+            if (xyz == 0) {
+                sendText("Monitoring.", "blue")
+                xyz = 1
+            } else if (xyz == 1) {
+                sendText("Monitoring..", "blue")
+                xyz = 2
+            } else if (xyz == 2) {
+                sendText("Monitoring...", "blue")
+                xyz = 0
+            }
         }
 
     } catch (error) { errorWebhooks(error, "mainCheckStock") }
@@ -285,6 +297,7 @@ async function mainAtc() {
             browseCurrency = document.cookie.split('; ').find(row => row.startsWith('browseCurrency')).substring(15)
             geocountry = document.cookie.split('; ').find(row => row.startsWith('geocountry')).substring(11)
             browseCountry = document.cookie.split('; ').find(row => row.startsWith('browseCountry')).substring(14)
+            keyStoreDataversion = document.cookie.split('; ').find(row => row.startsWith('keyStoreDataversion')).substring(20)
             await getBagId()
         }
     }
@@ -296,20 +309,21 @@ async function mainAtc() {
 async function getBagId() {
 
     sendText("Getting bag id...", "blue")
-    await fetch("https://www.asos.com/api/commerce/bag/v4/customers/" + customers_id + "/bags/getbag?expand=summary,total&lang=" + lang + "&keyStoreDataversion=hnm9sjt-28", {
+    await fetch("https://www.asos.com/api/commerce/bag/v4/customers/" + customers_id + "/bags/getbag?expand=summary,total&lang=" + lang + "&keyStoreDataversion=" + keyStoreDataversion, {
             "headers": {
                 "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
                 "asos-c-ismobile": "false",
                 "asos-c-istablet": "false",
                 "asos-c-name": "Asos.Commerce.Bag.Sdk",
                 "asos-c-plat": "Web",
                 "asos-c-store": "IT",
-                "asos-c-ver": "5.1.0",
+                "asos-c-ver": "5.5.166",
                 "authorization": "bearer " + access_token,
                 "content-type": "application/json",
-                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua": "\"Google Chrome\";v=\"95\", \"Chromium\";v=\"95\", \";Not A Brand\";v=\"99\"",
                 "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
@@ -405,12 +419,12 @@ async function checkResatcR(response) {
                 price_product = item["price"]["current"]["text"]
                 size_product = item["size"]
 
-                // img_product = "https://" + item["images"][0]["url"] + "?$XXL$&wid=513&fit=constrain"
+                img_product = "https://imageresize.24i.com/?w=300&url=" + item["images"][0]["url"]
 
                 mainCheckout()
             }
         } else {
-            sendText(res.errorCode, "red")
+            sendText(res[0].errorCode, "red")
         }
 
     } catch (error) {
@@ -424,17 +438,19 @@ async function mainCheckout() {
 
         sendWebhooks()
 
-        if (document.querySelector('[data-testid="miniBagIcon"]').href != undefined)
-            document.location = document.querySelector('[data-testid="miniBagIcon"]').href
-        else
-            document.location = document.querySelector('[data-test-id="bag-link"]').href
+        if (multicart == "off") {
+            if (document.querySelector('[data-testid="miniBagIcon"]').href != undefined)
+                document.location = document.querySelector('[data-testid="miniBagIcon"]').href
+            else
+                document.location = document.querySelector('[data-test-id="bag-link"]').href
+        }
 
     } catch (error) {}
 }
 
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + " " + browseCountry + "&-&" + size_product + "&-&" + price_product })
 }
 
 async function errorWebhooks(error, position) {
@@ -451,6 +467,10 @@ chrome.runtime.sendMessage({ greeting: "delay_asos" }, function(response) {
 
 chrome.runtime.sendMessage({ greeting: "status_aco_asos" }, function(response) {
     status_aco = response.farewell
+});
+
+chrome.runtime.sendMessage({ greeting: "multicart_asos" }, function(response) {
+    multicart = response.farewell
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
