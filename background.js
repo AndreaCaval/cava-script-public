@@ -553,7 +553,7 @@ async function sendWebhookCheckout(x) {
     if (site == "Lvr" || site.startsWith("Courir")) {
         email = x[7]
     }
-    if (site.startsWith("Zalando") || site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Supreme") {
+    if (site.startsWith("Zalando") || site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Supreme") {
         try {
             email = x[7]
             payment_link = x[8]
@@ -659,7 +659,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -812,7 +812,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -951,7 +951,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site == "Offspring" && payment_link != "") || (site == "Office" && payment_link != "") || (site.startsWith("Zalando") && payment_link != "")) {
+    } else if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site.startsWith("Zalando") && payment_link != "")) {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",

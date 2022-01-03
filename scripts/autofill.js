@@ -140,20 +140,8 @@ async function mainPaymentCardCourir() {
     try {
         if (document.getElementById("encryptedExpiryDate") != null && document.getElementById("encryptedExpiryDate").value == "") {
             document.getElementById("encryptedExpiryDate").focus()
-            switch (profileCourir.MMYY) {
-                case profileCourir.MMYY.split('/')[0].length == 2 && profileCourir.MMYY.split('/')[1].length == 4:
-                    document.execCommand('insertText', false, profileCourir.MMYY.split('/')[0] + profileCourir.MMYY.split('/')[1].substring(2, 4))
-                    break;
-                case profileCourir.MMYY.split('/')[0].length == 1 && profileCourir.MMYY.split('/')[1].length == 4:
-                    document.execCommand('insertText', false, "0" + profileCourir.MMYY.split('/')[0] + profileCourir.MMYY.split('/')[1].substring(2, 4))
-                    break;
-                case profileCourir.MMYY.split('/')[0].length == 1 && profileCourir.MMYY.split('/')[1].length == 2:
-                    document.execCommand('insertText', false, "0" + profileCourir.MMYY)
-                    break;
-                default:
-                    document.execCommand('insertText', false, profileCourir.MMYY)
-                    break;
-            }
+            if (profileCourir.MMYY.split('/')[1].length == 2) document.execCommand('insertText', false, profileCourir.MMYY)
+            else document.execCommand('insertText', false, profileCourir.MMYY.split('/')[0] + profileCourir.MMYY.split('/')[1].substring(2, 4))
         }
     } catch (error) {}
 
@@ -167,56 +155,43 @@ async function mainPaymentCardCourir() {
 }
 async function mainPaymentCardAwLab() {
 
-    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null && document.getElementById("checkout_shipping_address_first_name").value == "")
+    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null)
         await sleep(50)
 
-    let profile = []
+    let profileAW = []
     if (document.body.textContent.includes("www.aw-lab.com"))
-        profile = profileAwlabIT
+        profileAW = profileAwlabIT
     else if (document.body.textContent.includes("en.aw-lab.com"))
-        profile = profileAwlabEN
+        profileAW = profileAwlabEN
     else if (document.body.textContent.includes("es.aw-lab.com"))
-        profile = profileAwlabES
+        profileAW = profileAwlabES
 
 
     try {
         if (document.getElementById("encryptedCardNumber") != null && document.getElementById("encryptedCardNumber").value == "") {
             document.getElementById("encryptedCardNumber").focus()
-            document.execCommand('insertText', false, profile.CardNumber)
+            document.execCommand('insertText', false, profileAW.CardNumber)
         }
     } catch (error) {}
 
     try {
         if (document.getElementById("encryptedExpiryDate") != null && document.getElementById("encryptedExpiryDate").value == "") {
             document.getElementById("encryptedExpiryDate").focus()
-
-            switch (profile.MMYY) {
-                case profile.MMYY.split('/')[0].length == 2 && profile.MMYY.split('/')[1].length == 4:
-                    document.execCommand('insertText', false, profile.MMYY.split('/')[0] + profile.MMYY.split('/')[1].substring(2, 4))
-                    break;
-                case profile.MMYY.split('/')[0].length == 1 && profile.MMYY.split('/')[1].length == 4:
-                    document.execCommand('insertText', false, "0" + profile.MMYY.split('/')[0] + profile.MMYY.split('/')[1].substring(2, 4))
-                    break;
-                case profile.MMYY.split('/')[0].length == 1 && profile.MMYY.split('/')[1].length == 2:
-                    document.execCommand('insertText', false, "0" + profile.MMYY)
-                    break;
-                default:
-                    document.execCommand('insertText', false, profile.MMYY)
-                    break;
-            }
+            if (profileAW.MMYY.split('/')[1].length == 2) document.execCommand('insertText', false, profileAW.MMYY)
+            else document.execCommand('insertText', false, profile.MMYY.split('/')[0] + profileAW.MMYY.split('/')[1].substring(2, 4))
         }
     } catch (error) {}
 
     try {
         if (document.getElementById("encryptedSecurityCode") != null && document.getElementById("encryptedSecurityCode").value == "") {
             document.getElementById("encryptedSecurityCode").focus()
-            document.execCommand('insertText', false, profile.CVV)
+            document.execCommand('insertText', false, profileAW.CVV)
         }
     } catch (error) {}
 }
 async function mainPaymentCardHere() {
 
-    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null && document.getElementById("checkout_shipping_address_first_name").value == "")
+    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null)
         await sleep(50)
 
     try {
@@ -229,21 +204,8 @@ async function mainPaymentCardHere() {
     try {
         if (document.getElementById("encryptedExpiryDate") != null && document.getElementById("encryptedExpiryDate").value == "") {
             document.getElementById("encryptedExpiryDate").focus()
-
-            switch (profileHere.MMYY) {
-                case profileHere.MMYY.split('/')[0].length == 2 && profileHere.MMYY.split('/')[1].length == 4:
-                    document.execCommand('insertText', false, profileHere.MMYY.split('/')[0] + profileHere.MMYY.split('/')[1].substring(2, 4))
-                    break;
-                case profileHere.MMYY.split('/')[0].length == 1 && profileHere.MMYY.split('/')[1].length == 4:
-                    document.execCommand('insertText', false, "0" + profileHere.MMYY.split('/')[0] + profileHere.MMYY.split('/')[1].substring(2, 4))
-                    break;
-                case profileHere.MMYY.split('/')[0].length == 1 && profileHere.MMYY.split('/')[1].length == 2:
-                    document.execCommand('insertText', false, "0" + profileHere.MMYY)
-                    break;
-                default:
-                    document.execCommand('insertText', false, profileHere.MMYY)
-                    break;
-            }
+            if (profileHere.MMYY.split('/')[1].length == 2) document.execCommand('insertText', false, profileHere.MMYY)
+            else document.execCommand('insertText', false, profile.MMYY.split('/')[0] + profileHere.MMYY.split('/')[1].substring(2, 4))
         }
     } catch (error) {}
 

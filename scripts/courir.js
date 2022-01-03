@@ -49,6 +49,7 @@ let size_range = "random"
 let status_aco = ""
 
 let checkout_mode = ""
+let profile = []
 
 let variant_pid = ""
 let size_browser = ""
@@ -475,6 +476,14 @@ chrome.runtime.sendMessage({ greeting: "status_aco_courir" }, function(response)
 chrome.runtime.sendMessage({ greeting: "checkout_mode_courir" }, function(response) {
     checkout_mode = response.farewell
 });
+chrome.runtime.sendMessage({ greeting: "profile_courir" }, function(response) {
+    chrome.runtime.sendMessage({ greeting: response.farewell }, function(response) {
+        try {
+            profile = JSON.parse(response.farewell)
+        } catch (error) {}
+    });
+});
+
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
