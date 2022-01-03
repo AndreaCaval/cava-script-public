@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.2.8'
+const version = 'Cava-Scripts 1.3.0'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {

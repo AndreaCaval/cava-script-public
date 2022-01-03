@@ -367,9 +367,7 @@ async function mainAtc() {
                 atcR()
             });
         } else {
-            if (link.includes(document.querySelector('[name="pid"]').value) && sizepid_instock.includes(document.querySelector('[name="pid"]').value)) {
-                sizepid = document.querySelector('[name="pid"]').value
-            } else if (size_range == "random") {
+            if (size_range == "random") {
                 let n = getRandomIntInclusive(0, sizepid_instock.length - 1)
                 sizepid = sizepid_instock[n]
             }
@@ -464,8 +462,6 @@ async function mainCheckoutShipping() {
                 if (document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_phonewithoutcode").value == "")
                     document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_phonewithoutcode").value = profile["Telephone"]
 
-                // document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_phonecountrycode_codes").value = profile["Telephone"]
-
                 if (document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_firstName").value == "")
                     document.getElementById("dwfrm_singleshipping_shippingAddress_addressFields_firstName").value = profile["FirstName"]
 
@@ -520,17 +516,11 @@ async function mainCheckoutPayment() {
 
             if (profile != "") {
 
-                document.getElementById("cardOwner").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardOwnerName"]
                 try {
-                    document.getElementById("cardNumber").getElementsByClassName("js-input_field b-text-input")[0].value = profile["CardNumber"]
-                    document.getElementById("cardExpireMonth").getElementsByClassName("js-input_field input-select b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[0]
-
-                    if (profile["MMYY"].split('/')[1].length == 2)
-                        document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = "20" + profile["MMYY"].split('/')[1]
-                    else
-                        document.getElementById("cardExpireYear").getElementsByClassName("js-input_field b-selectbox__input required input-required")[0].value = profile["MMYY"].split('/')[1]
-
-                    document.getElementById("cardCvn").getElementsByClassName("js-input_field b-text-input required input-required")[0].value = profile["CVV"]
+                    if (document.getElementById("input-name-on-card") != null && document.getElementById("input-name-on-card").value == "") {
+                        document.getElementById("input-name-on-card").focus()
+                        document.execCommand('insertText', false, profile.CardOwnerName)
+                    }
                 } catch (error) {}
 
             }

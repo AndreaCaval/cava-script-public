@@ -432,16 +432,17 @@ async function mainShipBrowser() {
 }
 async function mainPaymentBrowser() {
 
-    return
-    sendText("mainPaymentBrowser", "blue")
-    await sleep(3000)
+    sendText("Filling card info...", "blue")
+    while (document.getElementsByClassName("adyen-checkout__card__holderName__input") == null)
+        await sleep(100)
 
     if (profile != null) {
-        sendText("CC Autofill...", "blue")
-        try { document.getElementById("encryptedCardNumber").value = profile.CardNumber } catch (error) { console.log(error, "mainPaymentBrowser1") }
-        try { document.getElementById("encryptedExpiryDate").value = profile.MMYY } catch (error) { console.log(error, "mainPaymentBrowser2") }
-        try { document.getElementById("encryptedSecurityCode").value = profile.CVV } catch (error) { console.log(error, "mainPaymentBrowser3") }
-        try { document.getElementsByClassName("adyen-checkout__input adyen-checkout__input--text adyen-checkout__card__holderName__input _3JmldYKADXTctIE9oP8lcu adyen-checkout__input--valid adyen-checkout__input--large")[0].value = profile.CardOwnerName } catch (error) {}
+        try {
+            if (document.getElementsByClassName("adyen-checkout__card__holderName__input")[0] != null) {
+                document.getElementsByClassName("adyen-checkout__card__holderName__input")[0].focus()
+                document.execCommand('insertText', false, profile.CardOwnerName)
+            }
+        } catch (error) {}
     }
 }
 

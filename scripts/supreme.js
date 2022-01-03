@@ -5,7 +5,7 @@ const site = "Supreme"
 let link = document.location.href
 let country = link.split('/')[2]
 
-let csrf_token = ""
+let start = false
 
 let size_range = "random"
 
@@ -170,12 +170,12 @@ async function sendText(text, color) {
 }
 
 async function main() {
-    if (link.startsWith("https://www.supremenewyork.com/checkout") && checkout_mode != "ATC Only" && document.getElementsByClassName("tab tab-payment selected")[0] != undefined)
+    start = true
+    if (link.startsWith("https://www.supremenewyork.com/checkout")) {
         mainCheckout()
-    else if (link.includes("shop") && checkout_mode != "CK Only" && document.getElementById("style") != null)
-        mainAtc()
-    else if (link.startsWith("https://www.supremenewyork.com/checkout") && document.getElementsByClassName("tab tab-confirmation selected")[0] != undefined)
         mainSuccess()
+    } else if (link.includes("shop") && checkout_mode != "CK Only" && document.getElementById("style") != null)
+        mainAtc()
     else if (status_aco_instore == "on") {
         if (link.includes("step-1"))
             instoreStep1()
@@ -202,7 +202,6 @@ async function mainAtc() {
                 sizes.forEach(element => {
                     if (element.textContent == size_range) {
                         document.getElementById("size").value = element.getAttribute("value")
-                            // size = element.getAttribute("value")
                     }
                 });
             }
@@ -228,9 +227,11 @@ async function mainAtc() {
 async function mainCheckout() {
     try {
 
+        while (checkout_mode == "ATC Only" && document.getElementsByClassName("tab tab-payment selected")[0] == undefined)
+            await sleep(500)
+
         if (profile != "") {
             sendText("trying fill data...", "blue")
-                // if (document.getElementById("order_billing_name").value == "")
             document.getElementById("order_billing_name").value = profile["FirstName"] + " " + profile["LastName"]
             document.getElementById("order_email").value = profile["Email"]
             document.getElementById("order_tel").value = profile["Telephone"]
@@ -260,7 +261,7 @@ async function mainCheckout() {
 
                 sendText("Data filled", "green")
             }
-            // document.getElementById("order_terms").checked = true
+
         } else {
             sendText("Error profile", "red")
         }
@@ -270,6 +271,10 @@ async function mainCheckout() {
 
 async function mainSuccess() {
     try {
+
+        while (document.getElementsByClassName("tab tab-confirmation selected")[0] == undefined)
+            await sleep(500)
+
 
         price_product = document.getElementById("total").textContent
         link_product = document.getElementsByClassName("cart-image")[0].querySelector("a").href
@@ -297,6 +302,22 @@ function ga_track(a, orderid, sku, pname, colorsize, price1, quantity) {
         order_number = orderid
     }
 }
+
+
+async function checkLocation() {
+    while (true) {
+        await sleep(1000)
+        if (document.location.href == link && start == false)
+            main()
+        else if (document.location.href != link) {
+            if (document.getElementById("CavaScripts") == null)
+                textBox()
+            link = document.location.href
+            start = false
+        }
+    }
+}
+
 
 async function instoreStep1() {
     try {
@@ -409,7 +430,7 @@ chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
         textBox()
         chrome.runtime.sendMessage({ greeting: "status_aco_supreme" }, function(response) {
             if (response.farewell == 'on') {
-                main()
+                checkLocation()
             }
         });
     }
