@@ -55,31 +55,33 @@ async function mainPaymentCardOffice() {
     await sleep(1000)
 
     try {
-        if (document.getElementById("cardholderName") != null) {
+        if (document.getElementById("cardholderName") != null && document.getElementById("cardholderName").value == "") {
             document.getElementById("cardholderName").focus()
             document.execCommand('insertText', false, profileOffice.CardOwnerName)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("cardNumber") != null) {
+        if (document.getElementById("cardNumber") != null && document.getElementById("cardNumber").value == "") {
             document.getElementById("cardNumber").focus()
             document.execCommand('insertText', false, profileOffice.CardNumber)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("expiryMonth") != null) {
-            document.getElementById("expiryMonth").value = profileOffice.MMYY.split('/')[0]
+        if (document.getElementById("expiryMonth") != null && document.getElementById("expiryMonth").value == "") {
+            if (profileOffice.MMYY.split('/')[0].length == 2) document.getElementById("expiryMonth").value = profileOffice.MMYY.split('/')[0]
+            else document.getElementById("expiryMonth").value = "0" + profileOffice.MMYY.split('/')[0]
+
         }
-        if (document.getElementById("expiryYear") != null) {
+        if (document.getElementById("expiryYear") != null && document.getElementById("expiryYear").value == "") {
             if (profileOffice.MMYY.split('/')[1].length == 2) document.getElementById("expiryYear").value = profileOffice.MMYY.split('/')[1]
             else document.getElementById("expiryYear").value = profileOffice.MMYY.split('/')[1].substring(2, 4)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("securityCode") != null) {
+        if (document.getElementById("securityCode") != null && document.getElementById("securityCode").value == "") {
             document.getElementById("securityCode").focus()
             document.execCommand('insertText', false, profileOffice.CVV)
         }
@@ -91,31 +93,32 @@ async function mainPaymentCardOffspring() {
     await sleep(1000)
 
     try {
-        if (document.getElementById("cardholderName") != null) {
+        if (document.getElementById("cardholderName") != null && document.getElementById("cardholderName").value == "") {
             document.getElementById("cardholderName").focus()
             document.execCommand('insertText', false, profileOffspring.CardOwnerName)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("cardNumber") != null) {
+        if (document.getElementById("cardNumber") != null && document.getElementById("cardNumber").value == "") {
             document.getElementById("cardNumber").focus()
             document.execCommand('insertText', false, profileOffspring.CardNumber)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("expiryMonth") != null) {
-            document.getElementById("expiryMonth").value = profileOffspring.MMYY.split('/')[0]
+        if (document.getElementById("expiryMonth") != null && document.getElementById("expiryMonth").value == "") {
+            if (profileOffspring.MMYY.split('/')[0].length == 2) document.getElementById("expiryMonth").value = profileOffspring.MMYY.split('/')[0]
+            else document.getElementById("expiryMonth").value = "0" + profileOffspring.MMYY.split('/')[0]
         }
-        if (document.getElementById("expiryYear") != null) {
+        if (document.getElementById("expiryYear") != null && document.getElementById("expiryYear").value == "") {
             if (profileOffspring.MMYY.split('/')[1].length == 2) document.getElementById("expiryYear").value = profileOffspring.MMYY.split('/')[1]
             else document.getElementById("expiryYear").value = profileOffspring.MMYY.split('/')[1].substring(2, 4)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("securityCode") != null) {
+        if (document.getElementById("securityCode") != null && document.getElementById("securityCode").value == "") {
             document.getElementById("securityCode").focus()
             document.execCommand('insertText', false, profileOffspring.CVV)
         }
@@ -128,22 +131,34 @@ async function mainPaymentCardCourir() {
         await sleep(50)
 
     try {
-        if (document.getElementById("encryptedCardNumber") != null) {
+        if (document.getElementById("encryptedCardNumber") != null && document.getElementById("encryptedCardNumber").value == "") {
             document.getElementById("encryptedCardNumber").focus()
             document.execCommand('insertText', false, profileCourir.CardNumber)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("encryptedExpiryDate") != null) {
+        if (document.getElementById("encryptedExpiryDate") != null && document.getElementById("encryptedExpiryDate").value == "") {
             document.getElementById("encryptedExpiryDate").focus()
-            if (profileCourir.MMYY.split('/')[1].length == 2) document.execCommand('insertText', false, profileCourir.MMYY)
-            else document.execCommand('insertText', false, profileCourir.MMYY.split('/')[0] + profileCourir.MMYY.split('/')[1].substring(2, 4))
+            switch (profileCourir.MMYY) {
+                case profileCourir.MMYY.split('/')[0].length == 2 && profileCourir.MMYY.split('/')[1].length == 4:
+                    document.execCommand('insertText', false, profileCourir.MMYY.split('/')[0] + profileCourir.MMYY.split('/')[1].substring(2, 4))
+                    break;
+                case profileCourir.MMYY.split('/')[0].length == 1 && profileCourir.MMYY.split('/')[1].length == 4:
+                    document.execCommand('insertText', false, "0" + profileCourir.MMYY.split('/')[0] + profileCourir.MMYY.split('/')[1].substring(2, 4))
+                    break;
+                case profileCourir.MMYY.split('/')[0].length == 1 && profileCourir.MMYY.split('/')[1].length == 2:
+                    document.execCommand('insertText', false, "0" + profileCourir.MMYY)
+                    break;
+                default:
+                    document.execCommand('insertText', false, profileCourir.MMYY)
+                    break;
+            }
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("encryptedSecurityCode") != null) {
+        if (document.getElementById("encryptedSecurityCode") != null && document.getElementById("encryptedSecurityCode").value == "") {
             document.getElementById("encryptedSecurityCode").focus()
             document.execCommand('insertText', false, profileCourir.CVV)
         }
@@ -152,7 +167,7 @@ async function mainPaymentCardCourir() {
 }
 async function mainPaymentCardAwLab() {
 
-    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null)
+    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null && document.getElementById("checkout_shipping_address_first_name").value == "")
         await sleep(50)
 
     let profile = []
@@ -165,22 +180,35 @@ async function mainPaymentCardAwLab() {
 
 
     try {
-        if (document.getElementById("encryptedCardNumber") != null) {
+        if (document.getElementById("encryptedCardNumber") != null && document.getElementById("encryptedCardNumber").value == "") {
             document.getElementById("encryptedCardNumber").focus()
             document.execCommand('insertText', false, profile.CardNumber)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("encryptedExpiryDate") != null) {
+        if (document.getElementById("encryptedExpiryDate") != null && document.getElementById("encryptedExpiryDate").value == "") {
             document.getElementById("encryptedExpiryDate").focus()
-            if (profile.MMYY.split('/')[1].length == 2) document.execCommand('insertText', false, profile.MMYY)
-            else document.execCommand('insertText', false, profile.MMYY.split('/')[0] + profile.MMYY.split('/')[1].substring(2, 4))
+
+            switch (profile.MMYY) {
+                case profile.MMYY.split('/')[0].length == 2 && profile.MMYY.split('/')[1].length == 4:
+                    document.execCommand('insertText', false, profile.MMYY.split('/')[0] + profile.MMYY.split('/')[1].substring(2, 4))
+                    break;
+                case profile.MMYY.split('/')[0].length == 1 && profile.MMYY.split('/')[1].length == 4:
+                    document.execCommand('insertText', false, "0" + profile.MMYY.split('/')[0] + profile.MMYY.split('/')[1].substring(2, 4))
+                    break;
+                case profile.MMYY.split('/')[0].length == 1 && profile.MMYY.split('/')[1].length == 2:
+                    document.execCommand('insertText', false, "0" + profile.MMYY)
+                    break;
+                default:
+                    document.execCommand('insertText', false, profile.MMYY)
+                    break;
+            }
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("encryptedSecurityCode") != null) {
+        if (document.getElementById("encryptedSecurityCode") != null && document.getElementById("encryptedSecurityCode").value == "") {
             document.getElementById("encryptedSecurityCode").focus()
             document.execCommand('insertText', false, profile.CVV)
         }
@@ -188,26 +216,39 @@ async function mainPaymentCardAwLab() {
 }
 async function mainPaymentCardHere() {
 
-    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null)
+    while (document.getElementById("encryptedCardNumber") == null && document.getElementById("encryptedExpiryDate") == null && document.getElementById("encryptedSecurityCode") == null && document.getElementById("checkout_shipping_address_first_name").value == "")
         await sleep(50)
 
     try {
-        if (document.getElementById("encryptedCardNumber") != null) {
+        if (document.getElementById("encryptedCardNumber") != null && document.getElementById("encryptedCardNumber").value == "") {
             document.getElementById("encryptedCardNumber").focus()
             document.execCommand('insertText', false, profileHere.CardNumber)
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("encryptedExpiryDate") != null) {
+        if (document.getElementById("encryptedExpiryDate") != null && document.getElementById("encryptedExpiryDate").value == "") {
             document.getElementById("encryptedExpiryDate").focus()
-            if (profileHere.MMYY.split('/')[1].length == 2) document.execCommand('insertText', false, profileHere.MMYY)
-            else document.execCommand('insertText', false, profileHere.MMYY.split('/')[0] + profileHere.MMYY.split('/')[1].substring(2, 4))
+
+            switch (profileHere.MMYY) {
+                case profileHere.MMYY.split('/')[0].length == 2 && profileHere.MMYY.split('/')[1].length == 4:
+                    document.execCommand('insertText', false, profileHere.MMYY.split('/')[0] + profileHere.MMYY.split('/')[1].substring(2, 4))
+                    break;
+                case profileHere.MMYY.split('/')[0].length == 1 && profileHere.MMYY.split('/')[1].length == 4:
+                    document.execCommand('insertText', false, "0" + profileHere.MMYY.split('/')[0] + profileHere.MMYY.split('/')[1].substring(2, 4))
+                    break;
+                case profileHere.MMYY.split('/')[0].length == 1 && profileHere.MMYY.split('/')[1].length == 2:
+                    document.execCommand('insertText', false, "0" + profileHere.MMYY)
+                    break;
+                default:
+                    document.execCommand('insertText', false, profileHere.MMYY)
+                    break;
+            }
         }
     } catch (error) {}
 
     try {
-        if (document.getElementById("encryptedSecurityCode") != null) {
+        if (document.getElementById("encryptedSecurityCode") != null && document.getElementById("encryptedSecurityCode").value == "") {
             document.getElementById("encryptedSecurityCode").focus()
             document.execCommand('insertText', false, profileHere.CVV)
         }
@@ -280,7 +321,6 @@ chrome.runtime.sendMessage({ greeting: "status_aco_offspring" }, function(respon
 chrome.runtime.sendMessage({ greeting: "status_aco_office" }, function(response) {
     status_office = response.farewell
 });
-
 
 chrome.runtime.sendMessage({ greeting: "status_aco_awlab" }, function(response) {
     status_awlab = response.farewell
