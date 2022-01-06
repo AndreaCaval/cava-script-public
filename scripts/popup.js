@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.3.0'
+const version = 'Cava-Scripts 1.3.1'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
@@ -145,6 +145,10 @@ function onUserLogged() {
     if (localStorage.getItem("status_aco_aboutyou") == "on") { $('#Status_aco_aboutyou').prop('checked', true); }
     //Ldlc
     if (localStorage.getItem("status_aco_ldlc") == "on") { $('#Status_aco_ldlc').prop('checked', true); }
+    //MagicEden
+    if (localStorage.getItem("status_monitor_magiceden") == "on") { $('#Status_monitor_magiceden').prop('checked', true); }
+    //Shopify
+    if (localStorage.getItem("status_aco_shopify") == "on") { $('#Status_aco_shopify').prop('checked', true); }
 
     //gestisco i click delle checkbox
     //Zalando
@@ -234,6 +238,14 @@ function onUserLogged() {
     //Ldlc
     $('#Status_aco_ldlc').click(function() {
         if ($("#Status_aco_ldlc").is(':checked')) { localStorage.setItem("status_aco_ldlc", "on"); } else { localStorage.setItem("status_aco_ldlc", "off"); }
+    });
+    //MagicEden
+    $('#Status_monitor_magiceden').click(function() {
+        if ($("#Status_monitor_magiceden").is(':checked')) { localStorage.setItem("status_monitor_magiceden", "on"); } else { localStorage.setItem("status_monitor_magiceden", "off"); }
+    });
+    //Shopify
+    $('#Status_aco_shopify').click(function() {
+        if ($("#Status_aco_shopify").is(':checked')) { localStorage.setItem("status_aco_shopify", "on"); } else { localStorage.setItem("status_aco_shopify", "off"); }
     });
     //---------------------------------------------------------------------
 
@@ -1162,6 +1174,30 @@ function onUserLogged() {
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_ldlc", e + ":" + p); } else { localStorage.setItem("email_pw_ldlc", "off"); }
     });
     //---------------------------------------------------------------------
+
+
+    //GESTIONE PAGINA SHOPIFY----------------------------------------------
+    profiles = localStorage.getItem("array_profiles")
+    profiles = profiles.split('&')
+    if (profiles.length != 0 && profiles != "off") {
+        $('#ProfileShopify').removeAttr('disabled')
+        for (let i = 0; i < profiles.length; i++) {
+            $('#ProfileShopify').append($('<option>', {
+                value: profiles[i],
+                text: profiles[i],
+                id: profiles[i]
+            }));
+        }
+    }
+    if (localStorage.getItem("profile_shopify") != "off") { $("#ProfileShopify").val(localStorage.getItem("profile_shopify")); }
+
+    //gestisco il click del bottone salva
+    $("#btn_save_shopify").click(function() {
+        let profile_shopify = $("#ProfileShopify").val();
+        if (profile_shopify != '') { localStorage.setItem("profile_shopify", profile_shopify); } else { localStorage.setItem("profile_shopify", "off"); }
+    });
+    //---------------------------------------------------------------------
+
 }
 
 function saveLocalStorageToJson() {
