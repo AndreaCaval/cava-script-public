@@ -20,12 +20,6 @@
 
     <div class="box" style="padding:15px;">
         <center><img src="../icons/sites/zalando.png" style="width: 150px;"></center><br>
-        <label>Email: </label>
-        <input type="text" id="email_zalando" placeholder="es: cavascripts@gmail.com">
-        <br>
-        <label>Password: </label>
-        <input type="text" id="pw_zalando" placeholder="es: cavascripts">
-        <br>
         <label>Size range (EU): </label>
         <input type="text" id="size_zalando" placeholder="es: 40-45" min="35.5" max="52" step="0.5">
         <br>
@@ -34,6 +28,14 @@
         <br>
         <label>Drop Mode: </label><input type="checkbox" id="zalandoDropMode" style="float: none;">
         <br><br>
+        <label>Payment: </label>
+        <select style="width: 177px;" id="zalandoPaymentMode">
+            <option>Default</option>
+            <option>COD</option>
+            <option>PayPal</option>
+            <option>CreditCard</option>
+        </select>
+        <br>
         <label>Cart Mode: </label>
         <select style="width: 177px;" id="zalandoCartMode">
                 <option>Fast</option>
