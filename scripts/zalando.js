@@ -644,18 +644,12 @@ async function genSession() {
 
         await sleep(500)
 
-        if (zalandosession.document.location.href == "https://" + country + "/checkout/address") {
+        while (zalandosession.document.location.href == "https://" + country + "/checkout/address") {
             await sleep(500)
-            try {
-                zalandosession.document.querySelector("#delivery-destination-tab-0").click()
-            } catch (error) {}
-
-            try {
-                zalandosession.document.querySelector('[data-id="z-coast-fjord_proceedToPayment"]').click()
-            } catch (error) { console.log(error) }
-            sendText("address", "yellow")
+            try { zalandosession.document.querySelector("#delivery-destination-tab-0").click() } catch (error) {}
+            try { zalandosession.document.querySelector('[data-id="z-coast-fjord_proceedToPayment"]').click() } catch (error) {}
         }
-
+        sendText("address", "yellow")
         await sleep(1000)
         if (payment_mode != "Default")
             zalandosession.document.location = "https://checkout.payment.zalando.com/selection?show=true"
@@ -1512,7 +1506,7 @@ async function checkRescheckoutBuyNow(response) {
                 location.reload()
             } else if (url.startsWith("https://checkout.payment.zalando.com/")) {
                 document.location = url
-            } else if (url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/checkoutnow?")) {
+            } else if (url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/")) {
                 linkpp = url
                 sendWebhooks()
                 document.location = url
