@@ -44,6 +44,7 @@ let SizeId = "";
 let SizeTypeId = "";
 let ItemId = "";
 let SeasonId = "";
+let ComColorId = "";
 
 let CartId = "";
 
@@ -200,7 +201,7 @@ async function main() {
 async function mainAtc() {
     if (mode == "Browser") {
         mainBrowserAtc()
-    } else if (mode == "Fast") {
+    } else if (mode == "Fast" || mode == "Fast2") {
         mainFast()
     } else if (mode == "Gift") {
         mainGift()
@@ -293,8 +294,10 @@ async function mainAtcFast() {
     VendorColorId = x.ItemParameters.VendorColorId
 
     x.AvailabilityByColor.forEach(element => {
-        if (element.VendorColorId == VendorColorId)
+        if (element.VendorColorId == VendorColorId) {
             sizes = element.SizeAvailability
+            ComColorId = element.ComColorId
+        }
     });
 
     EncodedVendorColorId = sizes[0].EncodedVendorColorId
@@ -348,7 +351,12 @@ async function mainFast() {
             if (SizeId != "") {
                 size_product = size
                 sendText("Adding to cart size " + size_product + "...", "blue")
-                atcRFast()
+
+                if (mode == "Fast2")
+                    getCheckout()
+                else
+                    atcRFast()
+
             }
         }
 
@@ -357,6 +365,8 @@ async function mainFast() {
         sendText("Error, Item out of stock", "red")
     }
 }
+
+
 
 async function mainGift() {
     try {
@@ -496,7 +506,6 @@ async function checkResgiftAccetta(response) {
         }
     } catch (error) { errorWebhooks(error, "checkResgiftAccetta") }
 }
-
 async function getGiftCheckout() {
 
     sendText("Getting checkout...", "blue")
@@ -718,6 +727,8 @@ async function sendagiftconfirmloggeduserandcreateorder() {
 }
 
 
+
+
 async function atcRFast() {
 
     await fetch("https://www.luisaviaroma.com/myarea/bag/add", {
@@ -857,7 +868,25 @@ async function getData() {
         CartId = x.OrderInfo.CartId
         TotalToPay = x.OrderInfo.TotalToPay
         Promos = JSON.stringify(x.OrderInfo.Promos)
-        Rows = JSON.stringify(x.OrderInfo.Rows)
+
+        if (mode == "Fast2") {
+            let info = [{
+                "SeasonId": SeasonId,
+                "CollectionId": CollectionId,
+                "ItemId": ItemId,
+                "SizeTypeId": SizeTypeId,
+                "SizeId": SizeId,
+                "VendorColorId": VendorColorId,
+                "ComColorId": ComColorId,
+                "Quantity": 1,
+                "CustomizedAttributes": []
+            }]
+
+            Rows = JSON.stringify(info)
+        } else
+            Rows = JSON.stringify(x.OrderInfo.Rows)
+
+
 
         lang = document.documentElement.getAttribute("xml:lang").toUpperCase()
 
@@ -1054,17 +1083,15 @@ async function checkResCk(response) {
                 sendText(text.ErrorDescription, "red")
             } else {
                 if (text.CreateOrderResponse.Action.Url) {
-                    if (text.CreateOrderResponse.Action.Url.includes("paypal")) {
+                    if (mode != "Fast2")
                         price_product = TotalToPay
+                    if (text.CreateOrderResponse.Action.Url.includes("paypal")) {
                         sendWebhooks3(text.CreateOrderResponse.Action.Url)
-                        document.location = text.CreateOrderResponse.Action.Url
-
                     } else {
                         sendText("Checked out", "green")
-                        price_product = TotalToPay
                         sendWebhooks2()
-                        document.location = text.CreateOrderResponse.Action.Url
                     }
+                    document.location = text.CreateOrderResponse.Action.Url
                 } else {
                     sendText("Error checking out...", "red")
                     errorWebhooks(JSON.stringify(text), "checkResCk1")

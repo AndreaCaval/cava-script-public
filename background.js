@@ -2,7 +2,7 @@ debugger
 
 const BEARER_TOKEN = 'pk_vY85vQ0iDWNhBqYqLAIfBDSgncRenqBf' // api metalabs
 
-const version = "1.3.1";
+const version = "1.3.2";
 const icon = "https://firebasestorage.googleapis.com/v0/b/cavascript-4bcd8.appspot.com/o/dash%2Ficonpk.png?alt=media&token=52cd991d-5687-40b0-945a-49dcbf4c999a";
 const url_private = "https://discordapp.com/api/webhooks/797771933864296459/U6h1oQVBBSRmRUPV0RJYacRot5fV_PbMRw5KdkyGUzYgvRJa86y4HWHl3VK4cforLDX9";
 const url_public = "https://discordapp.com/api/webhooks/726168318255562832/LWhhWJaYYwPLTjC8doiG9iravKqI4V2Phv0D_1-2CZDu82FxvJeLmtukA83FMrSpJmWh";
@@ -12,7 +12,6 @@ let user_signed_in = false;
 
 let checkLoginTimer // timer per check validità
 const LOGIN_CHECK_INTERVAL = 3600 * 24 * 1000
-
 
 let userData = {}
 
@@ -165,6 +164,7 @@ function SetStatus_off() {
         "status_login_ldlc",
         "email_pw_ldlc",
         "profile_ldlc",
+        "country_ldlc",
 
         //Supreme
         "status_aco_supreme",
@@ -311,8 +311,13 @@ chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         try {
 
+            if (request.greeting.startsWith("ldlc_checkout")) getCheckoutldlc(request.greeting.split("&")[1])
+            else if (request.greeting == "data_ldlc_checkout") {
+                sendResponse({ farewell: localStorage.getItem("data_ldlc_checkout") });
+                localStorage.removeItem("data_ldlc_checkout")
+            }
             //sendWebhookCheckout
-            if (request.greeting.startsWith("checkout_webhook")) sendWebhookCheckout(request.greeting);
+            else if (request.greeting.startsWith("checkout_webhook")) sendWebhookCheckout(request.greeting);
             //sendWebhookError
             else if (request.greeting.startsWith("error_webhook")) sendWebhookError(request.greeting);
             //sendWebhookInfo
@@ -451,7 +456,7 @@ async function resetMachineId(key) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            "metadata": {}
+            "metadata": null
         })
     })
 }
@@ -557,7 +562,7 @@ async function sendWebhookCheckout(x) {
     if (site == "Lvr" || site.startsWith("Courir")) {
         email = x[7]
     }
-    if (site.startsWith("Zalando") || site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Supreme") {
+    if (site.startsWith("Zalando") || site.startsWith("LDLC") || site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Supreme") {
         try {
             email = x[7]
             payment_link = x[8]
@@ -663,7 +668,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || (site.startsWith("LDLC") && payment_link == "") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -816,7 +821,7 @@ async function sendWebhook_private(name_product, link_product, img_product, site
             },
         }
 
-    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site.startsWith("LDLC") && payment_link == "") || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -955,7 +960,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site.startsWith("Zalando") && payment_link != "")) {
+    } else if ((site.startsWith("Awlab") && payment_link.startsWith("https")) || site == "Solebox" || site.startsWith("Snipes") || site == "Onygo" || (site.startsWith("LDLC") && payment_link != "") || (site.startsWith("Zalando") && payment_link != "")) {
 
         myEmbed = {
             title: ":fire: Pokèmon caught! :fire:",
@@ -1084,7 +1089,7 @@ async function sendWebhook_personal(name_product, link_product, img_product, sit
             },
         }
 
-    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || site.startsWith("Awlab") || site == "Here" || site == "Offspring" || site == "Office" || site == "Footdistrict" || site.startsWith("LDLC")) {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",
@@ -1267,5 +1272,295 @@ function detectDevTool(allow) {
         return true
     } else {
         return false
+    }
+}
+
+
+
+async function getCheckoutldlc(countryldlc) {
+
+    let d = false
+
+    if (countryldlc == "fr-fr") {
+        let res = await fetch("https://secure2.ldlc.com/" + countryldlc + "/Cart/GoNextStep?url=%2F" + countryldlc + "%2FDeliveryPayment", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://secure2.ldlc.com/" + countryldlc + "/Cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        });
+        let GoNextStep = await res.text()
+        let j = JSON.parse(GoNextStep)
+        if (j.ContentUrl != "/" + countryldlc + "/DeliveryPayment" && j.ContentUrl != undefined) {
+            await PartialPackServiceSelection(countryldlc)
+            d = true
+        }
+    }
+
+    if (d == true) {
+        let res2 = await fetch("https://secure2.ldlc.com/" + countryldlc + "/Cart/GoNextStep?url=%2F" + countryldlc + "%2FDeliveryPayment", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://secure2.ldlc.com/" + countryldlc + "/Cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        });
+        let GoNextStep2 = await res2.text()
+    }
+
+    await fetch("https://secure2.ldlc.com/" + countryldlc + "/DeliveryPayment", {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://secure2.ldlc.com/" + countryldlc + "/Cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResGetCheckout(response, countryldlc) })
+        .catch((error) => {
+            // localStorage.setItem("data_ldlc_checkout", "error")
+            errorWebhook("LDLC", error, "getCheckoutldlc")
+        });;
+}
+async function checkResGetCheckout(response, countryldlc) {
+    try {
+        let status = response.status
+        let result = await response.text()
+        if (status == 200 || status == 201) {
+            let html = document.createElement("html")
+            html.innerHTML = result
+
+            try {
+                __RequestVerificationToken = html.querySelector('[action="/' + countryldlc + '/Sips/Order"]').querySelector('[name="__RequestVerificationToken"]').value
+                CartType = html.querySelector('[name="CartType"]').value
+                Id = html.querySelector('[name="Id"]').value
+                Order(countryldlc, __RequestVerificationToken, CartType, Id)
+            } catch (error) {
+                __RequestVerificationToken = html.querySelector('[action="/' + countryldlc + '/DeliveryPayment/SetDeliveryMode"]').querySelector('[name="__RequestVerificationToken"]').value
+                SetDeliveryMode(countryldlc, __RequestVerificationToken)
+            }
+
+        } else {
+            localStorage.setItem("data_ldlc_checkout", "error")
+            errorWebhook("LDLC", "error", "checkResGetCheckout")
+
+        }
+
+    } catch (error) {
+
+        localStorage.setItem("data_ldlc_checkout", "error")
+        errorWebhook("LDLC", error, "checkResGetCheckout")
+    }
+}
+async function PartialPackServiceSelection(countryldlc) {
+    let res1 = await fetch("https://secure2.ldlc.com/fr-fr/Cart/PartialPackServiceSelection?redirectToNextStepAfterSelection=True", {
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://secure2.ldlc.com/" + countryldlc + "/Cart",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    });
+    let res2 = await fetch("https://secure2.ldlc.com/" + countryldlc + "/Cart/RemovePackService", {
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://secure2.ldlc.com/" + countryldlc + "/Cart",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "X-Requested-With=XMLHttpRequest",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+    });
+    let res3 = await fetch("https://secure2.ldlc.com/" + countryldlc + "/Cart/PartialCartState", {
+        "headers": {
+            "accept": "*/*",
+            "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+            "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
+        },
+        "referrer": "https://secure2.ldlc.com/" + countryldlc + "/Cart",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    });
+}
+async function SetDeliveryMode(countryldlc, __RequestVerificationToken) {
+    await fetch("https://secure2.ldlc.com/" + countryldlc + "/DeliveryPayment/SetDeliveryMode", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://secure2.ldlc.com/" + countryldlc + "/DeliveryPayment",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "__RequestVerificationToken=" + __RequestVerificationToken + "&SelectedDeliverySlotId=&SelectedDeliveryModeId=370001&X-Requested-With=XMLHttpRequest",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResSetDeliveryMode(response, countryldlc) })
+        .catch((error) => {
+            localStorage.setItem("data_ldlc_checkout", "error")
+            errorWebhook("LDLC", error, "getCheckoutldlc")
+        });;
+}
+async function checkResSetDeliveryMode(response, countryldlc) {
+    try {
+        let status = response.status
+        let result = await response.text()
+        if (status == 200 || status == 201) {
+
+            let html = document.createElement("html")
+            html.innerHTML = result
+
+            __RequestVerificationToken = html.querySelector('[action="/fr-fr/Sips/Order"]').querySelector('[name="__RequestVerificationToken"]').value
+            CartType = html.querySelector('[name="CartType"]').value
+            Id = html.querySelector('[name="Id"]').value
+            Order(countryldlc, __RequestVerificationToken, CartType, Id)
+
+        } else {
+            localStorage.setItem("data_ldlc_checkout", "error")
+            errorWebhook("LDLC", "error", "checkResSetDeliveryMode")
+        }
+
+    } catch (error) {
+        localStorage.setItem("data_ldlc_checkout", "error")
+        errorWebhook("LDLC", error, "checkResSetDeliveryMode")
+    }
+}
+async function Order(countryldlc, __RequestVerificationToken, CartType, Id) {
+
+    let p = localStorage.getItem("profile_ldlc")
+    let profileLDLC = JSON.parse(localStorage.getItem(p))
+
+    await fetch("https://secure2.ldlc.com/" + countryldlc + "/Sips/Order", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "it-IT,it;q=0.9,en-XA;q=0.8,en;q=0.7,en-US;q=0.6",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://secure2.ldlc.com/" + countryldlc + "/DeliveryPayment",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "__RequestVerificationToken=" + __RequestVerificationToken +
+                "&CartType=" + CartType +
+                "&Id=" + Id +
+                "&ExistingOrderId=" +
+                "&UnsettledInstalmentsOrderIdSage=" +
+                "&CardNumber=" + profileLDLC.CardNumber +
+                "&ExpirationDate=" + profileLDLC.MMYY +
+                "&ExpirationMonth=" + profileLDLC.MMYY.split("/")[0] +
+                "&ExpirationYear=20" + profileLDLC.MMYY.split("/")[1] +
+                "&OwnerName=" + profileLDLC.CardOwnerName +
+                "&Cryptogram=" + profileLDLC.CVV +
+                "&GeneralTermsOfSaleAccepted=true" +
+                "&GeneralTermsOfSaleAccepted=false" +
+                "&ShippingPassTermsOfSaleAccepted=True" +
+                "&X-Requested-With=XMLHttpRequest",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => { checkResOrder(response) })
+        .catch((error) => {
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook("LDLC", error, "Order")
+        });;
+}
+async function checkResOrder(response) {
+    let text = ""
+    try {
+        let status = response.status
+        text = await response.text()
+        let res = JSON.parse(text)
+            // let res = await response.json()
+        if (status == 200 || status == 201) {
+            linkpp = res.redirectUrl
+            localStorage.setItem("data_ldlc_checkout", linkpp)
+        } else {
+            errorWebhook("LDLC", "error", "checkResOrder")
+            localStorage.setItem("data_ldlc_checkout", "error")
+        }
+    } catch (error) {
+
+        localStorage.setItem("data_ldlc_checkout", "error")
+        errorWebhook("LDLC", error, "checkResOrder")
     }
 }

@@ -67,7 +67,6 @@ let size_range = "random"
 let payment_mode = "Default"
 let ckmode = ""
 let cart_mode = ""
-let drop_mode = ""
 
 let delay = "0"
 
@@ -180,7 +179,10 @@ function textBoxMain() {
 
         let btn_atc_fast = document.getElementById('btn_atc_fast')
         btn_atc_fast.addEventListener("click", function() {
-            try { atcFast() } catch (error) {
+            try {
+                // atcFast()
+                btn_monitoring()
+            } catch (error) {
                 errorWebhook(error, "btn_atc_fast")
             }
         });
@@ -370,7 +372,7 @@ function textBoxCouponGen() {
             document.getElementById("catchall").value = localStorage.getItem("zalando_catchall")
         }
 
-    } catch (error) { console.log(error) }
+    } catch (error) {}
 }
 
 function updateValueCatchall(e) {
@@ -390,9 +392,6 @@ async function main() {
         await searchSize()
         textBoxMain()
         if (link != "https://" + country + "/wardrobe/?" && (size_btn != "" || document.getElementsByClassName("uqkIZw ka2E9k uMhVZi FxZV-M z-oVg8 pVrzNP")[0] != undefined || document.getElementsByClassName("uqkIZw ka2E9k uMhVZi dgII7d z-oVg8 _88STHx cMfkVL")[0] != undefined)) {
-            if (drop_mode == "on")
-                dropMode()
-
             AtcSizeButton()
         }
     }
@@ -517,7 +516,7 @@ async function AtcSizeButton() {
         document.getElementsByClassName("_1z5_Qg")[0].appendChild(x);
 
     } catch (error) {
-        console.log(error)
+        errorWebhook(error, "AtcSizeButton")
     }
 }
 
@@ -583,6 +582,7 @@ async function atcRall() {
         })
         .then(response => { checkResAtcAll(response) })
         .catch((error) => {
+            sendText("ATC Error, rate limited", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhook(error, "atcR_fetch")
         });;
@@ -611,19 +611,7 @@ async function checkResAtcAll(response) {
                     await sleep(parseInt(delay))
                 }
 
-            } else {
-
-                sendText("Error carting...", "red")
-
-                errors = res[0]["errors"][0]
-                if (errors["message"].includes("Received Status: 429 from Cart:") && errors["message"].includes("TOO_MANY_REQUESTS")) {
-                    console.log("Error 429 Cart Too Many Requests")
-                } else if (errors["message"] == "Received Status: 429 from Cart: " || errors["message"] == "Received Status: 429 from Cart:") {
-                    console.log("Received Status: 429 from Cart:")
-                } else {
-                    errorWebhook(errors["message"], "checkAtcRes_1")
-                }
-            }
+            } else { sendText("Error carting...", "red") }
         } else {
             sendText("Error carting...", "red")
         }
@@ -644,20 +632,30 @@ async function genSession() {
 
         await sleep(500)
 
-        while (zalandosession.document.location.href == "https://" + country + "/checkout/address") {
+        while (zalandosession.document.location.href.includes("address")) {
             await sleep(500)
             try { zalandosession.document.querySelector("#delivery-destination-tab-0").click() } catch (error) {}
+            await sleep(500)
             try { zalandosession.document.querySelector('[data-id="z-coast-fjord_proceedToPayment"]').click() } catch (error) {}
         }
         sendText("address", "yellow")
         await sleep(1000)
         if (payment_mode != "Default")
-            zalandosession.document.location = "https://checkout.payment.zalando.com/selection?show=true"
+            try { zalandosession.document.location = "https://checkout.payment.zalando.com/selection?show=true" } catch (error) { errorWebhook(error, "genSession5") }
+
 
         let errore = true
         while (errore == true) {
             try {
-                while (!zalandosession.document.location.href.startsWith("https://" + country + "/checkout/confirm")) { await sleep(100) }
+                while (!zalandosession.document.location.href.includes("confirm")) {
+                    if (zalandosession.document.location.href.includes("address")) {
+                        await sleep(500)
+                        try { zalandosession.document.querySelector("#delivery-destination-tab-0").click() } catch (error) {}
+                        await sleep(500)
+                        try { zalandosession.document.querySelector('[data-id="z-coast-fjord_proceedToPayment"]').click() } catch (error) {}
+                    }
+                    await sleep(100)
+                }
                 errore = false
             } catch (error) {
                 errore = true
@@ -667,7 +665,7 @@ async function genSession() {
 
         try {
 
-            if (zalandosession.document.location.href.startsWith("https://" + country + "/checkout/confirm")) {
+            if (zalandosession.document.location.href.includes("confirm")) {
 
                 try {
                     if (coupon_code != "") {
@@ -676,7 +674,7 @@ async function genSession() {
                         zalandosession.document.querySelector(".z-button__content").click()
                         sendText("coupon", "yellow")
                     }
-                } catch (error) { console.log(error) }
+                } catch (error) { errorWebhook(error, "genSession3") }
 
                 await sleep(500)
                 await mainClearCart()
@@ -687,9 +685,13 @@ async function genSession() {
                 zalandosession.close()
             }
 
-        } catch (error) { console.log(error) }
+        } catch (error) { errorWebhook(error, "genSession2") }
 
-    } catch (error) { console.log(error) }
+    } catch (error) {
+        sendText("Error generating session", "red")
+        errorWebhook(error, "genSession1")
+        await mainClearCart()
+    }
 }
 
 
@@ -720,7 +722,7 @@ async function getProductCart() {
             "credentials": "include"
         })
         .then(response => { checkResStock(response) })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => { errorWebhook(error, "getProductCart") });;
 }
 async function checkResStock(response) {
     try {
@@ -903,126 +905,6 @@ async function searchSize() {
             errorWebhook(error, "searchSize_2")
     }
 }
-async function dropMode() {
-    let c = 0
-    let xyz = 0
-    try {
-        while (true) {
-            c++
-            setCount(c)
-            size_in_stock = []
-            let html = document.createElement('html')
-            await sleep(parseInt(delay))
-            if (xyz == 0) {
-                sendText("Monitoring.", "yellow")
-                xyz = 1
-            } else if (xyz == 1) {
-                sendText("Monitoring..", "yellow")
-                xyz = 2
-            } else if (xyz == 2) {
-                sendText("Monitoring...", "yellow")
-                xyz = 0
-            }
-            await getProduct()
-            await res.then(function(result) {
-                html.innerHTML = result
-                try {
-                    let s = html.querySelector('[id="z-vegas-pdp-props"]').textContent
-                    s = s.slice(8, -2)
-                    let obj = JSON.parse(s)
-                    let sizes = obj[0].model.articleInfo.units
-                    for (let i = 0; i < sizes.length; i++) {
-                        if (sizes[i]["available"] == true) {
-                            if (size_range == "random")
-                                size_in_stock.push(sizes[i].id)
-                            else {
-                                s = parseFloat(sizes[i]["size"]["local"])
-                                if (size_range.includes('-')) {
-                                    size_1 = parseFloat(size_range.split('-')[0])
-                                    size_2 = parseFloat(size_range.split('-')[1])
-                                    if (s >= size_1 && s <= size_2) {
-                                        size_in_stock.push(sizes[i].id)
-                                    }
-                                } else {
-                                    if (parseFloat(size_range) == s) {
-                                        size_in_stock.push(sizes[i].id)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (error) {
-                    try {
-                        let x = ""
-                        let k = ""
-                        let s = html.querySelectorAll("script")
-                        s.forEach(element => {
-                            if (element.textContent.includes('enrichedEntity') && element.className == "re-1-12") {
-                                x = JSON.parse(element.textContent)
-                            }
-                        });
-                        for (const [key, value] of Object.entries(x.graphqlCache)) {
-                            let yy = JSON.stringify(value)
-                            if (yy.includes("quantity") && yy.includes("stock") && yy.includes("size") && yy.includes("sku") && yy.includes("offer") && (yy.includes("ONE") || yy.includes("OUT_OF_STOCK") || yy.includes("MANY"))) {
-                                k = key
-                                break
-                            }
-                        }
-                        sizes = x.graphqlCache[k].data.product.simples
-                        for (let i = 0; i < sizes.length; i++) {
-                            if (sizes[i].offer.stock.quantity != "OUT_OF_STOCK") {
-                                console.log("stock")
-                                if (size_range == "random")
-                                    size_in_stock.push(sizes[i].sku)
-                                else {
-                                    s = parseFloat(sizes[i].size)
-                                    if (size_range.includes('-')) {
-                                        size_1 = parseFloat(size_range.split('-')[0])
-                                        size_2 = parseFloat(size_range.split('-')[1])
-                                        if (s >= size_1 && s <= size_2) {
-                                            size_in_stock.push(sizes[i].sku)
-                                        }
-                                    } else {
-                                        if (parseFloat(size_range) == s) {
-                                            size_in_stock.push(sizes[i].sku)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
-            })
-
-            if (size_in_stock.length != 0) {
-                sendText("Product in stock, trying atc...", "yellow")
-                while (count_cart == 0) {
-                    if (xyz == 0) {
-                        sendText("Trying atc.", "yellow")
-                        xyz = 1
-                    } else if (xyz == 1) {
-                        sendText("Trying atc..", "yellow")
-                        xyz = 2
-                    } else if (xyz == 2) {
-                        sendText("Trying atc...", "yellow")
-                        xyz = 0
-                    }
-                    n = getRandomIntInclusive(0, size_in_stock.length - 1)
-                    await atcRDrop(size_in_stock[n])
-                    await sleep(parseInt(delay))
-                }
-                break
-            }
-        }
-
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'textContent' of null")
-            errorWebhook(error, "dropmode")
-    }
-
-}
 async function getProduct() {
 
     await fetch(link, {
@@ -1043,7 +925,11 @@ async function getProduct() {
             "credentials": "include"
         })
         .then(response => { res = response.text() })
-        .catch((error) => { errorWebhook(error, "getProduct_fetch") });;
+        .catch((error) => {
+            sendText("Error getting product, rate limited", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "getProduct_fetch")
+        });;
 }
 async function atcFast() {
 
@@ -1111,6 +997,7 @@ async function atcR(id_prodotto) {
         })
         .then(response => { checkAtcRes(response) })
         .catch((error) => {
+            sendText("ATC Error, rate limited", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhook(error, "atcR_fetch")
         });;
@@ -1138,7 +1025,7 @@ async function checkAtcRes(response) {
 
     } catch (error) {
         if (error != "SyntaxError: Unexpected token < in JSON at position 0")
-            errorWebhook(error, "checkAtcRes_2")
+            errorWebhook(res, "checkAtcRes_2")
     }
 }
 async function atcRDrop(id_prodotto) {
@@ -1165,6 +1052,7 @@ async function atcRDrop(id_prodotto) {
         })
         .then(response => { checkResAtcDrop(response) })
         .catch((error) => {
+            sendText("ATC Error, rate limited", "orange")
             if (error != "TypeError: Failed to fetch")
                 errorWebhook(error, "atcR_fetch")
         });;
@@ -1261,7 +1149,10 @@ async function getCheckout() {
             "credentials": "include"
         })
         .then(response => { checkResGetCheckout(response) })
-        .catch((error) => { if (error != "TypeError: Failed to fetch") errorWebhook(error, "getCheckout_fetch") });;
+        .catch((error) => {
+            sendText("Error getting checkout, rate limited", "orange")
+            if (error != "TypeError: Failed to fetch") errorWebhook(error, "getCheckout_fetch")
+        });;
 }
 async function checkResGetCheckout(response) {
     try {
@@ -1298,36 +1189,45 @@ async function checkResGetCheckout(response) {
             } else if (url.startsWith("/welcomenoaccount/true?target") || url.startsWith("https://" + country + "/welcomenoaccount/true?target")) {
                 document.location = "https://" + country + "/login?target=/myaccount/"
             } else if (url.startsWith("https://checkout.payment.zalando.com/payment-method-selection-session/")) {
-                console.log("ciao")
                 await sleep(5000)
                 document.location = url
             } else if (url.includes("cart?error")) {
-                sendText(url, "red")
-                await sleep(2000)
-                location.reload()
+                sendText("rate limited", "red")
+                await sleep(20000)
+                    // location.reload()
             }
         }
 
-    } catch (error) { errorWebhook(error, "checkResGetCheckout") }
+    } catch (error) {
+        sendText("rate limited", "red")
+        errorWebhook(error, "checkResGetCheckout")
+            // await sleep(2500)
+    }
 }
 
 
 async function mainPaymentBrowser() {
 
-    if (payment_mode == "Default") {
-        document.querySelector("#payz-selection-bottom-submit").click()
-    } else {
-        var button = document.querySelectorAll('[value="' + payment_mode + '"]')
-        if (button.length != 0) {
-            button[0].click()
-        }
-    }
-    await sleep(500)
-
     try {
-        document.querySelector("#payz-selection-bottom-submit").click()
-    } catch (error) {}
+        if (payment_mode == "Default") {
+            document.querySelector("#payz-selection-bottom-submit").click()
+        } else {
+            var button = document.querySelectorAll('[value="' + payment_mode + '"]')
+            if (button.length != 0) {
+                button[0].click()
+            }
+        }
+        await sleep(500)
+
+        try {
+            document.querySelector("#payz-selection-bottom-submit").click()
+        } catch (error) {}
+
+    } catch (error) { errorWebhook(error, "mainPaymentBrowser") }
 }
+
+
+
 
 async function mainAddress(result) {
     try {
@@ -1375,7 +1275,11 @@ async function defaultAddress() {
             "credentials": "include"
         })
         .then(response => { checkResdefaultAddress(response) })
-        .catch((error) => { errorWebhook(error, "defaultAddress") });;
+        .catch((error) => {
+            sendText("Error Submitting address, rate limited", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "defaultAddress")
+        });;
 }
 async function checkResdefaultAddress(response) {
     try {
@@ -1483,7 +1387,11 @@ async function checkoutBuyNow(etag, checkoutid) {
             "credentials": "include"
         })
         .then(response => { checkRescheckoutBuyNow(response) })
-        .catch((error) => { errorWebhook(error, "checkoutBuyNow_fetch") });;
+        .catch((error) => {
+            sendText("Error Submitting order, rate limited", "orange")
+            if (error != "TypeError: Failed to fetch")
+                errorWebhook(error, "checkoutBuyNow_fetch")
+        });;
 }
 async function checkRescheckoutBuyNow(response) {
 
@@ -1503,25 +1411,40 @@ async function checkRescheckoutBuyNow(response) {
                 sendWebhooks()
                 document.location = 'https://' + country + '/checkout/success'
             } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error" || url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
+                sendText("Error Submitting order, out of stock", "red")
+                await sleep(2500)
                 location.reload()
             } else if (url.startsWith("https://checkout.payment.zalando.com/")) {
                 document.location = url
+                resInfoWebook("checkout.payment.zalando.com", "checkRescheckoutBuyNow")
             } else if (url.startsWith("https://bankieren.ideal.ing.nl/") || url.startsWith("https://www.paypal.com/")) {
                 linkpp = url
                 sendWebhooks()
                 document.location = url
             } else {
-                errorWebhook(x, "checkRescheckoutBuyNow_1")
-                location.reload()
+                sendText("Error Submitting order", "red")
+                await sleep(2500)
             }
         } else {
-            errorWebhook(x, "checkRescheckoutBuyNow_2")
-            await sleep(500)
+            if (x.includes("Purchase Quantity Restriction"))
+                sendText("Purchase Quantity Restriction", "red")
+            else
+                sendText("Error Submitting order, rate limited", "red")
+                // errorWebhook(x, "checkRescheckoutBuyNow_2")
+            if (x.includes("wait"))
+                await sleep(60000)
+            else
+                await sleep(2500)
         }
 
     } catch (error) {
+        if (error.include("TypeError: Failed to fetch"))
+            sendText("Error Submitting order, rate limited", "red")
+        else
+            sendText("Error Submitting order, out of stock", "red")
+
         errorWebhook(error, "checkRescheckoutBuyNow_3")
-        await sleep(500)
+        await sleep(2500)
     }
 }
 
@@ -1542,10 +1465,6 @@ chrome.runtime.sendMessage({ greeting: "status_aco_zalando" }, function(response
 chrome.runtime.sendMessage({ greeting: "size_zalando" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "drop_mode_zalando" }, function(response) {
-    drop_mode = response.farewell;
 });
 
 chrome.runtime.sendMessage({ greeting: "cart_mode_zalando" }, function(response) {

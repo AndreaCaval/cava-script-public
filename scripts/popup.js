@@ -1,6 +1,6 @@
 debugger
 
-const version = 'Cava-Scripts 1.3.1'
+const version = 'Cava-Scripts 1.3.2'
 let array_export_profile = ["array_profiles"]
 
 function testWebhook(url_private) {
@@ -1155,7 +1155,7 @@ function onUserLogged() {
     }
     if (localStorage.getItem("profile_ldlc") != "off") { $("#ProfileLdlc").val(localStorage.getItem("profile_ldlc")); }
     if (localStorage.getItem("checkout_mode_ldlc") != "off") { $("#checkout_mode_ldlc").val(localStorage.getItem("checkout_mode_ldlc")); }
-
+    if (localStorage.getItem("country_ldlc") != "off") { $("#country_ldlc").val(localStorage.getItem("country_ldlc")); }
     if (localStorage.getItem("email_pw_ldlc") != "off") {
         var email = localStorage.getItem("email_pw_ldlc").split(':')[0]
         var pw = localStorage.getItem("email_pw_ldlc").split(':')[1]
@@ -1168,7 +1168,8 @@ function onUserLogged() {
         let p = $("#pw_ldlc").val();
         let checkout_mode_ldlc = $("#checkout_mode_ldlc").val();
         let profile_ldlc = $("#ProfileLdlc").val();
-
+        let country_ldlc = $("#country_ldlc").val();
+        if (country_ldlc != '') { localStorage.setItem("country_ldlc", country_ldlc); } else { localStorage.setItem("country_ldlc", "off"); }
         if (profile_ldlc != '') { localStorage.setItem("profile_ldlc", profile_ldlc); } else { localStorage.setItem("profile_ldlc", "off"); }
         if (checkout_mode_ldlc != '') { localStorage.setItem("checkout_mode_ldlc", checkout_mode_ldlc); } else { localStorage.setItem("checkout_mode_ldlc", "off"); }
         if (!(isBlank(e)) && !(isBlank(p))) { localStorage.setItem("email_pw_ldlc", e + ":" + p); } else { localStorage.setItem("email_pw_ldlc", "off"); }
