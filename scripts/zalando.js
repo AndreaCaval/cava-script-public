@@ -65,8 +65,8 @@ let pw = ""
 let size_range = "random"
 
 let payment_mode = "Default"
-let ckmode = ""
-let cart_mode = ""
+let ckmode = "Browser"
+let cart_mode = "Fast"
 
 let delay = "0"
 
@@ -90,8 +90,9 @@ let price_product = "";
 let link_product = "";
 let linkpp = "";
 
-let id_address
+let id_address = ""
 
+let cart_size_unavailable = []
 let cart_size_oos = []
 let cart_size_instock = []
 let cart_id = ""
@@ -181,7 +182,7 @@ function textBoxMain() {
         btn_atc_fast.addEventListener("click", function() {
             try {
                 // atcFast()
-                btn_monitoring()
+                btn_monitoring("AllSize")
             } catch (error) {
                 errorWebhook(error, "btn_atc_fast")
             }
@@ -407,46 +408,50 @@ async function AtcSizeButton() {
             text-align: center;
             width: 75px;
             border-radius: 15px;
-        }      
+            }      
 
-        ul {
-            padding: 0;
-            margin: 0;
-            clear: both;
-        }
-        
-        li{
-            list-style-type: none;
-            list-style-position: outside;
-            padding: 10px;
-            float: left;
-        }
-        
-        input[type="checkbox"]:not(:checked), 
-        input[type="checkbox"]:checked {
-            position: absolute;
-            left: -9999%;
-        }
-        
-        input[type="checkbox"] + label {
-            display: inline-block;
-            padding: 10px;
-            cursor: pointer;
-            border: 3px solid black;
-            color: black;
-            background-color: white;
-            margin-bottom: 10px;
-        }
-        
-        input[type="checkbox"]:checked + label {
-            border: 3px solid black;
-            color: white;
-            background-color: darkgray;
-        }` +
-            '</style><ul class="size_ul"></ul><br style="clear:both;">' +
+            ul {
+                padding: 0;
+                margin: 0;
+                clear: both;
+            }
+            
+            li{
+                list-style-type: none;
+                list-style-position: outside;
+                padding: 10px;
+                float: left;
+            }
+            
+            input[type="checkbox"]:not(:checked), 
+            input[type="checkbox"]:checked {
+                position: absolute;
+                left: -9999%;
+            }
+            
+            input[type="checkbox"] + label {
+                display: inline-block;
+                padding: 10px;
+                cursor: pointer;
+                border: 3px solid black;
+                color: black;
+                background-color: white;
+                margin-bottom: 10px;
+            }
+            
+            input[type="checkbox"]:checked + label {
+                border: 3px solid black;
+                color: white;
+                background-color: darkgray;
+            }` +
+            '</style><div style="text-align: center;" ><ul class="size_ul"></ul><br style="clear:both;">' +
 
             '<label style="margin-right:10px">Timer:</label> <input style="width:100px; color:black; type=text; margin-right:10px" id="timer" placeholder="es: 09:15:00">' +
-            '<input id="btn_start_monitoring" type="submit" value="START MONITORING">')
+            // '<input type="radio" id="OneSize" checked="checked" name="atc_mode" value="OneSize">' +
+            // '<label for="OneSize">OneSize</label>' +
+            // '<input style="margin-left:10px" type="radio" id="AllSize" name="atc_mode" value="AllSize">' +
+            // '<label for="AllSize">AllSize</label><br><br>' +
+            '<input id="btn_start_monitoring" type="submit" value="START MONITORING"></div>')
 
         for (let i = 0; i < size_btn.length; i++) {
             try {
@@ -501,7 +506,7 @@ async function AtcSizeButton() {
 
         let btn_start_monitoring = document.getElementById("btn_start_monitoring")
         btn_start_monitoring.addEventListener("click", function() {
-            btn_monitoring()
+            btn_monitoring("OneSize")
         });
 
         var x = document.createElement("SPAN");
@@ -520,7 +525,7 @@ async function AtcSizeButton() {
     }
 }
 
-async function btn_monitoring() {
+async function btn_monitoring(atc_mode) {
     selected_sizes = []
     let s = document.getElementsByClassName("ckbox_size")
     s = Array.prototype.slice.call(s)
@@ -528,8 +533,22 @@ async function btn_monitoring() {
         if (element.checked == true)
             selected_sizes.push(element.id)
     });
-    if (selected_sizes.length == 0)
-        selected_sizes = size
+    // atc_mode = document.querySelector('input[name="atc_mode"]:checked').value;
+
+    if (atc_mode == "AllSize") {
+        if (selected_sizes.length == 0)
+            selected_sizes = size
+    } else {
+        if (selected_sizes.length == 0) {
+            size = arreyMixer(size)
+            selected_sizes.push(size[0])
+        } else if (selected_sizes.length != 1) {
+            selected_sizes = arreyMixer(selected_sizes)
+            x = selected_sizes[0]
+            selected_sizes = []
+            selected_sizes.push(x)
+        }
+    }
 
     selected_sizes.forEach(element => {
         body += "{\"id\":\"e7f9dfd05f6b992d05ec8d79803ce6a6bcfb0a10972d4d9731c6b94f6ec75033\",\"variables\":{\"addToCartInput\":{\"productId\":\"" + element + "\",\"clientMutationId\":\"addToCartMutation\"}}},"
@@ -628,7 +647,7 @@ async function genSession() {
 
         await atcR(sizepid)
         let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=1000,height=500,left=-1000,top=-1000`;
-        zalandosession = window.open("https://" + country + "/checkout/address", 'zalandosession', params)
+        zalandosession = window.open("https://" + country + "/checkout/confirm", 'zalandosession', params)
 
         await sleep(500)
 
@@ -637,8 +656,9 @@ async function genSession() {
             try { zalandosession.document.querySelector("#delivery-destination-tab-0").click() } catch (error) {}
             await sleep(500)
             try { zalandosession.document.querySelector('[data-id="z-coast-fjord_proceedToPayment"]').click() } catch (error) {}
+            sendText("address", "yellow")
         }
-        sendText("address", "yellow")
+
         await sleep(1000)
         if (payment_mode != "Default")
             try { zalandosession.document.location = "https://checkout.payment.zalando.com/selection?show=true" } catch (error) { errorWebhook(error, "genSession5") }
@@ -657,9 +677,7 @@ async function genSession() {
                     await sleep(100)
                 }
                 errore = false
-            } catch (error) {
-                errore = true
-            }
+            } catch (error) {}
             await sleep(500)
         }
 
@@ -734,7 +752,8 @@ async function checkResStock(response) {
             cart_id = res["id"]
             try { cart_size_instock = res["groups"][0]["articles"] } catch (error) {}
             try { cart_size_oos = res["out_of_stock_articles"] } catch (error) {}
-            if (cart_size_oos.length == 0 && cart_size_instock.length == 0) {
+            try { cart_size_unavailable = res["unavailable_articles"] } catch (error) {}
+            if (cart_size_oos.length == 0 && cart_size_instock.length == 0 && cart_size_unavailable == 0) {
                 sendText("Cart empty", "green")
             } else {
                 await checkStock()
@@ -752,6 +771,9 @@ async function checkStock() {
         clearCart(element["simple_sku"])
     });
     cart_size_oos.forEach(element => {
+        clearCart(element["simple_sku"])
+    });
+    cart_size_unavailable.forEach(element => {
         clearCart(element["simple_sku"])
     });
 }
@@ -1410,6 +1432,7 @@ async function checkRescheckoutBuyNow(response) {
             if (url == "/checkout/success") {
                 sendWebhooks()
                 document.location = 'https://' + country + '/checkout/success'
+                await sleep(2500)
             } else if (url == "/cart?error=zalando.checkout.confirmation.quantity.error" || url == "/checkout/confirm?error=zalando.checkout.confirmation.quantity.error") {
                 sendText("Error Submitting order, out of stock", "red")
                 await sleep(2500)
@@ -1421,6 +1444,7 @@ async function checkRescheckoutBuyNow(response) {
                 linkpp = url
                 sendWebhooks()
                 document.location = url
+                await sleep(2500)
             } else {
                 sendText("Error Submitting order", "red")
                 await sleep(2500)
@@ -1462,27 +1486,8 @@ chrome.runtime.sendMessage({ greeting: "status_aco_zalando" }, function(response
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_zalando" }, function(response) {
-    if (response.farewell != "off" && hasNumber(response.farewell))
-        size_range = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "cart_mode_zalando" }, function(response) {
-    cart_mode = response.farewell
-});
-
 chrome.runtime.sendMessage({ greeting: "delay_zalando" }, function(response) {
     delay = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "checkout_mode_zalando" }, function(response) {
-    ckmode = response.farewell
-});
-
-chrome.runtime.sendMessage({ greeting: "email_pw_zalando" }, function(response) {
-    let x = response.farewell
-    email = x.split(':')[0]
-    pw = x.split(':')[1]
 });
 
 chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {

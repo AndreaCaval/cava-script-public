@@ -31,11 +31,6 @@
         "persistent": true
     },
     "content_scripts": [{
-            "matches": ["http://*/*", "https://*/*"],
-            "include_globs": ["https://*.ldlc.*/*"],
-            "js": ["scripts/ldlc.js"],
-            "all_frames": true
-        }, {
             "matches": ["https://www.here-store.com/*"],
             "js": ["scripts/here.js"],
             "all_frames": false
