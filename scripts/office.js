@@ -32,7 +32,7 @@ function getRandomIntInclusive(min, max) {
     return n
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusOffice").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusOffice").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 
 function arreyMixer(array) {
@@ -76,20 +76,17 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
-            errorWebhooks(error, "textBox")
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {
@@ -147,7 +144,7 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 
 async function errorRefresh() {
@@ -174,7 +171,7 @@ async function main() {
 
 
 async function getCsrfToken() {
-    try { csrftoken = document.getElementsByName('CSRFToken')[0].value } catch (error) { }
+    try { csrftoken = document.getElementsByName('CSRFToken')[0].value } catch (error) {}
 }
 
 async function getMainPid() {
@@ -188,7 +185,7 @@ async function getMainPid() {
                     eval(element.textContent)
             });
             main_pid = window.dataLayer[0]["productId"]
-        } catch (error) { }
+        } catch (error) {}
     }
 }
 
@@ -233,7 +230,7 @@ async function mainAtcBrowser() {
             price_product = document.getElementsByClassName("price__price js-price")[0].textContent.replace(/\s/g, '').replaceAll('\n', '')
             img_product = document.getElementsByClassName("product-grid__img lazy-load__item")[0].src
             size_product = size
-            document.getElementsByClassName("btn btn-fluid product__actions-cart js-add-to-bag-btn")[0].click()            
+            document.getElementsByClassName("btn btn-fluid product__actions-cart js-add-to-bag-btn")[0].click()
 
             for (let index = 0; index < 10; index++) {
                 await sleep(200)
@@ -266,7 +263,7 @@ async function mainCheckout() {
 }
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_product + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&&-&" })
 }
 
 async function errorWebhook(error, position) {
@@ -277,23 +274,23 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "delay_office" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "delay_office" }, function(response) {
     delay = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_office" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_office" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_office" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_office" }, function(response) {
     if (response.farewell != "off" && hasNumber(response.farewell))
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "status_aco_office" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_office" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             }

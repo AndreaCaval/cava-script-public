@@ -99,10 +99,7 @@ function textBox() {
 
         window.onresize = checkPosition;
 
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of null")
-            console.log(error)
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {

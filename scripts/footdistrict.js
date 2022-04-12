@@ -103,10 +103,7 @@ function textBox() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of null")
-            console.log(error)
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {

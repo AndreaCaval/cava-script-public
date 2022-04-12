@@ -89,10 +89,7 @@ function textBox() {
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
-            errorWebhooks(error, "textBox")
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {

@@ -94,10 +94,7 @@ function textBox() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined")
-            errorWebhooks(error, "textBox")
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {
@@ -274,7 +271,7 @@ async function mainCheckout() {
 
 
 async function sendWebhooks() {
-    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_productt + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product })
+    chrome.runtime.sendMessage({ greeting: "checkout_webhook&-&" + name_product + "&-&" + link_productt + "&-&" + img_product + "&-&" + site + "&-&" + size_product + "&-&" + price_product + "&-&&-&" })
 }
 
 async function errorWebhook(error, position) {

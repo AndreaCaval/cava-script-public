@@ -118,19 +118,19 @@ function textBox() {
         dragElement(document.getElementById("CavaScripts"));
         window.onresize = checkPosition;
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_start_task = document.getElementById('btn_start_task')
-        btn_start_task.addEventListener("click", function () {
+        btn_start_task.addEventListener("click", function() {
             try {
                 let input = document.getElementById("input_sizepid").value
                 if (!isNumeric(input)) {
@@ -151,12 +151,12 @@ function textBox() {
         });
 
         let btn_start_checkout = document.getElementById('btn_start_checkout')
-        btn_start_checkout.addEventListener("click", function () {
+        btn_start_checkout.addEventListener("click", function() {
             getCheckout()
         });
 
         let btn_dummy = document.getElementById('btn_dummy')
-        btn_dummy.addEventListener("click", function () {
+        btn_dummy.addEventListener("click", function() {
             try {
                 let input = document.getElementById("input_sizepid_dummy").value
                 if (!isNumeric(input)) {
@@ -177,7 +177,7 @@ function textBox() {
         });
 
         let btn_clear_cart = document.getElementById('btn_clear_cart')
-        btn_clear_cart.addEventListener("click", function () {
+        btn_clear_cart.addEventListener("click", function() {
             getCart()
         });
 
@@ -192,10 +192,7 @@ function textBox() {
         if (localStorage.getItem("box") != null)
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
-            errorWebhooks(error, "textBox")
-    }
+    } catch (error) {}
 }
 
 function dragElement(elmnt) {
@@ -253,7 +250,7 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 
 function updateValueDummy(e) {
@@ -273,7 +270,7 @@ async function addButton() {
                 '<br><br><div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solved" type="submit" value="SOLVED"></div><br><br> ');
 
             let btn_solver = document.getElementById('btn_solver')
-            btn_solver.addEventListener("click", function () {
+            btn_solver.addEventListener("click", function() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 captchasolver = window.open('https://www.onygo.com/view_account', 'captchasolver', params)
 
@@ -284,7 +281,7 @@ async function addButton() {
             });
 
             let btn_solved = document.getElementById('btn_solved')
-            btn_solved.addEventListener("click", function () {
+            btn_solved.addEventListener("click", function() {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
@@ -292,13 +289,13 @@ async function addButton() {
             checkPosition()
         }
 
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusOnygo").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusOnygo").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
 async function sendTime(time) {
-    try { document.getElementById("timerOnygo").innerHTML = "<span >" + time + "</span>" } catch (error) { }
+    try { document.getElementById("timerOnygo").innerHTML = "<span >" + time + "</span>" } catch (error) {}
 }
 
 function checkCaptcha(res) {
@@ -326,7 +323,7 @@ async function main() {
             if (resAtc["error"] == false) {
                 document.location = "https://www.onygo.com/cart"
             }
-        } catch (error) { }
+        } catch (error) {}
     }
 }
 
@@ -429,7 +426,7 @@ async function login() {
         if (link != "https://www.onygo.com/login") {
 
             await getLogin()
-            await res.then(function (result) {
+            await res.then(function(result) {
                 html_login.innerHTML = result
             })
 
@@ -468,22 +465,22 @@ async function login() {
 async function loginR(data_id, data_value, csrf_token) {
 
     await fetch("https://www.onygo.com/authentication?rurl=1&format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/login",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": data_id + "=" + data_value + "&dwfrm_profile_customer_email=" + email_login + "&dwfrm_profile_login_password=" + pw_login + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/login",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": data_id + "=" + data_value + "&dwfrm_profile_customer_email=" + email_login + "&dwfrm_profile_login_password=" + pw_login + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResLogin(response) })
         .catch((error) => {
             sendText("Error checking login", "orange")
@@ -525,22 +522,22 @@ async function checkResLogin(response) {
 async function getLogin() {
 
     await fetch("https://www.onygo.com/login", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": "https://www.onygo.com/",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://www.onygo.com/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { res = checkResgetLogin(response) })
         .catch((error) => {
             sendText("Error getting login", "orange")
@@ -583,25 +580,25 @@ async function getCart() {
 
     sendText("Getting cart", "blue")
     await fetch("https://www.onygo.com/cart", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResGetCart(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -664,24 +661,24 @@ async function clearCart(pid_cart, uuid_cart) {
 
     sendText("Removing item...", "blue")
     await fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/Cart-RemoveProductLineItem?format=ajax&pid=" + pid_cart + "&uuid=" + uuid_cart, {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/cart",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResClearCart(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -805,22 +802,22 @@ async function atc() {
 async function getSizePid(size_r) {
 
     await fetch("https://www.onygo.com/p/" + pid + ".html?chosen=size&dwvar_" + pid + "_size=" + size_r + "&format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetSizePid(response) })
         .catch((error) => {
             sendText("Error getting size", "orange")
@@ -865,22 +862,22 @@ async function atcRfast() {
 
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.onygo.com/add-product?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "pid=" + pidsize + "&options=&quantity=1",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "pid=" + pidsize + "&options=&quantity=1",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResAtc(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
@@ -987,21 +984,21 @@ async function getCheckout() {
 
     sendText("Starting checkout...", "blue")
     await fetch("https://www.onygo.com/checkout", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "none",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "none",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetCheckout(response) })
         .catch((error) => {
             sendText("Error getting checkout", "orange")
@@ -1072,7 +1069,7 @@ async function gettingShipping() {
         address_selector = rdbtn.getAttribute("value")
 
         try { email = html.querySelector('[aria-label="Email"]').getAttribute('value') } catch (error) { email = html.querySelector('[inputmode="email"]').getAttribute('value') }
-        try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') } catch (error) { }
+        try { phone = html.querySelector('[aria-label="Phone"').getAttribute('value') } catch (error) {}
 
         csrf_token = html.querySelector('[data-csrf-name="csrf_token"]').getAttribute('data-csrf-token')
         sendText("Getting shipping info", "green")
@@ -1083,7 +1080,7 @@ async function gettingShipping() {
             name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
             size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
             if (link.startsWith("https://www.onygo.com/cart"))
-                try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) { }
+                try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
             else if (pidsize != "")
                 link_product = "https://www.onygo.com/p/cava-" + pidsize + ".html"
         } catch (error) {
@@ -1105,22 +1102,22 @@ async function ValidateShipping() {
 
     sendText("Validating address...", "blue")
     await fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/CheckoutAddressServices-Validate?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/checkout?stage=shipping",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "street=" + street + "&houseNo=" + suite + "&postalCode=" + postal_code + "&city=" + city + "&country=" + country_code + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/checkout?stage=shipping",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "street=" + street + "&houseNo=" + suite + "&postalCode=" + postal_code + "&city=" + city + "&country=" + country_code + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResValidateShipping(response) })
         .catch((error) => {
             sendText("Error validating ship", "orange")
@@ -1169,22 +1166,22 @@ async function SubmitShipping() {
 
     sendText("Submitting ship...", "blue")
     await fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/CheckoutShippingServices-SubmitShipping?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/checkout?stage=shipping",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/checkout?stage=shipping",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=" + title + "&dwfrm_shipping_shippingAddress_addressFields_firstName=" + first_name + "&dwfrm_shipping_shippingAddress_addressFields_lastName=" + last_name + "&dwfrm_shipping_shippingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_shipping_shippingAddress_addressFields_city=" + city + "&dwfrm_shipping_shippingAddress_addressFields_street=" + street + "&dwfrm_shipping_shippingAddress_addressFields_suite=" + suite + "&dwfrm_shipping_shippingAddress_addressFields_address1=" + address1 + "&dwfrm_shipping_shippingAddress_addressFields_address2=" + address2 + "&dwfrm_shipping_shippingAddress_addressFields_phone=" + phone + "&dwfrm_shipping_shippingAddress_addressFields_countryCode=" + country_code + "&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResSubmitShipping(response) })
         .catch((error) => {
             sendText("Error submitting shipping", "orange")
@@ -1243,22 +1240,22 @@ async function SubmitPayment() {
 
     sendText("Submittin payment...", "blue")
     await fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/CheckoutServices-SubmitPayment?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/checkout?stage=payment",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "dwfrm_billing_paymentMethod=Paypal&dwfrm_giftCard_cardNumber=&dwfrm_giftCard_pin=&csrf_token=" + csrf_token + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/checkout?stage=payment",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "dwfrm_billing_paymentMethod=Paypal&dwfrm_giftCard_cardNumber=&dwfrm_giftCard_pin=&csrf_token=" + csrf_token + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResSubmitPayment(response) })
         .catch((error) => {
             sendText("Error submitting payment", "orange")
@@ -1327,22 +1324,22 @@ async function PlaceOrder() {
 
     sendText("Placing order...", "blue")
     await fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/CheckoutServices-PlaceOrder?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/checkout?stage=placeOrder",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/checkout?stage=placeOrder",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResPlaceOrder(response) })
         .catch((error) => {
             sendText("Error placing order", "orange")
@@ -1416,24 +1413,24 @@ async function checkResPlaceOrder(response) {
 
 async function removeDummy() {
     fetch("https://www.onygo.com/on/demandware.store/Sites-ong-DE-Site/de_DE/Cart-RemoveProductLineItem?format=ajax&pid=" + pidsize + "&uuid=" + uuid_dummy, {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.onygo.com/cart",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.onygo.com/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResRemoveDummy(response) })
         .catch((error) => {
             sendText("Error removing dummy", "orange")
@@ -1489,31 +1486,31 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "email_pw_onygo" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "email_pw_onygo" }, function(response) {
     var x = response.farewell
     email_login = x.split(':')[0]
     pw_login = x.split(':')[1]
 });
-chrome.runtime.sendMessage({ greeting: "status_aco_onygo" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_onygo" }, function(response) {
     status_aco = response.farewell
 });
-chrome.runtime.sendMessage({ greeting: "status_login_onygo" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_login_onygo" }, function(response) {
     status_login = response.farewell
 });
-chrome.runtime.sendMessage({ greeting: "size_onygo" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_onygo" }, function(response) {
     if (response.farewell != "off")
         size_range = response.farewell
 });
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
         checkTimer()
-        chrome.runtime.sendMessage({ greeting: "status_aco_onygo" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_onygo" }, function(response) {
             if (response.farewell == 'on') {
                 main()
             }
         });
-        chrome.runtime.sendMessage({ greeting: "status_login_onygo" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_login_onygo" }, function(response) {
             if (response.farewell == 'on') {
                 checkLogin()
             } else

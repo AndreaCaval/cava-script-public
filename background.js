@@ -668,7 +668,7 @@ async function sendWebhook_public(name_product, link_product, img_product, site,
             },
         }
 
-    } else if (site == "Sns" || site.startsWith("Courir") || (site.startsWith("LDLC") && payment_link == "") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || (site == "Offspring" && payment_link == "") || (site == "Office" && payment_link == "") || site == "Footdistrict") {
+    } else if (site == "Sns" || site.startsWith("Courir") || (site.startsWith("LDLC") && payment_link == "") || site == "Woodwood" || site == "Naked" || site == "Kickz" || site == "Kith EU" || site == "B4B" || (site == "Lvr" && email == "atc") || (site.startsWith("Awlab") && payment_link == "") || (site == "Here" && payment_link == "") || site == "Offspring" || site == "Office" || site == "Footdistrict") {
 
         myEmbed = {
             title: ":fire: Pokèmon almost caught! :fire:",

@@ -58,6 +58,7 @@ let csrf_token = "";
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 function arreyMixer(array) {
 
     var currentIndex = array.length,
@@ -72,18 +73,22 @@ function arreyMixer(array) {
     }
     return array;
 }
+
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
+
 function hasNumber(myString) {
     return /\d/.test(myString);
 }
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     n = Math.floor(Math.random() * (max - min + 1)) + min;
     return n
 }
+
 function textBox() {
     let color_aco = "";
     let color_login = ""
@@ -111,19 +116,19 @@ function textBox() {
             document.getElementById('CavaScripts').style = localStorage.getItem("box")
 
         let btn_left = document.getElementById('btn_left')
-        btn_left.addEventListener("click", function () {
+        btn_left.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "left:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_right = document.getElementById('btn_right')
-        btn_right.addEventListener("click", function () {
+        btn_right.addEventListener("click", function() {
             document.getElementById('CavaScripts').style = "right:0;top: 350px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         });
 
         let btn_start_task = document.getElementById('btn_start_task')
-        btn_start_task.addEventListener("click", function () {
+        btn_start_task.addEventListener("click", function() {
             try {
                 let input = document.getElementById("input_sizepid").value
                 if (!isNumeric(input)) {
@@ -145,12 +150,12 @@ function textBox() {
         });
 
         let btn_start_checkout = document.getElementById('btn_start_checkout')
-        btn_start_checkout.addEventListener("click", function () {
+        btn_start_checkout.addEventListener("click", function() {
             getCheckout()
         });
 
         let btn_clear_cart = document.getElementById('btn_clear_cart')
-        btn_clear_cart.addEventListener("click", function () {
+        btn_clear_cart.addEventListener("click", function() {
             getCart()
         });
 
@@ -159,11 +164,9 @@ function textBox() {
             document.getElementById("input_sizepid").value = localStorage.getItem("solebox_pid")
         }
 
-    } catch (error) {
-        if (error != "TypeError: Cannot read property 'parentNode' of undefined" && error != "TypeError: Cannot read property 'insertAdjacentHTML' of undefined" && error != "TypeError: Cannot read property 'addEventListener' of null")
-            errorWebhooks(error, "textBox")
-    }
+    } catch (error) {}
 }
+
 function dragElement(elmnt) {
     var pos1 = 0,
         pos2 = 0,
@@ -219,8 +222,9 @@ async function checkPosition() {
             document.getElementById('CavaScripts').style = "top:" + positon_top + "px;"
             localStorage.setItem("box", document.getElementById("CavaScripts").getAttribute("style"))
         }
-    } catch (error) { }
+    } catch (error) {}
 }
+
 function updateValuePid(e) {
     localStorage.setItem("solebox_pid", e.target.value)
 }
@@ -233,7 +237,7 @@ async function addButton() {
                 '<br><br><div class="box"><input class="btn_cava" style="color:white; width:100%" id="btn_solved" type="submit" value="Solved"></div> <br><br>');
 
             let btn_solver = document.getElementById('btn_solver')
-            btn_solver.addEventListener("click", function () {
+            btn_solver.addEventListener("click", function() {
                 let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=500,height=500,left=-1000,top=-1000`;
                 captchasolver = window.open('https://www.solebox.com/' + country + '/view-account', 'captchasolver', params)
 
@@ -243,18 +247,19 @@ async function addButton() {
             });
 
             let btn_solved = document.getElementById('btn_solved')
-            btn_solved.addEventListener("click", function () {
+            btn_solved.addEventListener("click", function() {
                 sendText("Captcha solved...", "blue")
                 is_captcha_solved = true
             });
 
             checkPosition()
         }
-    } catch (error) { }
+    } catch (error) {}
 }
 async function sendText(text, color) {
-    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) { }
+    try { document.getElementById("statusSolebox").innerHTML = "<span style='color: " + color + ";'>" + text + "</span>" } catch (error) {}
 }
+
 function checkCaptcha(res) {
 
     if (res.includes("\"appId\"") || res.includes("_pxAppId") || res.includes("\"PX-ABR\"")) return true
@@ -282,7 +287,7 @@ async function main() {
             } else {
                 console.log("oos")
             }
-        } catch (error) { }
+        } catch (error) {}
     }
 }
 
@@ -347,7 +352,7 @@ async function login() {
         if (link != "https://www.solebox.com/" + country + "/login") {
 
             await getLogin()
-            await res.then(function (result) {
+            await res.then(function(result) {
                 html_login.innerHTML = result
             })
 
@@ -386,22 +391,22 @@ async function loginR(data_id, data_value, csrf_token) {
     try {
 
         await fetch("https://www.solebox.com/" + country + "/authentication?rurl=1&format=ajax", {
-            "headers": {
-                "accept": "application/json, text/javascript, */*; q=0.01",
-                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "x-requested-with": "XMLHttpRequest"
-            },
-            "referrer": "https://www.solebox.com/" + country + "/login?rurl=1",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": data_id + "=" + data_value + "&dwfrm_profile_customer_email=" + email_login + "&dwfrm_profile_login_password=" + pw_login + "&csrf_token=" + csrf_token,
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
-        })
+                "headers": {
+                    "accept": "application/json, text/javascript, */*; q=0.01",
+                    "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin",
+                    "x-requested-with": "XMLHttpRequest"
+                },
+                "referrer": "https://www.solebox.com/" + country + "/login?rurl=1",
+                "referrerPolicy": "strict-origin-when-cross-origin",
+                "body": data_id + "=" + data_value + "&dwfrm_profile_customer_email=" + email_login + "&dwfrm_profile_login_password=" + pw_login + "&csrf_token=" + csrf_token,
+                "method": "POST",
+                "mode": "cors",
+                "credentials": "include"
+            })
             .then(response => { checkResLogin(response) })
             .catch((error) => {
                 sendText("Error logging in", "orange")
@@ -446,22 +451,22 @@ async function checkResLogin(response) {
 async function getLogin() {
 
     await fetch("https://www.solebox.com/" + country + "/login", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": "https://www.solebox.com/" + country,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://www.solebox.com/" + country,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { res = checkResgetLogin(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -506,25 +511,25 @@ async function getCart() {
 
     sendText("Getting cart", "blue")
     await fetch("https://www.solebox.com/" + country + "/cart", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "max-age=0",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResGetCart(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -587,24 +592,24 @@ async function clearCart(pid_cart, uuid_cart) {
 
     sendText("Removing item...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/Cart-RemoveProductLineItem?format=ajax&pid=" + pid_cart + "&uuid=" + uuid_cart, {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/cart",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-ch-ua": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResClearCart(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -729,22 +734,22 @@ async function atc() {
 async function getSizePid(req) {
 
     await fetch("https://www.solebox.com/" + country + "" + req + "&format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/json",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetSizePid(response) })
         .catch((error) => {
             if (error != "TypeError: Failed to fetch")
@@ -800,22 +805,22 @@ async function atcRfast() {
 
     sendText("Trying atc fast...", "blue")
     await fetch("https://www.solebox.com/" + country + "/add-product?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": link,
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "pid=" + pidsize + "&options=&quantity=1",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": link,
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "pid=" + pidsize + "&options=&quantity=1",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResAtc(response) })
         .catch((error) => {
             sendText("Error adding to cart", "orange")
@@ -921,22 +926,22 @@ async function getCheckout() {
 
     sendText("Starting checkout...", "blue")
     await fetch("https://www.solebox.com/" + country + "/checkout", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/cart",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/cart",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResgetCheckout(response) })
         .catch((error) => {
             sendText("Error getting checkout", "orange")
@@ -1019,7 +1024,7 @@ async function gettingShipping() {
             name_product = html.querySelectorAll("[class='t-product-main-name']")[0].textContent.replaceAll("\n", "")
             size_product = html.querySelectorAll("[class='b-item-attribute b-item-attribute--size Size-']")[0].querySelectorAll('[class="t-checkout-attr-value"]')[0].textContent
             if (link.startsWith("https://www.solebox.com/" + country + "/cart"))
-                try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) { }
+                try { link_product = document.querySelectorAll("[class=js-product-link]")[0].href } catch (error) {}
             else if (pidsize != "")
                 link_product = "https://www.solebox.com/" + country + "/p/cava-" + pidsize + ".html"
             else {
@@ -1055,22 +1060,22 @@ async function ShippingRates() {
 
     sendText("Getting shipping rates...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-ShippingRates?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "selected=true&id=" + address_id + "&addressType=" + address_type + "&snipesStore=" + snipes_store + "&postOfficeNumber=" + post_office_number + "&packstationNumber=" + pack_station_number + "&postNumber=" + post_number + "&postalCode=" + postal_code + "&countryCode=" + country_code + "&suite=" + suite + "&street=" + street + "&city=" + city + "&address2=" + address2 + "&lastName=" + last_name + "&firstName=" + first_name + "&title=" + title + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "selected=true&id=" + address_id + "&addressType=" + address_type + "&snipesStore=" + snipes_store + "&postOfficeNumber=" + post_office_number + "&packstationNumber=" + pack_station_number + "&postNumber=" + post_number + "&postalCode=" + postal_code + "&countryCode=" + country_code + "&suite=" + suite + "&street=" + street + "&city=" + city + "&address2=" + address2 + "&lastName=" + last_name + "&firstName=" + first_name + "&title=" + title + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResShippingRates(response) })
         .catch((error) => {
             sendText("Error getting shipping rates", "orange")
@@ -1119,22 +1124,22 @@ async function SubmitShipping() {
 
     sendText("Submitting ship...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutShippingServices-SubmitShipping?region=europe&country=" + country_code + "&addressId=" + address_id + "&format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=&dwfrm_shipping_shippingAddress_addressFields_firstName=&dwfrm_shipping_shippingAddress_addressFields_lastName=&dwfrm_shipping_shippingAddress_addressFields_postalCode=&dwfrm_shipping_shippingAddress_addressFields_city=&dwfrm_shipping_shippingAddress_addressFields_street=&dwfrm_shipping_shippingAddress_addressFields_suite=&dwfrm_shipping_shippingAddress_addressFields_address1=&dwfrm_shipping_shippingAddress_addressFields_address2=&dwfrm_shipping_shippingAddress_addressFields_phone=&dwfrm_shipping_shippingAddress_addressFields_countryCode=DE&serviceShippingMethod=ups-standard&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "%2C+137&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=" + phone + "&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=shipping",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "originalShipmentUUID=" + originalShipmentUUID + "&shipmentUUID=" + shipmentUUID + "&dwfrm_shipping_shippingAddress_shippingMethodID=" + shippingMethodID + "&address-selector=" + address_selector + "&dwfrm_shipping_shippingAddress_addressFields_title=&dwfrm_shipping_shippingAddress_addressFields_firstName=&dwfrm_shipping_shippingAddress_addressFields_lastName=&dwfrm_shipping_shippingAddress_addressFields_postalCode=&dwfrm_shipping_shippingAddress_addressFields_city=&dwfrm_shipping_shippingAddress_addressFields_street=&dwfrm_shipping_shippingAddress_addressFields_suite=&dwfrm_shipping_shippingAddress_addressFields_address1=&dwfrm_shipping_shippingAddress_addressFields_address2=&dwfrm_shipping_shippingAddress_addressFields_phone=&dwfrm_shipping_shippingAddress_addressFields_countryCode=DE&serviceShippingMethod=ups-standard&dwfrm_shipping_shippingAddress_shippingAddressUseAsBillingAddress=true&dwfrm_billing_billingAddress_addressFields_title=" + title + "&dwfrm_billing_billingAddress_addressFields_firstName=" + first_name + "&dwfrm_billing_billingAddress_addressFields_lastName=" + last_name + "&dwfrm_billing_billingAddress_addressFields_postalCode=" + postal_code + "&dwfrm_billing_billingAddress_addressFields_city=" + city + "&dwfrm_billing_billingAddress_addressFields_street=" + street + "&dwfrm_billing_billingAddress_addressFields_suite=" + suite + "&dwfrm_billing_billingAddress_addressFields_address1=" + address1 + "%2C+137&dwfrm_billing_billingAddress_addressFields_address2=" + address2 + "&dwfrm_billing_billingAddress_addressFields_countryCode=" + country_code + "&dwfrm_billing_billingAddress_addressFields_phone=" + phone + "&dwfrm_contact_email=" + email + "&dwfrm_contact_phone=" + phone + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResSubmitShipping(response) })
         .catch((error) => {
             sendText("Error submitting shipping", "orange")
@@ -1194,22 +1199,22 @@ async function SubmitPayment() {
 
     sendText("Submittimg payment...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-SubmitPayment?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=payment",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "dwfrm_billing_paymentMethod=" + payment_mode + "&csrf_token=" + csrf_token,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=payment",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": "dwfrm_billing_paymentMethod=" + payment_mode + "&csrf_token=" + csrf_token,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResSubmitPayment(response) })
         .catch((error) => {
             sendText("Error submitting payment", "orange")
@@ -1273,24 +1278,24 @@ async function PlaceOrder() {
 
     sendText("placing order...", "blue")
     await fetch("https://www.solebox.com/on/demandware.store/Sites-solebox-Site/" + country + "/CheckoutServices-PlaceOrder?format=ajax", {
-        "headers": {
-            "accept": "application/json, text/javascript, */*; q=0.01",
-            "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "sec-ch-ua": "\"Google Chrome\";v=\"87\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"87\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest"
-        },
-        "referrer": "https://www.solebox.com/" + country + "/checkout?stage=placeOrder",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
+            "headers": {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "sec-ch-ua": "\"Google Chrome\";v=\"87\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"87\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrer": "https://www.solebox.com/" + country + "/checkout?stage=placeOrder",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
         .then(response => { checkResPlaceOrder(response) })
         .catch((error) => {
             sendText("Error placing order", "orange")
@@ -1372,45 +1377,45 @@ async function resInfoWebook(message, position) {
     chrome.runtime.sendMessage({ greeting: "info_webhook&-&" + site + "&-&" + message + "&-&" + position })
 }
 
-chrome.runtime.sendMessage({ greeting: "email_pw_solebox" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "email_pw_solebox" }, function(response) {
     var x = response.farewell
     email_login = x.split(':')[0]
     pw_login = x.split(':')[1]
 });
 
-chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function(response) {
     status_aco = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "status_login_solebox" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "status_login_solebox" }, function(response) {
     status_login = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "size_solebox" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "size_solebox" }, function(response) {
     if (response.farewell != "off")
         size_range = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "payment_mode_solebox" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "payment_mode_solebox" }, function(response) {
     if (response.farewell == "Credit Card")
         payment_mode = "CREDIT_CARD"
     else
         payment_mode = "Paypal"
 });
 
-chrome.runtime.sendMessage({ greeting: "checkout_mode_solebox" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "checkout_mode_solebox" }, function(response) {
     checkout_mode = response.farewell
 });
 
-chrome.runtime.sendMessage({ greeting: "authLog" }, function (response) {
+chrome.runtime.sendMessage({ greeting: "authLog" }, function(response) {
     if (response.farewell == 'on') {
         textBox()
-        chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_aco_solebox" }, function(response) {
             if (response.farewell == 'on') {
                 main();
             }
         });
-        chrome.runtime.sendMessage({ greeting: "status_login_solebox" }, function (response) {
+        chrome.runtime.sendMessage({ greeting: "status_login_solebox" }, function(response) {
             if (response.farewell == 'on') {
                 checkLogin();
             } else
